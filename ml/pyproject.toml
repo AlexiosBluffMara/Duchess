@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "duchess-ml"
+version = "0.1.0"
+description = "ML training pipeline for Duchess Construction Site Intelligence Platform"
+authors = ["Duchess Team"]
+readme = "README.md"
+packages = [{include = "scripts"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+# Training
+unsloth = {version = "^2025.3", extras = ["cu124-torch260"]}
+torch = "^2.6.0"
+transformers = "^4.49.0"
+datasets = "^3.3.0"
+peft = "^0.14.0"
+trl = "^0.15.0"
+accelerate = "^1.4.0"
+
+# Export
+onnx = "^1.17.0"
+onnxruntime = "^1.20.0"
+optimum = "^1.24.0"
+ai-edge-torch = "^0.3.0"
+
+# Object detection
+ultralytics = "^8.3.0"
+
+# Experiment tracking
+wandb = "^0.19.0"
+
+# Utilities
+tqdm = "^4.67.0"
+pandas = "^2.2.0"
+numpy = "^1.26.0"
+Pillow = "^11.1.0"
+huggingface-hub = "^0.28.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+ruff = "^0.9.0"
+ipykernel = "^6.29.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]

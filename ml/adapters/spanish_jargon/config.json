@@ -1,0 +1,35 @@
+{
+  "adapter_name": "spanish_jargon",
+  "description": "LoRA adapter for construction-register Spanish — jobsite terminology, code-switching patterns, OSHA bilingual compliance",
+  "base_model": "google/gemma-3n-e2b-it",
+  "dataset": "duchess/construction-spanish-jargon",
+  "lora_config": {
+    "r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.05,
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj"],
+    "bias": "none",
+    "task_type": "CAUSAL_LM"
+  },
+  "training_config": {
+    "epochs": 5,
+    "batch_size": 4,
+    "learning_rate": 1e-4,
+    "warmup_ratio": 0.05,
+    "weight_decay": 0.01,
+    "max_seq_length": 2048
+  },
+  "terminology_domains": [
+    "structural_steel",
+    "concrete_formwork",
+    "electrical_systems",
+    "plumbing_hvac",
+    "heavy_equipment",
+    "scaffolding_access",
+    "excavation_earthwork",
+    "safety_signage",
+    "toolbox_talks"
+  ],
+  "languages": ["en", "es"],
+  "notes": "Higher epoch count for terminology domain — smaller effective dataset. Lower LR to preserve base model Spanish capability."
+}

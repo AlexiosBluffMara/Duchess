@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "duchess-cloud"
+version = "0.1.0"
+description = "AWS CDK infrastructure for Duchess Construction Site Intelligence Platform"
+authors = ["Duchess Team"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aws-cdk-lib = "^2.180.0"
+constructs = "^10.4.0"
+boto3 = "^1.36.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+ruff = "^0.9.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]

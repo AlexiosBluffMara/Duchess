@@ -1,0 +1,35 @@
+{
+  "adapter_name": "safety",
+  "description": "LoRA adapter for construction safety domain — PPE detection, OSHA compliance, hazard classification",
+  "base_model": "google/gemma-3n-e2b-it",
+  "dataset": "duchess/construction-safety-instructions",
+  "lora_config": {
+    "r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.05,
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj"],
+    "bias": "none",
+    "task_type": "CAUSAL_LM"
+  },
+  "training_config": {
+    "epochs": 3,
+    "batch_size": 4,
+    "learning_rate": 2e-4,
+    "warmup_ratio": 0.03,
+    "weight_decay": 0.01,
+    "max_seq_length": 2048
+  },
+  "labels": [
+    "no_hardhat",
+    "no_vest",
+    "no_eye_protection",
+    "no_ear_protection",
+    "fall_hazard",
+    "electrical_hazard",
+    "excavation_hazard",
+    "struck_by_hazard",
+    "confined_space",
+    "compliant"
+  ],
+  "languages": ["en", "es"]
+}

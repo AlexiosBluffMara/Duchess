@@ -104,7 +104,7 @@ Scaffold the `app-glasses/` AOSP Android app for the Vuzix M400 (AOSP Android 13
 
 ## Priority 3 — `ml/` Python Training Pipeline
 
-**Status**: `[ ] QUEUED`  
+**Status**: `[x] DONE — completed 2026-04-01`  
 **Assigned**: Claude Code
 
 ### Goal
@@ -125,7 +125,7 @@ Scaffold the ML training environment for Gemma 3n fine-tuning and YOLOv8-nano PP
 
 ## Priority 4 — `cloud/` AWS CDK Infrastructure
 
-**Status**: `[ ] QUEUED`  
+**Status**: `[x] DONE — completed 2026-04-01`  
 **Assigned**: Claude Code
 
 ### Goal
