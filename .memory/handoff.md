@@ -4,6 +4,30 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 22:40 UTC — Commit c1f1739
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: ci(infra): opt into Node.js 24 and add fetch-depth 0 to Pages workflow
+
+### Modules touched
+- **infra**: 1 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1746 | Active (1746 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+.github/workflows/pages.yml
+```
+
+---
+
 ## 2026-04-02 22:37 UTC — Commit d1dde36
 
 **Branch**: `main`  
@@ -74,36 +98,6 @@ app-glasses/app/src/main/kotlin/com/duchess/glasses/ppe/PpeDetector.kt
 app-glasses/app/build.gradle.kts
 specs/alerts.spec.md
 specs/ppe.spec.md
-```
-
----
-
-## 2026-04-02 21:12 UTC — Commit 4c3e99e
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: ci(infra): eliminate mirror drift and add missing gradlew to app-glasses
-
-### Modules touched
-- **app-glasses/**: 4 file(s) changed
-- **infra**: 2 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 33 | Active (33 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.github/skills/edge-inference/SKILL.md
-.github/skills/model-quantization/SKILL.md
-app-glasses/gradle/wrapper/gradle-wrapper.jar
-app-glasses/gradle/wrapper/gradle-wrapper.properties
-app-glasses/gradlew
-app-glasses/gradlew.bat
 ```
 
 ---
