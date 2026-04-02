@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Duchess — AI-Powered Construction Safety Platform. Frontier AI on every worker's phone. Built on Google Gemma 4 at Illinois State University.">
+  <meta property="og:title" content="Duchess × Gemma 4 — AI Construction Safety | Illinois State University">
+  <meta property="og:description" content="Real-time PPE detection, bilingual EN/ES alerts, on-device inference. Built for the Gemma 4 Good Hackathon.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#CC0000">
+  <title>Duchess × Gemma 4 — AI-Powered Construction Safety | Illinois State University</title>
+
+  <!-- Google Fonts: Roboto (Google Material) + Roboto Slab (ISU official feel) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400&family=Roboto+Slab:wght@400;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ══════════════════════════════════════════════════════
+       DUCHESS — ISU × Google Material Design 3
+       Primary:  ISU Red    #CC0000  (Pantone 186 C digital)
+       Design:   Google Material Design 3
+       Font:     Roboto (body/UI) · Roboto Slab (display/ISU)
+    ══════════════════════════════════════════════════════ */
+
+    :root {
+      /* ISU Brand */
+      --isu-red:           #CC0000;
+      --isu-red-dark:      #9B0000;
+      --isu-red-darker:    #6B0000;
+      --isu-red-light:     #EF3B3B;
+      --isu-red-container: #FFDAD6;
+      --isu-red-on-cont:   #410002;
+
+      /* Google M3 Neutrals — warm-tinted toward ISU Red */
+      --surface:        #FFFBFA;
+      --surface-alt:    #FFF3F2;
+      --surface-var:    #F5DDDA;
+      --surface-2:      #FFFFFF;
+      --background:     #FFF8F7;
+      --on-surface:     #201A1A;
+      --on-surface-var: #534342;
+      --outline:        #857371;
+      --outline-var:    #D8C2BF;
+
+      /* Google accent palette */
+      --g-blue:   #4285F4;
+      --g-green:  #34A853;
+      --g-yellow: #FBBC04;
+      --g-red:    #EA4335;
+
+      /* M3 Elevation shadows */
+      --elev-1: 0 1px 2px rgba(0,0,0,.3), 0 1px 3px 1px rgba(0,0,0,.15);
+      --elev-2: 0 1px 2px rgba(0,0,0,.3), 0 2px 6px 2px rgba(0,0,0,.15);
+      --elev-3: 0 4px 8px 3px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.3);
+      --elev-4: 0 6px 10px 4px rgba(0,0,0,.15), 0 2px 3px rgba(0,0,0,.3);
+
+      /* 8px spacing scale */
+      --s1:  8px;  --s2: 16px; --s3: 24px; --s4: 32px;
+      --s5: 40px;  --s6: 48px; --s8: 64px; --s10: 80px;
+
+      /* Radius */
+      --r-xs: 4px; --r-sm: 8px; --r-md: 12px;
+      --r-lg: 16px; --r-xl: 28px; --r-pill: 50px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+
+    body {
+      font-family:'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size:16px; line-height:1.6;
+      color:var(--on-surface);
+      background:var(--background);
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+
+    /* ── Scroll Reveal ── */
+    .reveal {
+      opacity:0;
+      transform:translateY(28px);
+      transition:opacity .6s cubic-bezier(.4,0,.2,1),
+                  transform .6s cubic-bezier(.4,0,.2,1);
+    }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .d1 { transition-delay:.08s; }
+    .d2 { transition-delay:.16s; }
+    .d3 { transition-delay:.24s; }
+    .d4 { transition-delay:.32s; }
+    .d5 { transition-delay:.40s; }
+
+    /* ── Layout ── */
+    .container { width:100%; max-width:1200px; margin:0 auto; padding:0 var(--s3); }
+    .section    { padding:var(--s10) 0; }
+    .section-sm { padding:var(--s6)  0; }
+
+    /* ══ TOP NAV ══ */
+    .topnav {
+      position:sticky; top:0; z-index:200;
+      background:rgba(255,251,250,.93);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--outline-var);
+      transition:box-shadow .25s;
+    }
+    .topnav.scrolled { box-shadow:var(--elev-2); }
+
+    .topnav-inner {
+      display:flex; align-items:center; gap:var(--s2);
+      padding:12px var(--s3); max-width:1200px; margin:0 auto;
+    }
+    .topnav-brand {
+      display:flex; align-items:center; gap:10px;
+      text-decoration:none; flex-shrink:0;
+    }
+    .isu-pill {
+      background:var(--isu-red); color:#fff;
+      padding:4px 12px; border-radius:var(--r-pill);
+      font-size:.7rem; font-weight:700; letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .brand-name {
+      font-family:'Roboto Slab',serif;
+      font-size:1.05rem; font-weight:700;
+      color:var(--on-surface);
+    }
+    .brand-divider {
+      width:1px; height:18px;
+      background:var(--outline-var);
+    }
+    .brand-sub {
+      font-size:.75rem; color:var(--on-surface-var);
+      font-weight:500; white-space:nowrap;
+    }
+
+    .nav-links {
+      display:flex; align-items:center; gap:2px;
+      list-style:none; margin-left:auto;
+    }
+    .nav-links a {
+      display:block; padding:8px 14px;
+      border-radius:var(--r-sm);
+      font-size:.86rem; font-weight:500;
+      text-decoration:none; color:var(--on-surface-var);
+      transition:background .15s, color .15s;
+    }
+    .nav-links a:hover {
+      background:var(--isu-red-container);
+      color:var(--isu-red-on-cont);
+    }
+    .nav-cta {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:9px 20px; background:var(--isu-red); color:#fff;
+      border-radius:var(--r-pill); font-size:.85rem; font-weight:700;
+      text-decoration:none; box-shadow:var(--elev-1);
+      transition:background .2s, box-shadow .2s, transform .15s;
+      white-space:nowrap; margin-left:var(--s1);
+      flex-shrink:0;
+    }
+    .nav-cta:hover { background:var(--isu-red-dark); box-shadow:var(--elev-3); transform:translateY(-1px); }
+
+    .mobile-btn {
+      display:none; background:none; border:none; cursor:pointer;
+      padding:8px; color:var(--on-surface); margin-left:auto; border-radius:var(--r-sm);
+    }
+    .mobile-btn:hover { background:var(--surface-var); }
+
+    /* ── Mobile nav drawer ── */
+    .mobile-nav {
+      display:none; flex-direction:column; gap:2px;
+      padding:8px var(--s3) 16px;
+      border-bottom:1px solid var(--outline-var);
+      background:rgba(255,251,250,.97);
+      backdrop-filter:blur(20px);
+    }
+    .mobile-nav a {
+      padding:12px 14px; border-radius:var(--r-sm);
+      font-size:.95rem; font-weight:500;
+      text-decoration:none; color:var(--on-surface-var);
+      transition:background .15s;
+    }
+    .mobile-nav a:hover { background:var(--isu-red-container); color:var(--isu-red-on-cont); }
+    .mobile-nav.open { display:flex; }
+
+    /* ══ HERO ══ */
+    .hero {
+      position:relative;
+      background:linear-gradient(150deg, var(--isu-red-darker) 0%, var(--isu-red-dark) 30%, var(--isu-red) 65%, #1A1A2E 100%);
+      color:#fff;
+      padding:calc(var(--s10) + var(--s6)) var(--s3) var(--s10);
+      text-align:center;
+      min-height:90vh;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+
+    /* Animated dot-grid background */
+    .hero-grid {
+      position:absolute; inset:0; pointer-events:none;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size:36px 36px;
+      animation:grid-pan 25s linear infinite;
+    }
+    @keyframes grid-pan { to { background-position:36px 36px; } }
+
+    /* Glowing orb */
+    .hero-orb {
+      position:absolute; pointer-events:none;
+      width:700px; height:700px; border-radius:50%;
+      background:radial-gradient(circle, rgba(255,255,255,.07) 0%, transparent 65%);
+      top:50%; left:50%; transform:translate(-50%,-50%);
+      animation:orb-pulse 7s ease-in-out infinite;
+    }
+    @keyframes orb-pulse {
+      0%,100% { transform:translate(-50%,-50%) scale(1); opacity:.6; }
+      50%      { transform:translate(-50%,-50%) scale(1.18); opacity:1; }
+    }
+
+    .hero-content {
+      position:relative; z-index:1;
+      max-width:860px;
+      animation:fade-up .85s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes fade-up { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+
+    .hero-eyebrow {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,.12);
+      backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,.22);
+      color:rgba(255,255,255,.92);
+      padding:6px 18px; border-radius:var(--r-pill);
+      font-size:.78rem; font-weight:600; letter-spacing:.07em;
+      text-transform:uppercase; margin-bottom:var(--s3);
+      animation:fade-up .85s .08s cubic-bezier(.4,0,.2,1) both;
+    }
+    .live-dot {
+      width:7px; height:7px; border-radius:50%;
+      background:#4ade80;
+      animation:blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+    .hero h1 {
+      font-family:'Roboto Slab',serif;
+      font-size:clamp(2.8rem,7vw,5.2rem);
+      font-weight:800; line-height:1.07;
+      letter-spacing:-.025em; margin-bottom:var(--s3);
+      animation:fade-up .85s .14s cubic-bezier(.4,0,.2,1) both;
+    }
+    .hero h1 .h1-project { color:rgba(255,255,255,.55); font-style:italic; font-weight:300; }
+    .hero h1 .h1-underline {
+      display:inline-block; position:relative;
+    }
+    .hero h1 .h1-underline::after {
+      content:''; position:absolute; bottom:-2px; left:0; right:0;
+      height:3px; background:rgba(255,255,255,.35); border-radius:2px;
+    }
+
+    .hero-sub {
+      font-size:clamp(1rem,2.5vw,1.22rem);
+      font-weight:300; opacity:.88; line-height:1.7;
+      max-width:640px; margin:0 auto var(--s4);
+      animation:fade-up .85s .20s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    .hero-chips {
+      display:flex; gap:10px; justify-content:center;
+      flex-wrap:wrap; margin-bottom:var(--s5);
+      animation:fade-up .85s .26s cubic-bezier(.4,0,.2,1) both;
+    }
+    .chip {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(255,255,255,.11);
+      backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,.2);
+      color:#fff; padding:7px 15px; border-radius:var(--r-pill);
+      font-size:.8rem; font-weight:500;
+      transition:background .2s, border-color .2s;
+      cursor:default;
+    }
+    .chip:hover { background:rgba(255,255,255,.2); border-color:rgba(255,255,255,.4); }
+
+    .hero-ctas {
+      display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
+      animation:fade-up .85s .32s cubic-bezier(.4,0,.2,1) both;
+    }
+    .btn-hero-p {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:14px 34px; background:#fff; color:var(--isu-red);
+      font-weight:700; font-size:1rem; border-radius:var(--r-pill);
+      text-decoration:none; box-shadow:0 4px 24px rgba(0,0,0,.28);
+      transition:transform .2s, box-shadow .2s;
+    }
+    .btn-hero-p:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,0,0,.34); }
+    .btn-hero-s {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:13px 30px; background:transparent; color:#fff;
+      font-weight:600; font-size:1rem; border-radius:var(--r-pill);
+      text-decoration:none; border:2px solid rgba(255,255,255,.35);
+      transition:background .2s, border-color .2s;
+    }
+    .btn-hero-s:hover { background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.65); }
+
+    .scroll-hint {
+      position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:8px;
+      color:rgba(255,255,255,.45); font-size:.72rem; letter-spacing:.1em;
+      text-transform:uppercase;
+      animation:fade-up 1s .6s both;
+    }
+    .scroll-chevron {
+      width:18px; height:18px;
+      border-right:2px solid rgba(255,255,255,.38);
+      border-bottom:2px solid rgba(255,255,255,.38);
+      transform:rotate(45deg);
+      animation:bounce-down 1.6s ease-in-out infinite;
+    }
+    @keyframes bounce-down {
+      0%,100% { transform:rotate(45deg) translateY(0); }
+      50%      { transform:rotate(45deg) translateY(5px); }
+    }
+
+    /* ══ STATS ══ */
+    .stats-bar {
+      background:var(--surface-2);
+      border-bottom:1px solid var(--outline-var);
+      padding:var(--s6) 0;
+    }
+    .stats-grid {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:var(--s2); text-align:center;
+    }
+    .stat-cell { position:relative; padding:var(--s2); }
+    .stat-cell + .stat-cell::before {
+      content:''; position:absolute; left:0; top:20%; height:60%;
+      width:1px; background:var(--outline-var);
+    }
+    .stat-val {
+      font-family:'Roboto Slab',serif;
+      font-size:clamp(1.8rem,4vw,2.8rem);
+      font-weight:800; color:var(--isu-red);
+      line-height:1; display:block;
+    }
+    .stat-lbl {
+      font-size:.8rem; font-weight:500;
+      color:var(--on-surface-var); margin-top:6px; line-height:1.35;
+    }
+
+    /* ══ SECTION HEADER ══ */
+    .sec-hdr { text-align:center; margin-bottom:var(--s6); }
+    .eyebrow {
+      display:inline-block;
+      font-size:.72rem; font-weight:700; letter-spacing:.1em;
+      text-transform:uppercase; color:var(--isu-red);
+      background:var(--isu-red-container);
+      padding:4px 14px; border-radius:var(--r-pill);
+      margin-bottom:var(--s2);
+    }
+    .sec-title {
+      font-family:'Roboto Slab',serif;
+      font-size:clamp(1.6rem,3.5vw,2.4rem);
+      font-weight:700; color:var(--on-surface); margin-bottom:10px;
+    }
+    .sec-sub {
+      font-size:1rem; color:var(--on-surface-var);
+      max-width:600px; margin:0 auto; line-height:1.65;
+    }
+
+    /* ══ CARDS ══ */
+    .card-grid   { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:var(--s3); }
+    .card-grid-3 { grid-template-columns:repeat(3,1fr); }
+
+    .card {
+      background:var(--surface-2);
+      border-radius:var(--r-lg);
+      padding:var(--s4);
+      border:1px solid var(--outline-var);
+      position:relative; overflow:hidden;
+      transition:transform .25s cubic-bezier(.4,0,.2,1),
+                  box-shadow .25s cubic-bezier(.4,0,.2,1),
+                  border-color .25s;
+    }
+    .card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:3px;
+      background:linear-gradient(90deg, var(--isu-red), var(--isu-red-light));
+      transform:scaleX(0); transform-origin:left;
+      transition:transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    .card:hover { transform:translateY(-6px); box-shadow:var(--elev-3); border-color:var(--outline); }
+    .card:hover::before { transform:scaleX(1); }
+
+    .card-icon { font-size:2.25rem; display:block; margin-bottom:var(--s2); }
+    .card h3 { font-size:1.1rem; font-weight:700; color:var(--on-surface); margin-bottom:8px; }
+    .card p  { font-size:.9rem; color:var(--on-surface-var); line-height:1.65; }
+
+    /* ══ ARCHITECTURE ══ */
+    .arch-wrap {
+      background:linear-gradient(175deg, var(--surface-var) 0%, var(--background) 100%);
+    }
+    .arch-flow {
+      display:flex; align-items:stretch; justify-content:center;
+      gap:var(--s2); flex-wrap:wrap;
+      margin:var(--s5) 0 var(--s2);
+    }
+    .arch-arrow { display:flex; align-items:center; color:var(--outline); font-size:1.4rem; flex-shrink:0; }
+    .arch-tier {
+      flex:1; min-width:155px; max-width:210px;
+      background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3);
+      text-align:center; border:2px solid var(--outline-var); position:relative;
+      transition:transform .22s, box-shadow .22s, border-color .22s;
+      cursor:default;
+    }
+    .arch-tier:hover { transform:translateY(-4px); box-shadow:var(--elev-3); }
+    .arch-tier.t-primary { border-color:var(--isu-red); }
+    .arch-tier.t-primary::after {
+      content:'CORE'; position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+      background:var(--isu-red); color:#fff;
+      font-size:.62rem; font-weight:700; letter-spacing:.08em;
+      padding:2px 10px; border-radius:var(--r-pill); white-space:nowrap;
+    }
+    .t-num {
+      width:26px; height:26px; border-radius:50%;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:.72rem; font-weight:700; margin-bottom:10px;
+    }
+    .n1 { background:var(--isu-red-container); color:var(--isu-red-on-cont); }
+    .n2 { background:var(--isu-red); color:#fff; }
+    .n3 { background:#E8F5E9; color:#1B5E20; }
+    .n4 { background:#E3F2FD; color:#0D47A1; }
+    .t-label { font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--on-surface-var); margin-bottom:4px; }
+    .t-icon  { font-size:1.5rem; margin:6px 0; }
+    .t-name  { font-size:.88rem; font-weight:700; color:var(--on-surface); margin-bottom:4px; }
+    .t-model { font-size:.76rem; color:var(--on-surface-var); }
+    .t-badge {
+      display:inline-block; margin-top:10px;
+      padding:3px 10px; border-radius:var(--r-pill);
+      font-size:.7rem; font-weight:700;
+    }
+    .tb-green { background:#E8F5E9; color:#1B5E20; }
+
+    .arch-note {
+      text-align:center; font-size:.85rem; color:var(--isu-red-on-cont);
+      font-style:italic; padding:var(--s3);
+      background:var(--isu-red-container); border-radius:var(--r-md);
+      margin-top:var(--s3);
+    }
+
+    /* ══ TABLE ══ */
+    .tbl-wrap { overflow-x:auto; border-radius:var(--r-lg); box-shadow:var(--elev-2); }
+    .tbl {
+      width:100%; border-collapse:collapse;
+      background:var(--surface-2); min-width:580px;
+    }
+    .tbl thead { background:var(--isu-red); color:#fff; }
+    .tbl th {
+      padding:14px 20px; text-align:left;
+      font-size:.78rem; font-weight:700; letter-spacing:.06em;
+      text-transform:uppercase; white-space:nowrap;
+    }
+    .tbl td { padding:14px 20px; border-bottom:1px solid var(--outline-var); font-size:.875rem; vertical-align:middle; }
+    .tbl tr:last-child td  { border-bottom:none; }
+    .tbl tbody tr { transition:background .15s; }
+    .tbl tbody tr:hover    { background:var(--surface-var); }
+    .tbl .hl { color:var(--isu-red); font-weight:700; }
+    .tier-tag {
+      display:inline-flex; align-items:center; gap:4px;
+      padding:3px 10px; border-radius:var(--r-pill);
+      font-size:.73rem; font-weight:600; white-space:nowrap;
+    }
+    .tt2 { background:var(--isu-red-container); color:var(--isu-red-on-cont); }
+    .tt3 { background:#E8F5E9; color:#1B5E20; }
+    .tt4 { background:#E3F2FD; color:#0D47A1; }
+
+    /* ══ ALERT DEMO ══ */
+    .alert-demo {
+      background:#1A1A2E; color:#fff;
+      border-radius:var(--r-lg); padding:var(--s4);
+      font-family:'Roboto Mono', 'Courier New', monospace;
+      font-size:.86rem; line-height:1.9;
+      position:relative; overflow:hidden;
+    }
+    .alert-demo::before {
+      content:'● ● ●'; display:block;
+      color:rgba(255,255,255,.25); font-size:.58rem;
+      letter-spacing:.5em; margin-bottom:var(--s2);
+    }
+    .ar { color:#FF6B6B; font-weight:700; }
+    .ag { color:#69DB7C; }
+    .ay { color:#FFD43B; }
+    .ad { color:rgba(255,255,255,.45); }
+    .cursor {
+      display:inline-block; width:2px; height:1em;
+      background:#fff; vertical-align:middle;
+      animation:cur 1s step-end infinite;
+    }
+    @keyframes cur { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ══ METRIC GRID ══ */
+    .metric-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--s2); }
+    .metric-tile {
+      border-radius:var(--r-lg); padding:var(--s3); text-align:center;
+    }
+    .metric-val {
+      font-family:'Roboto Slab',serif;
+      font-size:1.9rem; font-weight:800; line-height:1;
+    }
+    .metric-lbl { font-size:.78rem; font-weight:600; margin-top:5px; }
+
+    /* ══ TWO-COL ══ */
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:var(--s8); align-items:center; }
+    .two-col.rev { direction:rtl; }
+    .two-col.rev > * { direction:ltr; }
+
+    .feat-list { list-style:none; padding:0; margin-top:var(--s3); }
+    .feat-list li {
+      display:flex; align-items:flex-start; gap:12px;
+      padding:10px 0; border-bottom:1px solid var(--outline-var);
+      font-size:.9rem; color:var(--on-surface-var);
+    }
+    .feat-list li:last-child { border-bottom:none; }
+    .feat-check {
+      width:20px; height:20px; border-radius:50%;
+      background:var(--isu-red); color:#fff;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:.6rem; font-weight:900; flex-shrink:0; margin-top:1px;
+    }
+
+    /* ══ PRIZES ══ */
+    .prize-wrap { background:var(--surface-var); }
+    .prize-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:var(--s2); }
+    .prize-card {
+      background:var(--surface-2); border:2px solid var(--outline-var);
+      border-radius:var(--r-lg); padding:var(--s3); text-align:center;
+      transition:border-color .2s, transform .2s, box-shadow .2s;
+      cursor:default;
+    }
+    .prize-card:hover { border-color:var(--isu-red); transform:translateY(-4px); box-shadow:var(--elev-2); }
+    .prize-card.featured { border-color:var(--isu-red); background:var(--isu-red-container); }
+    .prize-amt {
+      font-family:'Roboto Slab',serif;
+      font-size:1.65rem; font-weight:800; color:var(--isu-red); line-height:1;
+    }
+    .prize-card.featured .prize-amt { font-size:2rem; }
+    .prize-lbl { font-size:.82rem; font-weight:600; color:var(--on-surface); margin-top:6px; line-height:1.3; }
+    .prize-stars { color:var(--g-yellow); font-size:.82rem; margin-top:6px; letter-spacing:2px; }
+    .prize-total { text-align:center; margin-top:var(--s4); font-size:.9rem; color:var(--on-surface-var); }
+    .prize-total strong { color:var(--isu-red); font-size:1.1rem; }
+    .prize-total a { color:var(--isu-red); font-weight:600; text-decoration:none; }
+    .prize-total a:hover { text-decoration:underline; }
+
+    /* ══ ISU BANNER ══ */
+    .isu-banner { background:var(--isu-red); color:#fff; padding:var(--s5) var(--s3); }
+    .isu-inner {
+      max-width:960px; margin:0 auto;
+      display:flex; align-items:center; gap:var(--s5);
+      flex-wrap:wrap; justify-content:center;
+    }
+    .isu-wordmark {
+      font-family:'Roboto Slab',serif;
+      font-size:1.65rem; font-weight:800;
+      line-height:1.2; flex-shrink:0;
+    }
+    .isu-wordmark span { font-weight:300; opacity:.82; }
+    .isu-sep { width:1px; height:60px; background:rgba(255,255,255,.3); flex-shrink:0; }
+    .isu-copy { flex:1; min-width:280px; }
+    .isu-copy p { font-size:.9rem; opacity:.9; line-height:1.55; }
+
+    /* ══ TEAM ══ */
+    .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:var(--s3); }
+    .team-card {
+      background:var(--surface-2); border:1px solid var(--outline-var);
+      border-radius:var(--r-lg); padding:var(--s4);
+      transition:box-shadow .2s, transform .2s;
+    }
+    .team-card:hover { transform:translateY(-3px); box-shadow:var(--elev-2); }
+    .t-avatar {
+      width:52px; height:52px; border-radius:var(--r-pill); flex-shrink:0;
+      background:linear-gradient(135deg, var(--isu-red), var(--isu-red-light));
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; color:#fff; font-weight:700;
+    }
+    .t-name { font-weight:700; font-size:1rem; color:var(--on-surface); }
+    .t-role { font-size:.84rem; color:var(--isu-red); font-weight:600; }
+    .t-desc { font-size:.82rem; color:var(--on-surface-var); line-height:1.55; margin-top:8px; }
+    .isu-tag {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:.72rem; font-weight:600; color:var(--on-surface-var);
+      background:var(--surface-var); padding:4px 10px;
+      border-radius:var(--r-pill); margin-top:10px;
+    }
+
+    .advisor-box {
+      background:var(--surface-var); border-radius:var(--r-lg);
+      padding:var(--s4); margin-top:var(--s5);
+    }
+    .advisor-box h3 { font-size:1rem; font-weight:700; margin-bottom:var(--s2); color:var(--on-surface); }
+    .advisor-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--s3); }
+    .advisor-name { font-weight:700; font-size:.9rem; color:var(--on-surface); }
+    .advisor-desc { font-size:.81rem; color:var(--on-surface-var); margin-top:4px; line-height:1.5; }
+
+    /* ══ CTA ══ */
+    .cta-section {
+      background:linear-gradient(135deg, var(--isu-red-darker) 0%, var(--isu-red) 100%);
+      color:#fff; padding:var(--s10) var(--s3); text-align:center;
+    }
+    .cta-title {
+      font-family:'Roboto Slab',serif;
+      font-size:clamp(1.6rem,4vw,2.5rem);
+      font-weight:700; margin-bottom:var(--s2);
+    }
+    .cta-sub {
+      font-size:1rem; opacity:.88; max-width:560px;
+      margin:0 auto var(--s5); line-height:1.65;
+    }
+    .cta-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+    .btn-cta-p {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:15px 36px; background:#fff; color:var(--isu-red);
+      font-weight:700; font-size:1rem; border-radius:var(--r-pill);
+      text-decoration:none; box-shadow:var(--elev-3);
+      transition:transform .2s, box-shadow .2s;
+    }
+    .btn-cta-p:hover { transform:translateY(-2px); box-shadow:var(--elev-4); }
+    .btn-cta-s {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:14px 30px; background:transparent; color:#fff;
+      font-weight:600; font-size:1rem; border-radius:var(--r-pill);
+      text-decoration:none; border:2px solid rgba(255,255,255,.45);
+      transition:background .2s, border-color .2s;
+    }
+    .btn-cta-s:hover { background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.8); }
+
+    /* ══ FOOTER ══ */
+    .footer { background:var(--on-surface); color:rgba(255,255,255,.65); padding:var(--s8) var(--s3) var(--s4); }
+    .footer-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:var(--s5); }
+    .footer-col h4 { color:#fff; font-size:.86rem; font-weight:700; margin-bottom:12px; letter-spacing:.04em; }
+    .footer-col p  { font-size:.81rem; line-height:1.7; }
+    .footer-col a  { font-size:.81rem; color:rgba(255,255,255,.58); text-decoration:none; display:block; line-height:1.9; }
+    .footer-col a:hover { color:rgba(255,255,255,.9); }
+    .footer-bottom {
+      max-width:1200px; margin:var(--s4) auto 0;
+      padding-top:var(--s3); border-top:1px solid rgba(255,255,255,.1);
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:12px; font-size:.79rem; color:rgba(255,255,255,.38);
+    }
+    .footer-mark {
+      display:inline-flex; align-items:center; gap:8px;
+      font-weight:700; color:rgba(255,255,255,.65); font-size:.83rem;
+    }
+    .f-dot { width:9px; height:9px; border-radius:50%; background:var(--isu-red); flex-shrink:0; }
+
+    /* ══ UTILITIES ══ */
+    .bg-s  { background:var(--surface); }
+    .bg-s2 { background:var(--surface-2); }
+    .bg-sv { background:var(--surface-var); }
+    .text-red { color:var(--isu-red); }
+    .mt2 { margin-top:var(--s2); }
+    .mt3 { margin-top:var(--s3); }
+    .fw7 { font-weight:700; }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width:1024px) {
+      .card-grid-3 { grid-template-columns:repeat(2,1fr); }
+      .stats-grid  { grid-template-columns:repeat(2,1fr); }
+      .stat-cell + .stat-cell::before { display:none; }
+    }
+
+    @media (max-width:768px) {
+      :root { --s10:56px; --s8:48px; --s6:36px; }
+
+      .nav-links   { display:none; }
+      .mobile-btn  { display:flex; }
+      .nav-cta     { display:none; }
+
+      .two-col, .two-col.rev { grid-template-columns:1fr; gap:var(--s5); direction:ltr; }
+
+      .card-grid-3 { grid-template-columns:1fr; }
+
+      .arch-flow { flex-direction:column; align-items:center; }
+      .arch-arrow { transform:rotate(90deg); }
+      .arch-tier  { max-width:290px; width:100%; }
+
+      .footer-grid { grid-template-columns:1fr; gap:var(--s4); }
+
+      .hero-ctas .btn-hero-p,
+      .hero-ctas .btn-hero-s { width:100%; max-width:320px; justify-content:center; }
+      .hero-ctas { flex-direction:column; align-items:center; }
+
+      .prize-grid { grid-template-columns:repeat(2,1fr); }
+      .metric-grid { grid-template-columns:1fr 1fr; }
+
+      .footer-bottom { flex-direction:column; text-align:center; }
+
+      .isu-sep { display:none; }
+      .isu-copy { text-align:center; }
+      .isu-inner { text-align:center; }
+
+      .advisor-grid { grid-template-columns:1fr; }
+    }
+
+    @media (max-width:480px) {
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .prize-grid { grid-template-columns:1fr 1fr; }
+      .metric-grid { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════
+     TOP NAV
+════════════════ -->
+<header class="topnav" id="topnav">
+  <div class="topnav-inner">
+    <a href="#" class="topnav-brand" aria-label="Duchess home">
+      <span class="isu-pill">ISU</span>
+      <span class="brand-name">Duchess</span>
+      <span class="brand-divider" aria-hidden="true"></span>
+      <span class="brand-sub">Gemma 4 Good Hackathon</span>
+    </a>
+
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="#problem">The Problem</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#gemma4">Gemma 4</a></li>
+        <li><a href="#prizes">Prizes</a></li>
+        <li><a href="#team">Team</a></li>
+      </ul>
+    </nav>
+
+    <button class="mobile-btn" aria-label="Toggle navigation" onclick="toggleNav()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+
+    <a href="https://github.com/AlexiosBluffMara/Duchess" class="nav-cta" aria-label="View on GitHub">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+      </svg>
+      GitHub
+    </a>
+  </div>
+
+  <!-- Mobile nav drawer -->
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+    <a href="#problem"      onclick="closeNav()">The Problem</a>
+    <a href="#architecture" onclick="closeNav()">Architecture</a>
+    <a href="#gemma4"       onclick="closeNav()">Gemma 4</a>
+    <a href="#prizes"       onclick="closeNav()">Prizes</a>
+    <a href="#team"         onclick="closeNav()">Team</a>
+    <a href="https://github.com/AlexiosBluffMara/Duchess">View on GitHub ↗</a>
+  </nav>
+</header>
+
+
+<!-- ════════════════
+     HERO
+════════════════ -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-orb"  aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow" aria-label="Hackathon entry">
+      <span class="live-dot" aria-hidden="true"></span>
+      Gemma 4 Good Hackathon · April – May 2026
+    </div>
+
+    <h1 id="hero-title">
+      <span class="h1-underline">Duchess</span><br>
+      <span class="h1-project">Construction Safety,</span><br>
+      Powered by Gemma&nbsp;4
+    </h1>
+
+    <p class="hero-sub">
+      Frontier AI on every construction worker's phone. On-device. Bilingual. Privacy-preserving.<br>
+      Real-time PPE detection that speaks English <em>and</em> Spanish — anywhere, offline.
+    </p>
+
+    <div class="hero-chips" role="list" aria-label="Key features">
+      <span class="chip" role="listitem">🏗️ Construction Safety</span>
+      <span class="chip" role="listitem">📱 On-Device Gemma 4</span>
+      <span class="chip" role="listitem">🌐 English + Español</span>
+      <span class="chip" role="listitem">🔒 Privacy-First</span>
+      <span class="chip" role="listitem">⚡ &lt;2s Inference</span>
+    </div>
+
+    <div class="hero-ctas">
+      <a href="https://github.com/AlexiosBluffMara/Duchess" class="btn-hero-p">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        View on GitHub
+      </a>
+      <a href="#architecture" class="btn-hero-s">See How It Works ↓</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="scroll-chevron"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     STATS
+════════════════ -->
+<section class="stats-bar" aria-label="Key statistics">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-cell reveal">
+        <span class="stat-val" data-target="1056" aria-live="polite">0</span>
+        <div class="stat-lbl">US construction deaths in 2024</div>
+      </div>
+      <div class="stat-cell reveal d1">
+        <span class="stat-val">$0</span>
+        <div class="stat-lbl">Per-inference cost — on-device</div>
+      </div>
+      <div class="stat-cell reveal d2">
+        <span class="stat-val">&lt;2s</span>
+        <div class="stat-lbl">Gemma 4 E2B on-phone latency</div>
+      </div>
+      <div class="stat-cell reveal d3">
+        <span class="stat-val" data-target="140" aria-live="polite">0</span>
+        <div class="stat-lbl">Languages Gemma 4 supports</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     PROBLEM
+════════════════ -->
+<section class="section bg-s" id="problem" aria-labelledby="prob-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <span class="eyebrow">The Challenge</span>
+      <h2 class="sec-title" id="prob-title">Construction Is America's Deadliest Industry</h2>
+      <p class="sec-sub">Over 60% of fatalities are preventable. PPE non-compliance and language barriers are the leading causes.</p>
+    </div>
+
+    <div class="card-grid">
+      <article class="card reveal">
+        <span class="card-icon" aria-hidden="true">⚠️</span>
+        <h3>The Fatal Four</h3>
+        <p>Falls, struck-by, electrocution, and caught-in/between account for over 60% of construction deaths. All are detectable with real-time AI vision — if the system is fast enough.</p>
+      </article>
+      <article class="card reveal d2">
+        <span class="card-icon" aria-hidden="true">🗣️</span>
+        <h3>Language Barrier</h3>
+        <p>30%+ of US construction workers are Spanish-speaking. Safety warnings in English only leave the most vulnerable workers unprotected — exposing companies to liability and workers to harm.</p>
+      </article>
+      <article class="card reveal d3">
+        <span class="card-icon" aria-hidden="true">📵</span>
+        <h3>Connectivity Gap</h3>
+        <p>Construction sites often lack reliable internet. Cloud-only AI systems fail exactly when they're needed most. On-device inference is not a feature — it's a requirement.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     ARCHITECTURE
+════════════════ -->
+<section class="section arch-wrap" id="architecture" aria-labelledby="arch-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <span class="eyebrow">System Design</span>
+      <h2 class="sec-title" id="arch-title">Four-Tier AI Architecture</h2>
+      <p class="sec-sub">Google Gemma 4 at every tier — from AR glasses to cloud — with privacy-preserving data flow by design.</p>
+    </div>
+
+    <div class="arch-flow" role="list" aria-label="System architecture tiers">
+      <div class="arch-tier reveal" role="listitem">
+        <span class="t-num n1" aria-label="Tier 1">1</span>
+        <div class="t-label">Edge · &lt;50ms</div>
+        <div class="t-icon" aria-hidden="true">🕶️</div>
+        <div class="t-name">Ray-Ban Meta Glasses</div>
+        <div class="t-model">YOLOv8-nano + MobileNet</div>
+        <span class="t-badge tb-green">&lt;50ms</span>
+      </div>
+
+      <div class="arch-arrow reveal d1" aria-hidden="true">→</div>
+
+      <div class="arch-tier t-primary reveal d1" role="listitem">
+        <span class="t-num n2" aria-label="Tier 2 — core">2</span>
+        <div class="t-label">Phone · &lt;2s</div>
+        <div class="t-icon" aria-hidden="true">📱</div>
+        <div class="t-name">Pixel 9 Fold Pro</div>
+        <div class="t-model">Gemma 4 E2B · LiteRT</div>
+        <span class="t-badge tb-green">&lt;2 seconds</span>
+      </div>
+
+      <div class="arch-arrow reveal d2" aria-hidden="true">→</div>
+
+      <div class="arch-tier reveal d2" role="listitem">
+        <span class="t-num n3" aria-label="Tier 3">3</span>
+        <div class="t-label">Local · &lt;5s</div>
+        <div class="t-icon" aria-hidden="true">💻</div>
+        <div class="t-name">RTX 5090 Server</div>
+        <div class="t-model">Gemma 4 26B via Ollama</div>
+        <span class="t-badge tb-green">&lt;5 seconds</span>
+      </div>
+
+      <div class="arch-arrow reveal d3" aria-hidden="true">→</div>
+
+      <div class="arch-tier reveal d3" role="listitem">
+        <span class="t-num n4" aria-label="Tier 4">4</span>
+        <div class="t-label">Cloud · 100–500ms</div>
+        <div class="t-icon" aria-hidden="true">☁️</div>
+        <div class="t-name">Google Cloud</div>
+        <div class="t-model">Gemma 4 31B · Vertex AI</div>
+        <span class="t-badge tb-green">100–500ms</span>
+      </div>
+    </div>
+
+    <p class="arch-note reveal">
+      🔒 Video never leaves the jobsite unless explicitly escalated through the PPE pipeline.
+      Tier 3 is optional — all core functionality works with only Tiers 1, 2, and 4.
+    </p>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     GEMMA 4 CAPABILITIES
+════════════════ -->
+<section class="section bg-s2" id="gemma4" aria-labelledby="g4-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <span class="eyebrow">Technology</span>
+      <h2 class="sec-title" id="g4-title">Why Gemma 4?</h2>
+      <p class="sec-sub">The first open model family that brings frontier multimodal AI to every construction worker's phone — at zero per-inference cost.</p>
+    </div>
+
+    <div class="card-grid">
+      <article class="card reveal">
+        <span class="card-icon" aria-hidden="true">👁️</span>
+        <h3>Multimodal Vision</h3>
+        <p>E2B/E4B processes camera frames natively. No separate vision pipeline. The model <em>sees</em> the missing hard hat directly from the AR glasses feed.</p>
+      </article>
+      <article class="card reveal d1">
+        <span class="card-icon" aria-hidden="true">🎤</span>
+        <h3>Native Audio Input</h3>
+        <p>"¡Falta casco en la zona norte!" → Structured bilingual safety alert. No intermediate speech-to-text step needed. Works in any language.</p>
+      </article>
+      <article class="card reveal d2">
+        <span class="card-icon" aria-hidden="true">🔧</span>
+        <h3>Function Calling</h3>
+        <p>Native tool use produces typed, structured safety assessments with 98%+ schema compliance. Eliminates fragile JSON parsing and hallucinated safety codes.</p>
+      </article>
+      <article class="card reveal d3">
+        <span class="card-icon" aria-hidden="true">🧠</span>
+        <h3>Thinking Mode</h3>
+        <p>Auditable reasoning chains: <em>"Worker at height without harness. OSHA 1926.502 requires fall protection above 6 feet. Severity: HIGH."</em></p>
+      </article>
+      <article class="card reveal d4">
+        <span class="card-icon" aria-hidden="true">📱</span>
+        <h3>On-Device — LiteRT</h3>
+        <p>E2B runs via Google's LiteRT runtime on Pixel 9 Fold Pro. Zero cloud cost per inference. Zero latency dependency. Fully offline capable.</p>
+      </article>
+      <article class="card reveal d5">
+        <span class="card-icon" aria-hidden="true">⚖️</span>
+        <h3>Apache 2.0 License</h3>
+        <p>Fine-tune, deploy, and monetize without restriction. Essential for enterprise and government construction contracts requiring code ownership.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     MODEL TABLE
+════════════════ -->
+<section class="section bg-s" aria-labelledby="model-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <span class="eyebrow">Model Family</span>
+      <h2 class="sec-title" id="model-title">Gemma 4 Across All Four Tiers</h2>
+      <p class="sec-sub">We deploy the full family — smallest to largest — matching model capability to each tier's latency budget.</p>
+    </div>
+
+    <div class="tbl-wrap reveal">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Effective Params</th>
+            <th>Context</th>
+            <th>Modalities</th>
+            <th>Duchess Tier</th>
+            <th>MMLU Pro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Gemma 4 E2B</strong></td>
+            <td><span class="hl">2.3B</span> (5.1B total MoE)</td>
+            <td>128K</td>
+            <td>Text · Vision · Audio</td>
+            <td><span class="tier-tag tt2">📱 Tier 2 — Phone</span></td>
+            <td>60.0%</td>
+          </tr>
+          <tr>
+            <td><strong>Gemma 4 E4B</strong></td>
+            <td><span class="hl">4.5B</span> (8B total MoE)</td>
+            <td>128K</td>
+            <td>Text · Vision · Audio</td>
+            <td><span class="tier-tag tt2">📱 Tier 2 — Enhanced</span></td>
+            <td>69.4%</td>
+          </tr>
+          <tr>
+            <td><strong>Gemma 4 26B A4B</strong></td>
+            <td><span class="hl">3.8B active</span> (25.2B total)</td>
+            <td>256K</td>
+            <td>Text · Vision</td>
+            <td><span class="tier-tag tt3">💻 Tier 3 — Server</span></td>
+            <td>82.6%</td>
+          </tr>
+          <tr>
+            <td><strong>Gemma 4 31B</strong></td>
+            <td><span class="hl">30.7B</span> (Dense)</td>
+            <td>256K</td>
+            <td>Text · Vision</td>
+            <td><span class="tier-tag tt4">☁️ Tier 4 — Cloud</span></td>
+            <td>85.2%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     BILINGUAL
+════════════════ -->
+<section class="section bg-s2" aria-labelledby="bilingual-title">
+  <div class="container">
+    <div class="two-col">
+      <div class="reveal">
+        <span class="eyebrow">Digital Equity</span>
+        <h2 class="sec-title mt2" id="bilingual-title" style="text-align:left;">Every Worker. Every Language.</h2>
+        <p style="color:var(--on-surface-var); line-height:1.7; margin-top:var(--s2);">
+          Construction workforces are multilingual. Safety cannot be English-only. Duchess delivers every alert, warning, and instruction in the worker's language — simultaneously, with zero translation delay.
+        </p>
+        <ul class="feat-list" aria-label="Bilingual features">
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            All UI strings in English and Spanish — OSHA-compliant bilingual labeling
+          </li>
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            Gemma 4 supports 140+ languages natively — no separate translation pipeline
+          </li>
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            Voice hazard reporting in any language via E2B/E4B native audio
+          </li>
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            EN + ES generated simultaneously — single model forward pass
+          </li>
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            Construction-register Spanish — not generic translation
+          </li>
+        </ul>
+      </div>
+
+      <div class="reveal d2">
+        <div class="alert-demo" role="region" aria-label="Live safety alert example">
+          <div class="ar">⚠ DUCHESS SAFETY ALERT</div>
+          <br>
+          <div class="ay">Violation : Missing hard hat</div>
+          <div class="ay">Zone      : B · Near crane operation</div>
+          <div class="ay">Severity  : HIGH · OSHA 1926.100</div>
+          <br>
+          <div class="ag">EN: Hard hat required in Zone B.</div>
+          <div class="ag">    Worker near overhead crane.</div>
+          <div class="ag">    Stop work until PPE compliant.</div>
+          <br>
+          <div class="ag">ES: Casco requerido en Zona B.</div>
+          <div class="ag">    Trabajador cerca de grúa.</div>
+          <div class="ag">    Detener trabajo hasta cumplir.</div>
+          <br>
+          <div class="ad">Dispatched · Tailscale mesh · 1.8s on-device<span class="cursor" aria-hidden="true"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     PRIVACY + ECONOMICS
+════════════════ -->
+<section class="section bg-s" aria-labelledby="econ-title">
+  <div class="container">
+    <div class="two-col rev">
+      <div class="reveal">
+        <span class="eyebrow">Privacy &amp; Economics</span>
+        <h2 class="sec-title mt2" id="econ-title" style="text-align:left;">Privacy by Design. Economics That Scale.</h2>
+        <p style="color:var(--on-surface-var); line-height:1.7; margin-top:var(--s2);">
+          Video never leaves the jobsite. On-device Gemma 4 eliminates per-inference cloud costs entirely. The math works for both worker safety and commercial viability.
+        </p>
+        <ul class="feat-list" aria-label="Privacy and economics features">
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            <strong>$0/inference</strong> — Gemma 4 E2B runs entirely on-device via LiteRT
+          </li>
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            <strong>~$0.02/escalation</strong> — Only ~5% of detections reach Vertex AI
+          </li>
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            WireGuard-encrypted mesh (Tailscale) — end-to-end on jobsite
+          </li>
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            HIPAA-compliant biometric data handling — auditable, OSHA-ready
+          </li>
+          <li>
+            <span class="feat-check" aria-hidden="true">✓</span>
+            $15–50/worker/month SaaS pricing across a $8.2B safety tech market
+          </li>
+        </ul>
+      </div>
+
+      <div class="reveal d2">
+        <div class="metric-grid">
+          <div class="metric-tile" style="background:var(--isu-red-container);">
+            <div class="metric-val" style="color:var(--isu-red);">$0</div>
+            <div class="metric-lbl" style="color:var(--isu-red-on-cont);">Per-Inference Cost</div>
+          </div>
+          <div class="metric-tile" style="background:#E8F5E9;">
+            <div class="metric-val" style="color:#2E7D32;">$50</div>
+            <div class="metric-lbl" style="color:#1B5E20;">Fine-Tune (QLoRA)</div>
+          </div>
+          <div class="metric-tile" style="background:#E3F2FD;">
+            <div class="metric-val" style="color:#1565C0;">$1.7T</div>
+            <div class="metric-lbl" style="color:#0D47A1;">US Construction TAM</div>
+          </div>
+          <div class="metric-tile" style="background:#FFF8E1;">
+            <div class="metric-val" style="color:#F57F17;">12%</div>
+            <div class="metric-lbl" style="color:#E65100;">Safety Tech CAGR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     PRIZES
+════════════════ -->
+<section class="section prize-wrap" id="prizes" aria-labelledby="prizes-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <span class="eyebrow">Hackathon</span>
+      <h2 class="sec-title" id="prizes-title">Targeting $80K+ Across Six Tracks</h2>
+      <p class="sec-sub">Duchess is purpose-built to qualify for multiple prize categories simultaneously.</p>
+    </div>
+
+    <div class="prize-grid reveal" role="list" aria-label="Prize tracks">
+      <div class="prize-card featured" role="listitem">
+        <div class="prize-amt">$50K</div>
+        <div class="prize-lbl">Main Track — 1st Place</div>
+        <div class="prize-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+      <div class="prize-card d1" role="listitem">
+        <div class="prize-amt">$10K</div>
+        <div class="prize-lbl">Safety &amp; Trust</div>
+        <div class="prize-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+      <div class="prize-card d2" role="listitem">
+        <div class="prize-amt">$10K</div>
+        <div class="prize-lbl">Digital Equity</div>
+        <div class="prize-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+      <div class="prize-card d3" role="listitem">
+        <div class="prize-amt">$10K</div>
+        <div class="prize-lbl">Cactus Prize</div>
+        <div class="prize-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+      <div class="prize-card d4" role="listitem">
+        <div class="prize-amt">$10K</div>
+        <div class="prize-lbl">Unsloth Prize</div>
+        <div class="prize-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+      <div class="prize-card d5" role="listitem">
+        <div class="prize-amt">$10K</div>
+        <div class="prize-lbl">LiteRT Prize</div>
+        <div class="prize-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+      <div class="prize-card" role="listitem">
+        <div class="prize-amt">$10K</div>
+        <div class="prize-lbl">Global Resilience</div>
+        <div class="prize-stars" aria-label="4 stars">★★★★☆</div>
+      </div>
+      <div class="prize-card" role="listitem">
+        <div class="prize-amt">$10K</div>
+        <div class="prize-lbl">llama.cpp Prize</div>
+        <div class="prize-stars" aria-label="4 stars">★★★★☆</div>
+      </div>
+    </div>
+
+    <p class="prize-total reveal mt3">
+      Maximum addressable prize pool: <strong>$120K+</strong> ·
+      Deadline: May 18, 2026 ·
+      <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon">Kaggle Competition →</a>
+    </p>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     ISU AFFILIATION BANNER
+════════════════ -->
+<div class="isu-banner" role="complementary" aria-label="Illinois State University affiliation">
+  <div class="isu-inner">
+    <div class="isu-wordmark">Illinois<span> State</span><br>University</div>
+    <div class="isu-sep" aria-hidden="true"></div>
+    <div class="isu-copy">
+      <p><strong>Department of Technology</strong> — Normal, Illinois</p>
+      <p>Research in AR systems, construction technology, and AI-powered safety monitoring.</p>
+      <p>Faculty: <strong>Dr. Mangolika Bhattacharya</strong> (IoT/AI) · <strong>Dr. Haiyan Sally Xie</strong> (Construction Digital Twins, 791+ citations)</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════
+     TEAM
+════════════════ -->
+<section class="section bg-s2" id="team" aria-labelledby="team-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <span class="eyebrow">The Team</span>
+      <h2 class="sec-title" id="team-title">Built at Illinois State University</h2>
+      <p class="sec-sub">Core researchers and 15 AI specialist agents working together on the Duchess platform.</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+          <div class="t-avatar" aria-hidden="true">B</div>
+          <div>
+            <div class="t-name">Bhattacharya</div>
+            <div class="t-role">Lead Researcher</div>
+          </div>
+        </div>
+        <div class="t-desc">Systems architecture, ML pipeline design, edge inference optimization, and hackathon strategy.</div>
+        <span class="isu-tag">🎓 Illinois State University</span>
+      </div>
+
+      <div class="team-card reveal d1">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+          <div class="t-avatar" aria-hidden="true">B</div>
+          <div>
+            <div class="t-name">Baksi</div>
+            <div class="t-role">Android Developer</div>
+          </div>
+        </div>
+        <div class="t-desc">Companion phone app, Kotlin/Compose, BLE streaming pipeline, LiteRT integration.</div>
+        <span class="isu-tag">🎓 Illinois State University</span>
+      </div>
+
+      <div class="team-card reveal d2">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+          <div class="t-avatar" aria-hidden="true">L</div>
+          <div>
+            <div class="t-name">Lahiri</div>
+            <div class="t-role">ML Engineer</div>
+          </div>
+        </div>
+        <div class="t-desc">Gemma 4 fine-tuning with Unsloth QLoRA, model evaluation, safety dataset curation.</div>
+        <span class="isu-tag">🎓 Illinois State University</span>
+      </div>
+    </div>
+
+    <div class="advisor-box reveal">
+      <h3>Academic Advisors</h3>
+      <div class="advisor-grid">
+        <div>
+          <div class="advisor-name">Dr. Mangolika Bhattacharya</div>
+          <div class="advisor-desc">IoT, digital twins, AI for engineering applications. Co-author on vision transformers for engineering analysis.</div>
+        </div>
+        <div>
+          <div class="advisor-name">Dr. Haiyan Sally Xie</div>
+          <div class="advisor-desc">Construction digital twins, BIM, computer vision. "Construction with Digital Twin Information Systems" — 791+ citations. Landmark in construction AI.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     CTA
+════════════════ -->
+<section class="cta-section" aria-labelledby="cta-title">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="cta-title" id="cta-title">Every Construction Worker Deserves an AI Safety Partner</h2>
+      <p class="cta-sub">
+        Gemma 4 makes frontier AI accessible on every phone. Duchess puts it to work saving lives on construction sites across America.<br>
+        <em>¡Seguridad primero! Safety first.</em>
+      </p>
+      <div class="cta-btns">
+        <a href="https://github.com/AlexiosBluffMara/Duchess" class="btn-cta-p">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          View on GitHub
+        </a>
+        <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon" class="btn-cta-s">Kaggle Competition →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     FOOTER
+════════════════ -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>Duchess Platform</h4>
+      <p>AI-Powered Construction Safety built on Google Gemma 4. Developed at Illinois State University for the Gemma 4 Good Hackathon 2026.<br><br>Apache 2.0 Licensed · All worker biometric data stays on-site.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Links</h4>
+      <a href="https://github.com/AlexiosBluffMara/Duchess">GitHub Repository</a>
+      <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon">Kaggle Competition</a>
+      <a href="https://ai.google.dev/gemma">Google Gemma</a>
+      <a href="https://ai.google.dev/edge/litert">Google LiteRT</a>
+      <a href="https://illinoisstate.edu">Illinois State University</a>
+    </div>
+    <div class="footer-col">
+      <h4>Technology Stack</h4>
+      <a href="#">Google Gemma 4 E2B / E4B / 26B / 31B</a>
+      <a href="#">LiteRT · Vertex AI · Google Cloud</a>
+      <a href="#">Unsloth Dynamic QLoRA Fine-tuning</a>
+      <a href="#">Tailscale WireGuard Mesh Network</a>
+      <a href="#">Ray-Ban Meta · Pixel 9 Fold Pro</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-mark">
+      <span class="f-dot" aria-hidden="true"></span>
+      Illinois State University — Alexios Bluff Mara LLC
+    </span>
+    <span>Apache 2.0 Licensed · © 2026 Bhattacharya, Baksi, Lahiri</span>
+  </div>
+</footer>
+
+
+<script>
+  /* ── Scroll nav shadow ── */
+  const topnav = document.getElementById('topnav');
+  window.addEventListener('scroll', () => {
+    topnav.classList.toggle('scrolled', window.scrollY > 24);
+  }, { passive: true });
+
+  /* ── Mobile nav ── */
+  const mobileNav = document.getElementById('mobileNav');
+  function toggleNav() {
+    mobileNav.classList.toggle('open');
+  }
+  function closeNav() {
+    mobileNav.classList.remove('open');
+  }
+
+  /* ── Scroll reveal (IntersectionObserver) ── */
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -44px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  /* ── Counter animation ── */
+  function countUp(el, target, duration = 1800) {
+    const start = performance.now();
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      el.textContent = Math.floor(eased * target).toLocaleString();
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const cntObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const target = parseInt(e.target.dataset.target, 10);
+        if (!isNaN(target)) countUp(e.target, target);
+        cntObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.6 });
+
+  document.querySelectorAll('[data-target]').forEach(el => cntObs.observe(el));
+
+  /* ── Smooth scrolling for anchor links ── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      const target = document.querySelector(id);
+      if (target) {
+        e.preventDefault();
+        closeNav();
+        const offset = topnav.offsetHeight + 16;
+        const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+</body>
+</html>

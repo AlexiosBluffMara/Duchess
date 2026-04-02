@@ -1,58 +1,142 @@
-/* Duchess — Custom theme overrides for just-the-docs */
+/*
+  Duchess — Jekyll docs theme overrides
+  ISU Red × Google Material Design 3
+  Primary: #CC0000 (ISU Red, Pantone 186 C digital)
+  Font stack: Roboto (Google) + Roboto Slab (ISU display)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Slab:wght@600;700&display=swap');
 
 :root {
-  --duchess-orange: #E65100;
-  --duchess-dark: #1a1a2e;
-  --duchess-accent: #FF8A65;
+  /* ISU Brand */
+  --isu-red:        #CC0000;
+  --isu-red-dark:   #9B0000;
+  --isu-red-light:  #EF3B3B;
+  --isu-red-cont:   #FFDAD6;
+  --isu-on-cont:    #410002;
+
+  /* Duchess aliases */
+  --duchess-primary:  var(--isu-red);
+  --duchess-accent:   var(--isu-red-light);
+  --duchess-dark:     #201A1A;
+
+  /* Google M3 warm neutrals */
+  --surface-warm:   #FFFBFA;
+  --surface-var:    #F5DDDA;
+  --outline-warm:   #D8C2BF;
 }
 
-/* Construction-orange accents */
+/* ── Typography ── */
+body {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+h1, h2, h3 {
+  font-family: 'Roboto Slab', Georgia, serif !important;
+}
+
+/* ── Buttons ── */
 .btn-primary {
-  background-color: var(--duchess-orange) !important;
-  border-color: var(--duchess-orange) !important;
+  background-color: var(--isu-red) !important;
+  border-color: var(--isu-red) !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  transition: background .2s, transform .15s, box-shadow .2s !important;
 }
-
 .btn-primary:hover {
-  background-color: var(--duchess-accent) !important;
+  background-color: var(--isu-red-dark) !important;
+  border-color: var(--isu-red-dark) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(204,0,0,.35) !important;
+}
+.btn {
+  border-radius: 50px !important;
 }
 
-/* Navigation active state */
+/* ── Navigation ── */
 .nav-list .nav-list-item .nav-list-link.active {
-  color: var(--duchess-orange);
+  color: var(--isu-red) !important;
+  font-weight: 700;
+}
+.nav-list .nav-list-item .nav-list-link:hover {
+  background: var(--isu-red-cont);
+  color: var(--isu-on-cont);
 }
 
-/* Badge styling for status indicators */
-.label-green {
-  background-color: #2e7d32;
+/* Site title / brand */
+.site-title {
+  font-family: 'Roboto Slab', serif !important;
+  font-weight: 700 !important;
 }
-.label-yellow {
-  background-color: #f9a825;
-  color: #1a1a1a;
-}
-.label-red {
-  background-color: #c62828;
-}
-.label-blue {
-  background-color: #1565c0;
+.site-title:hover { color: var(--isu-red) !important; }
+
+/* ISU pill next to site title */
+.site-header {
+  border-bottom: 3px solid var(--isu-red) !important;
 }
 
-/* Mermaid diagram responsive sizing */
-.mermaid {
-  text-align: center;
-  margin: 1.5rem 0;
+/* ── Label badges ── */
+.label-green  { background-color: #2e7d32 !important; border-radius: 50px !important; }
+.label-yellow { background-color: #f9a825 !important; color: #1a1a1a !important; border-radius: 50px !important; }
+.label-red    { background-color: var(--isu-red) !important; border-radius: 50px !important; }
+.label-blue   { background-color: #1565c0 !important; border-radius: 50px !important; }
+
+/* ── Tables ── */
+table {
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+table th {
+  background: var(--isu-red) !important;
+  color: #fff !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: .8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+}
+table tr:hover td { background: var(--isu-red-cont); }
+table th:first-child { min-width: 120px; }
+
+/* ── Mermaid diagrams ── */
+.mermaid { text-align: center; margin: 1.75rem 0; }
+.mermaid svg { max-width: 100%; height: auto; border-radius: 8px; }
+
+/* ── Code blocks ── */
+.highlight {
+  border-radius: 10px !important;
+  overflow: hidden;
 }
 
-.mermaid svg {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Sprint board kanban styles */
-table th:first-child {
-  min-width: 120px;
-}
-
-/* Hero section on landing page */
+/* ── Hero title on landing ── */
 .fs-9 {
-  color: var(--duchess-orange);
+  font-family: 'Roboto Slab', serif !important;
+  color: var(--isu-red) !important;
+}
+
+/* ── Callout / alert boxes ── */
+.highlight-title {
+  color: var(--isu-red);
+  font-weight: 700;
+}
+
+/* ── Breadcrumb ── */
+.breadcrumb-nav-list-item + .breadcrumb-nav-list-item::before {
+  color: var(--isu-red);
+}
+
+/* ── Scroll offset for sticky nav ── */
+:target::before {
+  content: '';
+  display: block;
+  height: 72px;
+  margin-top: -72px;
+}
+
+/* ── Mobile responsiveness ── */
+@media (max-width: 800px) {
+  .side-bar { width: 100% !important; }
+  table { display: block; overflow-x: auto; }
+  .mermaid { overflow-x: auto; }
 }
