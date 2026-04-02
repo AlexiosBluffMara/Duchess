@@ -59,10 +59,10 @@ poetry run python scripts/train_gemma4.py --adapter safety --max-steps 10 --no-w
 ### 3. Export for Android
 
 ```bash
-# Export merged model → ONNX → TFLite FP16
+# Export merged model → ONNX → LiteRT FP16
 poetry run python scripts/export_model.py --adapter safety
 
-# Output: exports/safety/tflite/gemma4_duchess.tflite
+# Output: exports/safety/litert/gemma4_duchess.tflite
 # Copy to: app-phone/app/src/main/assets/
 ```
 
@@ -86,7 +86,7 @@ ml/
 ├── scripts/
 │   ├── train_gemma4.py      # Unsloth QLoRA fine-tuning
 │   ├── prepare_dataset.py    # Dataset preparation
-│   └── export_model.py       # ONNX + TFLite export
+│   └── export_model.py       # ONNX + LiteRT export
 ├── adapters/
 │   ├── safety/config.json
 │   └── spanish_jargon/config.json

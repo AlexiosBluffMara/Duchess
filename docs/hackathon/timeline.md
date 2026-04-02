@@ -90,7 +90,7 @@ gantt
 | Cactus SDK integration for multi-tier routing | 5 | 📋 | Alex + Kai |
 | GCP Cloud Run API skeleton | 3 | 📋 | Jordan |
 | GCP Firestore schema setup | 3 | 📋 | Jordan |
-| LiteRT migration (TFLite → LiteRT) | 3 | 📋 | Kai |
+| LiteRT benchmarking (NPU perf) | 3 | 📋 | Kai |
 | Zero-shot safety benchmarks (baseline) | 2 | 📋 | Priya |
 
 **Acceptance Criteria**:

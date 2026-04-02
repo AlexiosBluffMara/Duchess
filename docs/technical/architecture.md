@@ -250,7 +250,7 @@ flowchart LR
 ```mermaid
 graph LR
     subgraph "Edge (Glasses)"
-        TFLite[TensorFlow Lite/LiteRT]
+        LiteRT[LiteRT Runtime]
         CAM2[Camera2 API]
         BLE_C[BLE Client]
     end
@@ -284,7 +284,7 @@ graph LR
 
 | Layer | Framework | Version | Purpose |
 |-------|-----------|---------|---------|
-| Glasses | TensorFlow Lite | 2.16+ | YOLOv8-nano, MobileNet inference |
+| Glasses | LiteRT | 1.1+ | YOLOv8-nano, MobileNet inference |
 | Glasses | Meta DAT SDK | 0.5.0 | Camera streaming from Ray-Ban Meta |
 | Phone | Gemma 4 E2B | — | On-device NLU + vision (2.3B effective params) |
 | Phone | Cactus SDK | latest | Local LLM runtime for Gemma |

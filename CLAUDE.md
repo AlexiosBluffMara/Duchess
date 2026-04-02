@@ -131,7 +131,7 @@ implementation("com.meta.wearable:mwdat-core:0.5.0")  // ❌
 
 You have access to all 15 Duchess agents in `.claude/agents/`. When a task requires deep expertise:
 - `alex` — Android development patterns
-- `kai` — Edge AI, TFLite, ONNX optimization  
+- `kai` — Edge AI, LiteRT, ONNX optimization  
 - `elena` — Computer vision, YOLO, detection pipelines
 - `jordan` — AWS cloud, CDK, Lambda
 - `priya` — ML training, Unsloth, QLoRA

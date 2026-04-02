@@ -37,10 +37,10 @@ import kotlinx.coroutines.launch
  * - onCreate: Initialize all components (detector, BLE, battery scheduler)
  * - onResume: Start camera, start detection pipeline, start BLE scan
  * - onPause: Stop camera (CRITICAL — releases hardware for other apps), stop pipeline
- * - onDestroy: Release all native resources (TFLite, RenderScript, BLE)
+ * - onDestroy: Release all native resources (LiteRT, RenderScript, BLE)
  *
  * MEMORY BUDGET: ~180MB total
- *   - PpeDetector (TFLite + buffers): ~61MB
+ *   - PpeDetector (LiteRT + buffers): ~61MB
  *   - CameraSession (ImageReader + RenderScript): ~30MB
  *   - HudRenderer (Canvas paints): ~5MB
  *   - BleGattClient: ~2MB

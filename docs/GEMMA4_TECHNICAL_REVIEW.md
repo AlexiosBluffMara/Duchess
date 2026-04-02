@@ -286,7 +286,7 @@ For the ~5% of frames that escalate to cloud:
 - ✅ BLE GATT server/client for glasses ↔ phone
 - ✅ Tailscale mesh networking
 - ✅ Cloud CDK infrastructure (S3, DynamoDB, Lambda, SQS)
-- ✅ ML training pipeline (Unsloth QLoRA, export to TFLite)
+- ✅ ML training pipeline (Unsloth QLoRA, export to LiteRT)
 
 ### What Needs Building (46 days to deadline)
 - 🔄 Gemma 4 E2B integration (replacing Gemma 3n) — **3-5 days**

@@ -48,7 +48,7 @@ Duchess is a four-tier AI construction safety platform built on AR glasses, comp
 |-------|--------|---------|----------|
 | **Cactus** | $10,000 | ★★★★★ | **PERFECT match.** Cactus = "best local-first mobile or wearable application that intelligently routes tasks between models." Our 4-tier architecture IS this: YOLOv8-nano on glasses → Gemma 4 E2B on phone → Cloud Bedrock. Integrate Cactus SDK for model routing. |
 | **Unsloth** | $10,000 | ★★★★★ | **Strong match.** Fine-tune Gemma 4 E2B with Unsloth Dynamic QLoRA for construction safety domain. Vision LoRA for PPE detection. Bilingual adapter. Publish weights + benchmarks. |
-| **LiteRT** | $10,000 | ★★★★☆ | **Good match.** Migrate from TFLite to LiteRT for on-device Gemma 4 inference. LiteRT's improved NPU delegate on Tensor G4 = measurable speedup. |
+| **LiteRT** | $10,000 | ★★★★★ | **PERFECT match.** LiteRT powers all on-device Gemma 4 inference. NPU delegate on Tensor G4 = measurable speedup. CompiledModel API for optimal performance. |
 | **llama.cpp** | $10,000 | ★★★★☆ | **Good match.** Export Gemma 4 to GGUF, run via llama.cpp on resource-constrained hardware. Our glasses (Snapdragon XR1, 6GB RAM) are the edge case. |
 | **Ollama** | $10,000 | ★★★☆☆ | **Medium match.** Use Ollama on the Mac server (Tier 3) for local development/inference. Less differentiated than Cactus or Unsloth. |
 
@@ -76,7 +76,7 @@ Duchess is a four-tier AI construction safety platform built on AR glasses, comp
 | 9 | **Unsloth fine-tuning** — QLoRA fine-tune Gemma 4 E2B on construction safety vision dataset. Publish weights + benchmarks. | Priya | 5-7 days | Unsloth $10K |
 | 10 | **Bilingual excellence demo** — Voice input in Spanish, bilingual alert output, 140+ language potential, equity narrative. | Luis + Alex | 2-3 days | Digital Equity $10K |
 | 11 | **Safety & Trust narrative** — Human-in-the-loop pipeline, thinking mode for explainable reasoning, audit trail. | Carlos + Duke | 2-3 days | Safety & Trust $10K |
-| 12 | **LiteRT migration** — Replace TFLite with LiteRT across both apps. Benchmark NPU acceleration on Tensor G4. | Kai + Alex | 1-2 days | LiteRT $10K |
+| 12 | **LiteRT benchmarking** — Benchmark LiteRT NPU acceleration on Tensor G4 across both apps. Publish perf numbers. | Kai + Alex | 1-2 days | LiteRT $10K |
 
 ### P2 — Bonus Prizes
 
@@ -173,7 +173,7 @@ Duchess is a four-tier AI construction safety platform built on AR glasses, comp
 - [ ] Integrate Gemma 4 E2B into phone app GemmaInferenceService
 - [ ] Enable multimodal vision input (pass camera frames to model)
 - [ ] Implement native function calling for structured safety output
-- [ ] LiteRT migration (TFLite → LiteRT)
+- [ ] LiteRT benchmarks on Tensor G4 NPU
 - [ ] Zero-shot baseline benchmarks on safety datasets
 
 ### Week 3: Apr 16-22 — Fine-Tuning

@@ -9,7 +9,7 @@ updated: "2026-04-01"
 
 ## Overview
 
-Real-time PPE (Personal Protective Equipment) detection running on the Vuzix M400 glasses using a YOLOv8-nano TFLite model. Captures camera frames at 15 FPS, runs INT8-quantized inference, and renders bounding boxes + bilingual alerts on the 640x360 HUD.
+Real-time PPE (Personal Protective Equipment) detection running on the Vuzix M400 glasses using a YOLOv8-nano LiteRT model. Captures camera frames at 15 FPS, runs INT8-quantized inference, and renders bounding boxes + bilingual alerts on the 640x360 HUD.
 
 ## Tier Placement
 
@@ -30,7 +30,7 @@ Real-time PPE (Personal Protective Equipment) detection running on the Vuzix M40
 | Direction | Data | Format | Source / Destination |
 |-----------|------|--------|----------------------|
 | Input | Camera frames | YUV_420_888 Bitmap (640x480, 15 FPS) | CameraSession via Camera2 |
-| Input | TFLite model | INT8 quantized .tflite (~4MB) | Assets |
+| Input | LiteRT model | INT8 quantized .tflite (~4MB) | Assets |
 | Output | Detections | `List<Detection>` | PpeDetector |
 | Output | HUD overlay | Canvas drawing (640x360) | HudRenderer |
 | Output | Escalation | BLE GATT write | BleGattClient → phone |
@@ -74,7 +74,7 @@ None — initial scaffold complete.
 ## Implementation Notes
 
 - Camera2 callbacks wrapped in `callbackFlow` per project convention
-- GPU delegate with NNAPI fallback for TFLite
+- GPU delegate with NNAPI fallback for LiteRT
 - YUV_420_888 → Bitmap conversion in CameraSession
 - Battery-aware: PARTIAL_WAKE_LOCK only during active detection
 

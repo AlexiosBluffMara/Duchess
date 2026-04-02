@@ -165,7 +165,7 @@ The app runs in `DEMO_MODE = true` by default. To test with real Meta glasses:
 | "No JDK found" | Android Studio → Settings → Build → Gradle → set JDK to Temurin 17 |
 | Emulator won't start | Device Manager → select device → Cold Boot Now |
 | App crashes on launch | Run with Logcat open: filter by `com.duchess.companion` |
-| APK too large (128MB) | This is debug APK with TFLite/MediaPipe libs — release build with ProGuard will be ~40MB |
+| APK too large (128MB) | This is debug APK with LiteRT/MediaPipe libs — release build with ProGuard will be ~40MB |
 | "Hilt component not available" | Clean build: `./gradlew clean assembleDebug` |
 
 ---

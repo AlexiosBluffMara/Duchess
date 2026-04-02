@@ -4,7 +4,7 @@ Tests for the model export pipeline.
 # Priya: These tests validate the export pipeline's helper functions:
 #   - Model size validation (catches FP32-instead-of-FP16 bugs)
 #   - ONNX configuration and validation
-#   - TFLite stub generation
+#   - LiteRT stub generation
 #   - Benchmark result formatting
 #   - Export manifest generation
 #
@@ -22,7 +22,7 @@ import pytest
 from scripts.export_model import (
     ExportResult,
     MODEL_SIZE_LIMITS,
-    _write_tflite_stub,
+    _write_litert_stub,
     get_dir_size_bytes,
     validate_model_size,
     write_export_manifest,
@@ -33,7 +33,7 @@ class TestModelSizeValidation:
     """Tests for validate_model_size().
 
     # Priya: Size validation is the first line of defense against bad exports.
-    # If the ONNX is >8GB, it's probably FP32 instead of FP16. If TFLite
+    # If the ONNX is >8GB, it's probably FP32 instead of FP16. If LiteRT
     # is >6GB, it won't fit on the phone. Better to catch it here.
     """
 
@@ -67,13 +67,13 @@ class TestModelSizeValidation:
         """Model size limits should be reasonable for mobile deployment.
 
         # Priya: Sanity check that nobody accidentally set the limits to
-        # something absurd. ONNX max should be <16GB, TFLite max <8GB.
+        # something absurd. ONNX max should be <16GB, LiteRT max <8GB.
         """
         assert MODEL_SIZE_LIMITS["onnx_max_bytes"] <= 16 * 1024 ** 3
-        assert MODEL_SIZE_LIMITS["tflite_max_bytes"] <= 8 * 1024 ** 3
+        assert MODEL_SIZE_LIMITS["litert_max_bytes"] <= 8 * 1024 ** 3
         # Priya: Warn thresholds should be below max thresholds
         assert MODEL_SIZE_LIMITS["onnx_warn_bytes"] < MODEL_SIZE_LIMITS["onnx_max_bytes"]
-        assert MODEL_SIZE_LIMITS["tflite_warn_bytes"] < MODEL_SIZE_LIMITS["tflite_max_bytes"]
+        assert MODEL_SIZE_LIMITS["litert_warn_bytes"] < MODEL_SIZE_LIMITS["litert_max_bytes"]
 
     def test_nonexistent_path_is_empty(self):
         """Non-existent path should report 0 bytes."""
@@ -93,9 +93,9 @@ class TestOnnxConfig:
         result = ExportResult(adapter="safety")
         assert result.adapter == "safety"
         assert result.onnx_path is None
-        assert result.tflite_path is None
+        assert result.litert_path is None
         assert result.onnx_size_bytes == 0
-        assert result.tflite_size_bytes == 0
+        assert result.litert_size_bytes == 0
         assert result.benchmark_results == {}
         assert result.errors == []
         assert result.warnings == []
@@ -104,36 +104,36 @@ class TestOnnxConfig:
         """ExportResult should accumulate multiple errors."""
         result = ExportResult(adapter="safety")
         result.errors.append("Error 1: ONNX too large")
-        result.errors.append("Error 2: TFLite conversion failed")
+        result.errors.append("Error 2: LiteRT conversion failed")
         assert len(result.errors) == 2
 
 
-class TestTfliteOptions:
-    """Tests for TFLite conversion options and stub generation."""
+class TestLitertOptions:
+    """Tests for LiteRT conversion options and stub generation."""
 
-    def test_tflite_stub_creation(self, tmp_path):
-        """TFLite stub should be a readable text file (not binary).
+    def test_litert_stub_creation(self, tmp_path):
+        """LiteRT stub should be a readable text file (not binary).
 
         # Priya: The stub exists so the pipeline doesn't crash when
         # ai-edge-torch isn't installed. It should clearly indicate
         # that it's a placeholder, not a real model.
         """
         stub_file = tmp_path / "gemma4_duchess.tflite"
-        _write_tflite_stub(stub_file)
+        _write_litert_stub(stub_file)
 
         assert stub_file.exists()
         content = stub_file.read_text()
         assert "PLACEHOLDER" in content
         assert "ai-edge-torch" in content
 
-    def test_tflite_stub_is_small(self, tmp_path):
-        """TFLite stub should be tiny (a few hundred bytes, not GB).
+    def test_litert_stub_is_small(self, tmp_path):
+        """LiteRT stub should be tiny (a few hundred bytes, not GB).
 
         # Priya: If the stub is large, something is very wrong.
-        # Real TFLite models are ~3-4GB. Stubs should be <1KB.
+        # Real LiteRT models are ~3-4GB. Stubs should be <1KB.
         """
         stub_file = tmp_path / "test_stub.tflite"
-        _write_tflite_stub(stub_file)
+        _write_litert_stub(stub_file)
         assert stub_file.stat().st_size < 1024  # less than 1KB
 
 
@@ -148,9 +148,9 @@ class TestBenchmarkFormat:
         """
         result = ExportResult(adapter="safety")
         result.onnx_path = tmp_path / "onnx"
-        result.tflite_path = tmp_path / "tflite"
+        result.litert_path = tmp_path / "litert"
         result.onnx_size_bytes = 3_500_000_000
-        result.tflite_size_bytes = 3_200_000_000
+        result.litert_size_bytes = 3_200_000_000
         result.benchmark_results = {
             "latency_mean_ms": 150.5,
             "tokens_per_sec": 35.2,
@@ -165,7 +165,7 @@ class TestBenchmarkFormat:
         manifest = json.loads(manifest_path.read_text())
         assert manifest["adapter"] == "safety"
         assert "onnx_size_mb" in manifest
-        assert "tflite_size_mb" in manifest
+        assert "litert_size_mb" in manifest
         assert "benchmark" in manifest
         assert "errors" in manifest
         assert "warnings" in manifest
@@ -179,7 +179,7 @@ class TestBenchmarkFormat:
         """
         result = ExportResult(adapter="safety")
         result.onnx_size_bytes = 3_670_016_000  # ~3500 MB
-        result.tflite_size_bytes = 0
+        result.litert_size_bytes = 0
 
         write_export_manifest(result, tmp_path)
 

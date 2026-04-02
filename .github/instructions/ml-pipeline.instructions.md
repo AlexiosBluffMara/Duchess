@@ -21,7 +21,7 @@ applyTo: "ml/**"
 4. **Always run ablation studies** for hyperparameter choices on novel tasks.
 5. **Always benchmark on standard datasets**: iSafetyBench, Construction-PPE, MOCS, SH17.
 6. **Always export to the correct format** for the target tier:
-   - Tier 1: TFLite (FP16 or INT8)
+   - Tier 1: LiteRT (FP16 or INT8)
    - Tier 2: GGUF (Q4_K_M)
    - Tier 3: MLX (FP16)
    - Tier 4: SafeTensors (FP16/BF16)

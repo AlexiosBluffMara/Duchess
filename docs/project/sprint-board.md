@@ -51,7 +51,7 @@ Track progress across all Duchess sprints.
 | D-204 | Cactus SDK integration for multi-tier routing | 5 | Alex + Kai | P1 | Not Started |
 | D-205 | GCP Cloud Run API skeleton deployment | 3 | Jordan | P1 | Not Started |
 | D-206 | GCP Firestore schema setup | 3 | Jordan | P1 | Not Started |
-| D-207 | LiteRT migration (TFLite → LiteRT) | 3 | Kai | P1 | Not Started |
+| D-207 | LiteRT benchmarking (NPU perf) | 3 | Kai | P1 | Not Started |
 | D-208 | Zero-shot safety benchmarks (baseline) | 2 | Priya | P1 | Not Started |
 
 ### Sprint 3: Fine-Tuning (Apr 16–22) — 31 points planned

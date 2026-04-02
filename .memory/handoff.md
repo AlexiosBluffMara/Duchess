@@ -4,6 +4,62 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 19:48 UTC — Commit 538048a
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: chore(deps): migrate TFLite → LiteRT across entire codebase
+
+### Modules touched
+- **app-phone/**: 1 file(s) changed
+- **app-glasses/**: 6 file(s) changed
+- **ml/**: 4 file(s) changed
+- **infra**: 19 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1738 | Active (1738 files) |
+| app-glasses/ | 29 | Active (29 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+.claude/agents/alex.md
+.claude/agents/duke.md
+.claude/agents/kai.md
+.claude/agents/priya.md
+.claude/commands/skill.md
+.claude/settings.json
+.claude/skills/edge-inference.md
+.claude/skills/model-quantization.md
+.claude/worktrees/adoring-jackson
+.github/agents/alex.agent.md
+.github/agents/duke.agent.md
+.github/agents/kai.agent.md
+.github/agents/priya.agent.md
+.github/instructions/android-vuzix.instructions.md
+.github/instructions/ml-pipeline.instructions.md
+.github/skills/edge-inference/SKILL.md
+.github/skills/model-quantization/SKILL.md
+.memory/claude-queue.md
+.memory/handoff.md
+AGENTS.md
+CLAUDE.md
+HACKATHON_STRATEGY.md
+README.md
+app-glasses/app/proguard-rules.pro
+app-glasses/app/src/main/kotlin/com/duchess/glasses/GlassesApplication.kt
+app-glasses/app/src/main/kotlin/com/duchess/glasses/MainActivity.kt
+app-glasses/app/src/main/kotlin/com/duchess/glasses/camera/CameraSession.kt
+app-glasses/app/src/main/kotlin/com/duchess/glasses/ppe/PpeDetector.kt
+app-glasses/app/src/test/kotlin/com/duchess/glasses/ppe/PpeDetectorTest.kt
+app-phone/DEMO_SETUP.md
+```
+
+---
+
 ## 2026-04-02 19:15 UTC — Commit d187094
 
 **Branch**: `main`  
@@ -104,7 +160,7 @@ app-glasses/app/src/main/kotlin/com/duchess/glasses/ble/BleGattClient.kt
 3. `ml/tests/test_train_gemma3n.py` → renamed to `ml/tests/test_train_gemma4.py`
 4. Model ID: `google/gemma-3n-e2b-it` → `google/gemma-4-e2b-it` everywhere
 5. Param count: `1.91B` → `2.3B effective (5.1B with embeddings)` in docs
-6. Model file refs: `gemma3n-e2b.bin` → `gemma4-e2b.bin`, `gemma3n_duchess.tflite` → `gemma4_duchess.tflite`
+6. Model file refs: `gemma3n-e2b.bin` → `gemma4-e2b.bin`, `gemma3n_duchess.tflite` → `gemma4_duchess.tflite` (LiteRT format)
 
 ### New Files Created
 - `HACKATHON_STRATEGY.md` — Complete hackathon strategy with track alignment, timeline, priority stack
@@ -132,30 +188,6 @@ app-glasses/app/src/main/kotlin/com/duchess/glasses/ble/BleGattClient.kt
 
 ### Next Priority
 See `HACKATHON_STRATEGY.md` — Week 1 tasks: Gemma 4 E2B integration in phone app, Cactus research, Unsloth support check
-
----
-
-## 2026-04-02 16:51 UTC — Commit 21b44d0
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: docs(phone): add demo setup guide with step-by-step instructions
-
-### Modules touched
-- **app-phone/**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1738 | Active (1738 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 22 | Active (22 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-app-phone/DEMO_SETUP.md
-```
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: "Use when developing Android code for the Vuzix M400 glasses. Covers AOSP constraints, Camera2 API, TFLite integration, BLE client, voice commands, battery optimization, 640x360 display, sideloading."
+description: "Use when developing Android code for the Vuzix M400 glasses. Covers AOSP constraints, Camera2 API, LiteRT integration, BLE client, voice commands, battery optimization, 640x360 display, sideloading."
 applyTo: "app-glasses/**"
 ---
 

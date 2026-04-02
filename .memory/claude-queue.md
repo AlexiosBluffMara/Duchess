@@ -84,12 +84,12 @@ Scaffold the `app-glasses/` AOSP Android app for the Vuzix M400 (AOSP Android 13
 
 ### Deliverable Checklist
 - [ ] `app-glasses/settings.gradle.kts` + `build.gradle.kts`
-- [ ] `app-glasses/app/build.gradle.kts` — minSdk 33, NO Google Play Services deps, TFLite deps, no Compose (AOSP UI only)
+- [ ] `app-glasses/app/build.gradle.kts` — minSdk 33, NO Google Play Services deps, LiteRT deps, no Compose (AOSP UI only)
 - [ ] `app-glasses/app/src/main/AndroidManifest.xml` — CAMERA, BLE permissions, no GMS
 - [ ] `GlassesApplication.kt` — Application init
 - [ ] `MainActivity.kt` — boots the camera + BLE client
 - [ ] `.../camera/CameraSession.kt` — Camera2 API `CameraDevice` + `ImageReader`, captures frames at 15 FPS, 640×480 (Vuzix resolution), emits `ImageProxy` via `Flow`
-- [ ] `.../ppe/PpeDetector.kt` — TFLite `Interpreter` wrapper, loads `yolov8_nano_ppe.tflite` from assets (placeholder model file), `suspend fun detect(bitmap: Bitmap): List<Detection>` 
+- [ ] `.../ppe/PpeDetector.kt` — LiteRT `Interpreter` wrapper, loads `yolov8_nano_ppe.tflite` from assets (placeholder model file), `suspend fun detect(bitmap: Bitmap): List<Detection>` 
 - [ ] `.../model/Detection.kt` — `data class Detection(val label: String, val confidence: Float, val bbox: RectF)`
 - [ ] `.../ble/BleGattClient.kt` — BLE client connecting to phone's GATT server, receives alert payloads, parses to `SafetyAlert`
 - [ ] `.../display/HudRenderer.kt` — Canvas-based overlay renderer on 640×360 Vuzix display, draws bounding boxes + bilingual alert text
@@ -98,7 +98,7 @@ Scaffold the `app-glasses/` AOSP Android app for the Vuzix M400 (AOSP Android 13
 ### Code Conventions
 - No coroutines for Camera2 (Camera2 uses executor/callback pattern) — wrap in `callbackFlow` or `suspendCancellableCoroutine`
 - Battery: hold PARTIAL_WAKE_LOCK during active detection only
-- TFLite: INT8 quantized, GPU delegate with NNAPI fallback
+- LiteRT: INT8 quantized, GPU delegate with NNAPI fallback
 
 ---
 
@@ -115,7 +115,7 @@ Scaffold the ML training environment for Gemma 4 fine-tuning and YOLOv8-nano PPE
 - [ ] `ml/README.md` — setup instructions, hardware requirements (RTX 5090)
 - [ ] `ml/scripts/train_gemma4.py` — Unsloth `FastLanguageModel.from_pretrained("google/gemma-4-e2b-it")`, QLoRA config (r=16, alpha=32, target: q_proj, k_proj, v_proj, o_proj), SFTTrainer setup with placeholder dataset
 - [ ] `ml/scripts/prepare_dataset.py` — construction safety dataset prep: loads from HuggingFace placeholder, formats for instruction tuning `{"instruction": ..., "input": ..., "output": ...}` with English + Spanish pairs
-- [ ] `ml/scripts/export_model.py` — exports adapter merged model to ONNX, then TFLite FP16 for Android deployment
+- [ ] `ml/scripts/export_model.py` — exports adapter merged model to ONNX, then LiteRT FP16 for Android deployment
 - [ ] `ml/adapters/safety/config.json` — LoRA adapter config for safety domain
 - [ ] `ml/adapters/spanish_jargon/config.json` — LoRA adapter config for construction Spanish
 - [ ] `ml/eval/benchmark.py` — stub evaluation against iSafetyBench placeholders, outputs accuracy/latency table

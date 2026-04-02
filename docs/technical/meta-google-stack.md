@@ -85,12 +85,12 @@ Duchess uses GCP as its cloud backbone (Tier 4):
 
 ### LiteRT (Google AI Edge)
 
-Google's next-generation on-device ML framework, evolved from TensorFlow Lite. LiteRT powers Duchess's on-device inference on Pixel 9 Fold hardware.
+Google's next-generation on-device ML framework. LiteRT powers Duchess's on-device inference on Pixel 9 Fold hardware.
 
 - **NPU acceleration** for Tensor G4 chip — hardware-optimized inference
 - **CompiledModel API** for automated hardware selection (CPU/GPU/NPU)
 - **LiteRT-LM** for on-device generative AI (Gemma 4 E2B inference)
-- Successor to TFLite with improved performance and broader hardware support
+- Improved performance and broader hardware support over legacy frameworks
 
 ### Google Workspace Integration
 
