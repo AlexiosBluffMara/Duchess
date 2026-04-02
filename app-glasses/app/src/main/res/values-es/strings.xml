@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Duchess Lentes</string>
+
+    <!-- HUD status -->
+    <string name="status_ok">Sin alertas</string>
+    <string name="status_detecting">Detectando…</string>
+    <string name="status_violation">ALERTA EPP</string>
+
+    <!-- Detection labels -->
+    <string name="label_hardhat">Casco</string>
+    <string name="label_vest">Chaleco</string>
+    <string name="label_no_hardhat">SIN CASCO</string>
+    <string name="label_no_vest">SIN CHALECO</string>
+
+    <!-- BLE -->
+    <string name="ble_scanning">Buscando teléfono…</string>
+    <string name="ble_connected">Teléfono conectado</string>
+    <string name="ble_disconnected">Teléfono desconectado</string>
+    <string name="ble_error">Error de BLE</string>
+
+    <!-- Camera -->
+    <string name="camera_starting">Iniciando cámara…</string>
+    <string name="camera_error">Error de cámara</string>
+
+    <!-- Notifications -->
+    <string name="notif_detection_title">Detección EPP activa</string>
+    <string name="notif_detection_text">Monitoreando cumplimiento de seguridad</string>
+    <string name="notif_alert_title">Alerta de seguridad</string>
+</resources>

@@ -25,7 +25,7 @@ _Last updated: 2026-04-01 | Updated by: Claude Code_
 | Component | Status | Branch | Notes |
 |-----------|--------|--------|-------|
 | `app-phone/` Android scaffold | ✅ Complete | claude/keen-lalande | 23 files: DAT SDK + Gemma 3n + BLE + Compose + Hilt |
-| `app-glasses/` Vuzix AOSP scaffold | ⏳ Queued for Claude | — | Camera2 + TFLite + BLE client |
+| `app-glasses/` Vuzix AOSP scaffold | ✅ Complete | claude/keen-lalande | Camera2 + TFLite + BLE client + HUD renderer |
 | `ml/` Python training pipeline | ⏳ Queued for Claude | — | Unsloth QLoRA, Gemma 3n |
 | `cloud/` AWS CDK scaffold | ⏳ Queued for Claude | — | Lambda, SageMaker, DynamoDB |
 | iOS supervisor dashboard | 🔲 Not started | — | Phase 2, iPhone 16 Pro Max |

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Duchess Glasses</string>
+
+    <!-- HUD status -->
+    <string name="status_ok">All Clear</string>
+    <string name="status_detecting">Detecting…</string>
+    <string name="status_violation">PPE ALERT</string>
+
+    <!-- Detection labels -->
+    <string name="label_hardhat">Hardhat</string>
+    <string name="label_vest">Vest</string>
+    <string name="label_no_hardhat">NO HARDHAT</string>
+    <string name="label_no_vest">NO VEST</string>
+
+    <!-- BLE -->
+    <string name="ble_scanning">Scanning for phone…</string>
+    <string name="ble_connected">Phone connected</string>
+    <string name="ble_disconnected">Phone disconnected</string>
+    <string name="ble_error">BLE error</string>
+
+    <!-- Camera -->
+    <string name="camera_starting">Starting camera…</string>
+    <string name="camera_error">Camera error</string>
+
+    <!-- Notifications -->
+    <string name="notif_detection_title">PPE Detection Active</string>
+    <string name="notif_detection_text">Monitoring for safety compliance</string>
+    <string name="notif_alert_title">Safety Alert</string>
+</resources>

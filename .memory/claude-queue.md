@@ -76,7 +76,7 @@ This is Tier 2 — the phone is the brain. Glasses are sensors/speakers only.
 
 ## Priority 2 — `app-glasses/` Vuzix M400 AOSP App Scaffold
 
-**Status**: `[ ] QUEUED — start after Priority 1 is done`  
+**Status**: `[x] DONE — completed 2026-04-01`
 **Assigned**: Claude Code
 
 ### Goal
