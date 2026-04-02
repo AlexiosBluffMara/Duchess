@@ -8,7 +8,7 @@ _Read this when you open Duchess. Start from the top. Mark tasks complete in `pr
 
 ## Priority 1 — `app-phone/` Android Companion App Scaffold
 
-**Status**: `[ ] ACTIVE — pick up immediately`  
+**Status**: `[x] DONE — completed 2026-04-01`  
 **Assigned**: Claude Code  
 **Reviewed by**: GitHub Copilot (after delivery)
 

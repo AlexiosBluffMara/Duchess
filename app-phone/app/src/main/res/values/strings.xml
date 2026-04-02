@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Duchess</string>
+    <string name="loading">Loading…</string>
+    <string name="registration_prompt">Connect your smart glasses to get started</string>
+    <string name="register_button">Register Device</string>
+    <string name="registration_error">Registration failed. Please try again.</string>
+
+    <!-- Stream screen -->
+    <string name="stream_connecting">Connecting to glasses…</string>
+    <string name="stream_active">Live Feed</string>
+    <string name="stream_disconnected">Glasses disconnected</string>
+    <string name="stream_error">Stream error</string>
+    <string name="capture_photo">Capture Photo</string>
+    <string name="photo_captured">Photo captured</string>
+    <string name="photo_capture_failed">Photo capture failed</string>
+
+    <!-- Safety alerts -->
+    <string name="alert_critical">CRITICAL SAFETY ALERT</string>
+    <string name="alert_warning">Safety Warning</string>
+    <string name="alert_info">Safety Notice</string>
+
+    <!-- BLE -->
+    <string name="ble_server_running">BLE server active</string>
+    <string name="ble_server_stopped">BLE server stopped</string>
+
+    <!-- Gemma -->
+    <string name="gemma_loading">Loading AI model…</string>
+    <string name="gemma_ready">AI model ready</string>
+    <string name="gemma_error">AI model error</string>
+
+    <!-- Mesh -->
+    <string name="mesh_connected">Connected to site mesh</string>
+    <string name="mesh_disconnected">Site mesh unavailable</string>
+</resources>

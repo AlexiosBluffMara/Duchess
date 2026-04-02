@@ -1,6 +1,6 @@
 # Project State — Duchess
 
-_Last updated: 2026-04-01 | Updated by: GitHub Copilot_
+_Last updated: 2026-04-01 | Updated by: Claude Code_
 
 ## Infrastructure Status
 
@@ -24,7 +24,7 @@ _Last updated: 2026-04-01 | Updated by: GitHub Copilot_
 
 | Component | Status | Branch | Notes |
 |-----------|--------|--------|-------|
-| `app-phone/` Android scaffold | ⏳ Assigned to Claude | — | Meta DAT SDK + Gemma 3n + BLE |
+| `app-phone/` Android scaffold | ✅ Complete | claude/keen-lalande | 23 files: DAT SDK + Gemma 3n + BLE + Compose + Hilt |
 | `app-glasses/` Vuzix AOSP scaffold | ⏳ Queued for Claude | — | Camera2 + TFLite + BLE client |
 | `ml/` Python training pipeline | ⏳ Queued for Claude | — | Unsloth QLoRA, Gemma 3n |
 | `cloud/` AWS CDK scaffold | ⏳ Queued for Claude | — | Lambda, SageMaker, DynamoDB |
