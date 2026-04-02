@@ -3,10 +3,10 @@
 #   1. python-tests    — Cloud CDK + ML tests (mocked deps, no GPU needed)
 #   2. pre-commit      — The same 4 checks from .githooks/pre-commit
 #   3. kotlin-lint     — Basic project structure validation
-#   4. android-build   — Full Gradle debug build (requires GITHUB_PACKAGES_TOKEN secret)
+#   4. android-build   — Full Gradle debug build (requires GH_PACKAGES_TOKEN secret)
 #
 # Secrets required:
-#   GITHUB_PACKAGES_TOKEN — GitHub PAT with read:packages scope for Meta DAT SDK.
+#   GH_PACKAGES_TOKEN — GitHub PAT with read:packages scope for Meta DAT SDK.
 #   Set this in: repo Settings → Secrets and variables → Actions → New repository secret.
 #   android-build job is skipped if the secret is not set (safe for forks/external PRs).
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -306,7 +306,7 @@ jobs:
 
   # ─────────────────────────────────────────────────────────────────────────
   # Job 4: Android Build (phone + glasses debug APKs)
-  # Requires GITHUB_PACKAGES_TOKEN secret — skipped for external forks.
+  # Requires GH_PACKAGES_TOKEN secret — skipped for external forks.
   # ─────────────────────────────────────────────────────────────────────────
   android-build:
     name: Android Debug Build
@@ -314,7 +314,7 @@ jobs:
     # TAYLOR: Only run when the secret is present. For PRs from forks the secret
     # is not exposed, so we skip rather than fail. Internal PRs and main branch
     # always have access to the secret.
-    if: ${{ secrets.GITHUB_PACKAGES_TOKEN != '' }}
+    if: ${{ secrets.GH_PACKAGES_TOKEN != '' }}
 
     steps:
       - name: Checkout code
@@ -338,14 +338,14 @@ jobs:
           restore-keys: gradle-${{ runner.os }}-
 
       # TAYLOR: Write local.properties for both apps. Credentials come from the
-      # GITHUB_PACKAGES_TOKEN secret — never hardcoded, never logged.
+      # GH_PACKAGES_TOKEN secret — never hardcoded, never logged.
       - name: Write local.properties
         env:
-          GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
+          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > app-phone/local.properties
           echo "github_user=duchess-ci" >> app-phone/local.properties
-          echo "github_token=${GITHUB_PACKAGES_TOKEN}" >> app-phone/local.properties
+          echo "github_token=${GH_PACKAGES_TOKEN}" >> app-phone/local.properties
           echo "sdk.dir=$ANDROID_SDK_ROOT" > app-glasses/local.properties
 
       # TAYLOR: Build the phone companion app. --no-daemon is important in CI —
