@@ -1,0 +1,6 @@
+---
+name: ml-model-training
+description: ""Fine-tune and train ML models using Unsloth Dynamic QLoRA for the Duchess platform. Use when: fine-tuning Gemma 3n, training Qwen2.5-VL, creating domain adapters (Safety, Spanish, Engineering, Electrical), configuring QLoRA hyperparameters, running training on RTX 5090, dataset preparation for construction safety, model evaluation against benchmarks.""
+---
+
+

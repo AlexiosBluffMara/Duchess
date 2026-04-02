@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# .githooks/post-merge
+#
+# After a pull/merge, auto-sync skills so new skills added by teammates
+# on either side of the mirror are reflected locally.
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+CHANGED_SKILLS=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD 2>/dev/null \
+  | grep -E '^\.github/skills/|^\.claude/skills/' || true)
+
+if [[ -n "$CHANGED_SKILLS" ]]; then
+  echo ""
+  echo "━━━ Duchess post-merge: skill changes detected ━━━━━━━━━━━━━━"
+  echo "$CHANGED_SKILLS"
+  if [[ -f "$REPO_ROOT/scripts/mirror-skills.sh" ]]; then
+    bash "$REPO_ROOT/scripts/mirror-skills.sh" auto
+  fi
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+fi

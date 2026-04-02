@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# .githooks/commit-msg
+#
+# Enforces Duchess commit message convention:
+#
+#   <type>(<scope>): <subject>
+#
+#   Types:  feat | fix | spec | skill | docs | refactor | test | chore | ci | model
+#   Scopes: phone | glasses | shared | cloud | ml | mesh | ux | safety | skills | specs | infra
+#
+# Examples:
+#   feat(phone): integrate Meta DAT StreamSession lifecycle
+#   spec(phone): add PPE detection stream spec
+#   skill(skills): add edge-inference skill for Snapdragon XR1
+#   fix(cloud): handle anonymization before Lambda invocation
+#   model(ml): train Safety adapter v0.2 on iSafetyBench
+#
+# Breaking changes: append ! before colon or add BREAKING CHANGE in body.
+
+set -euo pipefail
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Skip merge commits and fixup commits
+if echo "$COMMIT_MSG" | grep -qE '^(Merge|fixup!|squash!)'; then
+  exit 0
+fi
+
+TYPES="feat|fix|spec|skill|docs|refactor|test|chore|ci|model|perf|revert"
+SCOPES="phone|glasses|shared|cloud|ml|mesh|ux|safety|skills|specs|infra|deps"
+
+PATTERN="^(${TYPES})(\((${SCOPES})\))?!?: .{1,100}$"
+
+FIRST_LINE=$(echo "$COMMIT_MSG" | head -1)
+
+if ! echo "$FIRST_LINE" | grep -qE "$PATTERN"; then
+  echo ""
+  echo "━━━ Duchess commit-msg hook ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "  ✗ Invalid commit message format."
+  echo ""
+  echo "  Required:  <type>(<scope>): <subject>"
+  echo "  Your msg:  $FIRST_LINE"
+  echo ""
+  echo "  Valid types:  feat fix spec skill docs refactor test chore ci model perf revert"
+  echo "  Valid scopes: phone glasses shared cloud ml mesh ux safety skills specs infra deps"
+  echo ""
+  echo "  Examples:"
+  echo "    feat(phone): integrate Meta DAT StreamSession"
+  echo "    spec(phone): add PPE detection stream spec"
+  echo "    skill(skills): add edge-inference Snapdragon skill"
+  echo "    fix(cloud): anonymize worker IDs before Lambda"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+  exit 1
+fi
+
+exit 0
