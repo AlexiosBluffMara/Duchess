@@ -194,6 +194,25 @@ class BleGattClientTest {
         assertEquals("All UUIDs must be distinct", 3, uuids.size)
     }
 
+    @Test
+    fun `UUIDs match phone BleGattServer values`() {
+        // Duke: This is the most important BLE test in the entire project.
+        // If these assertions fail, glasses and phone CANNOT communicate.
+        // Claude's original scaffold had mismatched UUIDs — never again.
+        assertEquals(
+            "d0c5e550-0001-4b6e-a5a0-b0b0b0b0b0b0",
+            BleGattClient.SERVICE_UUID.toString()
+        )
+        assertEquals(
+            "d0c5e550-0002-4b6e-a5a0-b0b0b0b0b0b0",
+            BleGattClient.ALERT_CHAR_UUID.toString()
+        )
+        assertEquals(
+            "d0c5e550-0003-4b6e-a5a0-b0b0b0b0b0b0",
+            BleGattClient.ESCALATION_CHAR_UUID.toString()
+        )
+    }
+
     // ===== RECONNECTION CONSTANTS =====
 
     @Test

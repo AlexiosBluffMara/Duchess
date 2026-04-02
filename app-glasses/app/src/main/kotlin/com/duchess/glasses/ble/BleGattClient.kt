@@ -399,13 +399,17 @@ class BleGattClient(
     }
 
     companion object {
-        // Alex: These UUIDs must match the phone's BleGattServer exactly.
-        // If they don't match, the glasses will scan forever and never find the phone.
-        // Generated once, hardcoded forever. Change them and you break every paired device.
-        val SERVICE_UUID: UUID = UUID.fromString("0000DCSS-0000-1000-8000-00805F9B34FB")
-        val ALERT_CHAR_UUID: UUID = UUID.fromString("0000DCA1-0000-1000-8000-00805F9B34FB")
-        val ESCALATION_CHAR_UUID: UUID = UUID.fromString("0000DCE1-0000-1000-8000-00805F9B34FB")
-        val CCCD_UUID: UUID = UUID.fromString("00002902-0000-1000-8000-00805F9B34FB")
+        // Duke: CRITICAL FIX — UUIDs were mismatched with the phone's BleGattServer.
+        // The original values ("0000DCSS-...") contained non-hex chars and didn't match
+        // the phone side at all. These MUST be identical to BleGattServer.kt in app-phone.
+        // Alex: If you change these, you MUST update BleGattServer.kt simultaneously.
+        val SERVICE_UUID: UUID = UUID.fromString("d0c5e550-0001-4b6e-a5a0-b0b0b0b0b0b0")
+        val ALERT_CHAR_UUID: UUID = UUID.fromString("d0c5e550-0002-4b6e-a5a0-b0b0b0b0b0b0")
+        // Duke: "ESCALATION" from the glasses' perspective = "STATUS" from the phone's
+        // perspective. Same characteristic, different names. The glasses write escalation
+        // data here; the phone reads it as status updates. UUID must match phone's STATUS_CHARACTERISTIC_UUID.
+        val ESCALATION_CHAR_UUID: UUID = UUID.fromString("d0c5e550-0003-4b6e-a5a0-b0b0b0b0b0b0")
+        val CCCD_UUID: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
         // Alex: Reconnection parameters
         const val MAX_RECONNECT_ATTEMPTS = 5

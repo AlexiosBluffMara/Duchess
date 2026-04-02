@@ -14,6 +14,157 @@ Pytest fixtures for the Duchess ML test suite.
 
 from __future__ import annotations
 
+# PRIYA: =================================================================
+# Mock heavy ML dependencies that aren't installed on dev laptops / CI.
+# These mocks are installed in sys.modules BEFORE any test file imports
+# source modules (eval.benchmark, scripts.export_model, etc.) that have
+# module-level `import torch` / `from datasets import ...` statements.
+# Without these mocks, every test fails with ModuleNotFoundError.
+#
+# Each mock is guarded by _is_package_available() so that on a GPU dev
+# machine with the real packages installed, the real code runs instead.
+# =================================================================
+
+import importlib.util
+import sys
+from unittest.mock import MagicMock
+
+
+def _is_package_available(name: str) -> bool:
+    """Check if a Python package is importable without importing it."""
+    # PRIYA: Use find_spec to avoid importing heavy packages as a side effect.
+    if name in sys.modules:
+        return True
+    return importlib.util.find_spec(name) is not None
+
+
+# ── Mock helpers ────────────────────────────────────────────────────────────
+
+class _MockDataset:
+    """Lightweight stand-in for datasets.Dataset.
+
+    # PRIYA: Functions like load_local_dataset() and split_dataset() call
+    # Dataset.from_list(), len(dataset), and dataset.train_test_split().
+    # This mock provides just enough interface to satisfy those calls
+    # without pulling in the 300 MB `datasets` package.
+    """
+
+    def __init__(self, data=None):
+        self._data = list(data or [])
+
+    def __len__(self):
+        return len(self._data)
+
+    @classmethod
+    def from_list(cls, data):
+        return cls(data)
+
+    def train_test_split(self, test_size=0.1, seed=42):
+        n_test = max(1, int(len(self._data) * test_size))
+        return {
+            "train": _MockDataset(self._data[n_test:]),
+            "test": _MockDataset(self._data[:n_test]),
+        }
+
+    def select(self, indices):
+        return _MockDataset([self._data[i] for i in indices])
+
+
+class _MockTrainingArguments:
+    """Lightweight stand-in for transformers.TrainingArguments.
+
+    # PRIYA: build_training_args() constructs a TrainingArguments and the
+    # test asserts training_args.report_to == ["none"]. The real class
+    # converts a bare string to a single-element list, so we replicate that.
+    """
+
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+        # PRIYA: Real TrainingArguments wraps a bare report_to string in a list
+        if hasattr(self, "report_to") and isinstance(self.report_to, str):
+            self.report_to = [self.report_to]
+
+
+# ── Install mocks for missing packages ──────────────────────────────────────
+
+if not _is_package_available("torch"):
+    # PRIYA: torch is imported at module level in benchmark.py, export_model.py,
+    # and train_gemma3n.py. resolve_mixed_precision() calls
+    # torch.cuda.is_available() — must return False so it picks the fp16 path.
+    _mock_torch = MagicMock()
+    _mock_torch.cuda.is_available.return_value = False
+    _mock_torch.cuda.is_bf16_supported.return_value = False
+    _mock_torch.float16 = "float16"
+    sys.modules["torch"] = _mock_torch
+    sys.modules["torch.cuda"] = _mock_torch.cuda
+    sys.modules["torch.nn"] = _mock_torch.nn
+    sys.modules["torch.nn.functional"] = _mock_torch.nn.functional
+
+if not _is_package_available("datasets"):
+    # PRIYA: datasets is imported at module level in prepare_dataset.py and
+    # train_gemma3n.py via `from datasets import Dataset, load_dataset`.
+    # _MockDataset supports from_list(), len(), and train_test_split().
+    _mock_datasets = MagicMock()
+    _mock_datasets.Dataset = _MockDataset
+    _mock_datasets.DatasetDict = MagicMock()
+    _mock_datasets.load_dataset = MagicMock()
+    sys.modules["datasets"] = _mock_datasets
+
+if not _is_package_available("transformers"):
+    # PRIYA: transformers provides TrainingArguments, imported at module level
+    # in train_gemma3n.py. _MockTrainingArguments stores kwargs as attributes
+    # and wraps report_to string → list (matching real HF behavior).
+    _mock_transformers = MagicMock()
+    _mock_transformers.TrainingArguments = _MockTrainingArguments
+    sys.modules["transformers"] = _mock_transformers
+
+if not _is_package_available("wandb"):
+    # PRIYA: wandb is imported at module level in train_gemma3n.py for
+    # experiment tracking. Not exercised in unit tests.
+    sys.modules["wandb"] = MagicMock()
+
+if not _is_package_available("peft"):
+    # PRIYA: peft provides LoraConfig (module-level import in train_gemma3n.py)
+    # and PeftModel (lazy import inside benchmark.py / export_model.py).
+    sys.modules["peft"] = MagicMock()
+
+if not _is_package_available("trl"):
+    # PRIYA: trl provides SFTTrainer, imported at module level in train_gemma3n.py.
+    sys.modules["trl"] = MagicMock()
+
+if not _is_package_available("unsloth"):
+    # PRIYA: unsloth provides FastLanguageModel for Dynamic QLoRA — imported at
+    # module level in train_gemma3n.py. Only framework supporting Gemma 3n quant.
+    sys.modules["unsloth"] = MagicMock()
+
+if not _is_package_available("ultralytics"):
+    # PRIYA: ultralytics (YOLOv8) isn't imported by the four source files under
+    # test, but mocked defensively in case future imports add it.
+    sys.modules["ultralytics"] = MagicMock()
+
+# PRIYA: numpy is NOT mocked here on purpose. It's only lazily imported inside
+# export_model.run_benchmark() (never called in unit tests), and mocking it
+# breaks pytest.approx() which checks sys.modules.get("numpy") internally.
+
+if not _is_package_available("optimum"):
+    # PRIYA: optimum is lazily imported inside export_model.export_to_onnx().
+    _mock_optimum = MagicMock()
+    sys.modules["optimum"] = _mock_optimum
+    sys.modules["optimum.exporters"] = _mock_optimum.exporters
+    sys.modules["optimum.exporters.onnx"] = _mock_optimum.exporters.onnx
+
+if not _is_package_available("onnx"):
+    # PRIYA: onnx is lazily imported inside export_model.validate_onnx().
+    sys.modules["onnx"] = MagicMock()
+
+if not _is_package_available("ai_edge_torch"):
+    # PRIYA: ai-edge-torch converts ONNX → TFLite. Lazily imported inside
+    # export_model.export_to_tflite().
+    sys.modules["ai_edge_torch"] = MagicMock()
+
+# ── End of mock setup ───────────────────────────────────────────────────────
+
 import json
 import os
 import tempfile

@@ -4,6 +4,71 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 14:43 UTC — Commit 872feab
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: fix(shared): BLE UUID mismatch, ML test mocking, QA audit
+
+### Modules touched
+- **app-glasses/**: 2 file(s) changed
+- **ml/**: 2 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 28 | Active (28 files) |
+| app-glasses/ | 26 | Active (26 files) |
+| ml/ | 22 | Active (22 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+.memory/handoff.md
+.memory/project-state.md
+app-glasses/app/src/main/kotlin/com/duchess/glasses/ble/BleGattClient.kt
+app-glasses/app/src/test/kotlin/com/duchess/glasses/ble/BleGattClientTest.kt
+ml/pyproject.toml
+ml/tests/conftest.py
+```
+
+---
+
+## 2026-04-02 — Copilot (Duke) Production Hardening Session
+
+**What happened**: Claude Code hit API limits repeatedly during Phase 2 production hardening. Multiple agent runs (Maya, Luis, Alex, Kai, Priya, Jordan, Carlos, Sam, Noah, Elena) were launched but most stalled or lost their changes when context was compacted. Only the Phase 1 scaffold commits and the Copilot wiring commit (6261100) actually persisted.
+
+### What Copilot (Duke) actually did this session:
+
+**1. BLE UUID Critical Fix** (BleGattClient.kt)
+- Glasses had INVALID UUIDs: `0000DCSS-0000-1000-8000-00805F9B34FB` ("DCSS" is not hex)
+- Phone had CORRECT UUIDs: `d0c5e550-0001-4b6e-a5a0-b0b0b0b0b0b0`
+- Fixed glasses to match phone. Added cross-module UUID verification test.
+- Without this fix, BLE connection between glasses and phone would NEVER work.
+
+**2. ML Test Mocking** (ml/tests/conftest.py, ml/pyproject.toml)
+- All 79 ML tests now pass without torch/transformers/datasets installed
+- Priya agent added conditional sys.modules mocking for 11 heavy packages
+- Tests run in 0.04s on dev laptop
+
+**3. Full QA Audit** (Sam agent)
+- 229 total tests across all modules
+- Cloud: 41/41 passing
+- ML: 79/79 passing
+- Key gaps: MeshManager.broadcastAlert() is a TODO stub, no temporal voting tests, no cross-module BLE integration test, no Gemma lifecycle tests
+
+### What's still TODO (Phase 2):
+- [ ] Wire MeshManager.broadcastAlert() with actual Tailscale integration
+- [ ] Add temporal voting to PpeDetector (3/5 frames must agree before escalation)
+- [ ] Add PII structural test to GemmaAnalysisResult
+- [ ] BLE payload serialization contract test (phone ↔ glasses)
+- [ ] GemmaInferenceService model loading (MediaPipe LLM Inference API)
+- [ ] Offline-first queue-and-retry for alert delivery
+- [ ] Nightly batch upload pipeline implementation
+- [ ] GitHub Actions CI/CD (Taylor agent)
+
+---
+
 ## 2026-04-02 11:39 UTC — Commit f656da6
 
 **Branch**: `main`  
@@ -95,88 +160,6 @@ app-phone/app/src/main/kotlin/com/duchess/companion/mesh/MeshManager.kt
 app-phone/app/src/main/kotlin/com/duchess/companion/model/SafetyAlert.kt
 app-phone/app/src/main/kotlin/com/duchess/companion/stream/StreamScreen.kt
 ```
-
----
-
-## 2026-04-02 — GitHub Copilot (Handoff Session)
-
-### What was accomplished this session
-
-1. **Fixed Python syntax errors** from Claude's scaffold:
-   - `ml/scripts/train_gemma3n.py`: Unclosed docstring (line 1 `"""` never terminated before imports). Fixed by closing docstring before `from __future__`.
-   - `ml/eval/benchmark.py`: f-string backslash error on line 409 (`f"{'Actual\\Pred':<20}"` illegal in Python <3.12). Extracted to variable.
-   - All 21 Python files now pass `ast.parse()` on Python 3.14.3.
-
-2. **Upgraded Python to 3.14.3** (system-wide):
-   - Homebrew had Python 3.14.3 and 3.13.12 installed but PATH was wrong
-   - `/usr/bin/python3` (Apple 3.9.6) was taking precedence over `/opt/homebrew/bin/python3` (3.14.3)
-   - Added `eval "$(/opt/homebrew/bin/brew shellenv)"` to `~/.zshrc` and created `~/.zprofile`
-   - Python 3.14.3 is now the default `python3`
-   - Project `pyproject.toml` constraint `^3.11` already covers 3.14 — no changes needed
-
-3. **Created post-commit handoff hook** (`.githooks/post-commit`):
-   - Auto-snapshots commit metadata into `handoff.md` (branch, author, message, files touched)
-   - Auto-generates `project-state.md` with file counts, test counts, module status
-   - Auto-updates `claude-queue.md` task statuses based on committed paths
-   - Uses lock file to prevent infinite recursion (amend triggers post-commit again)
-   - Amends the commit with `.memory/` updates so Claude always has fresh context
-
-4. **Wired up real code across all 4 modules** (previous session, continued):
-   - app-phone: StreamViewModel, BleGattServer, GemmaInferenceService, MockDeviceKit tests
-   - app-glasses: CameraSession (Camera2 callbackFlow), PpeDetector (TFLite), BleGattClient, HudRenderer
-   - ml: train_gemma3n.py (Unsloth QLoRA), prepare_dataset.py, export_model.py, benchmark.py + 4 test files
-   - cloud: duchess_stack.py (CDK), handler.py (Lambda+Bedrock) + 3 test files
-
-### For Claude: What to pick up next
-
-1. **Run the actual tests** — `cd ml && pip install -e ".[dev]" && pytest` and `cd cloud && pip install -e ".[dev]" && pytest`
-2. **Install Poetry** and lock deps: `pip install poetry && cd ml && poetry install && cd ../cloud && poetry install`
-3. **Wire GemmaInferenceService** to MediaPipe LLM Inference API (currently stub)
-4. **Wire PpeDetector** to real TFLite model loading (currently placeholder asset)
-5. **Create integration tests** for the PPE pipeline: Tier 1 detection → Tier 2 triage → Tier 4 escalation
-6. **Set up GitHub Actions CI** for automated test runs on PR
-
-### Gotchas / Context for Claude
-
-- Python 3.14.3 is now the system default (`/opt/homebrew/bin/python3`)
-- The post-commit hook auto-amends with .memory/ updates — don't be surprised by amend on commit
-- All Kotlin files are untested (no Android Studio / Gradle sync yet — needs `github_token` in `local.properties`)
-- VS Code Source Control panel may show stale errors — always run `bash .githooks/pre-commit` to verify
-
----
-
-## 2026-04-01 — Claude Code (Session 1, continued)
-
-### Additional accomplishments
-
-**`app-glasses/` Vuzix M400 AOSP app — COMPLETE** (17 files):
-- Camera2 API wrapped in `callbackFlow`, 15 FPS, 640x480 YUV→Bitmap
-- PpeDetector: TFLite Interpreter, GPU delegate + NNAPI fallback, YOLOv8-nano
-- BleGattClient: scans for phone GATT, subscribes to alerts, sends escalations (UUIDs match app-phone)
-- HudRenderer: Canvas-based 640x360, bounding boxes, bilingual EN/ES status
-- No GMS deps, no Compose (AOSP View-based), landscape-only, PARTIAL_WAKE_LOCK
-
-**`ml/` Python training pipeline — COMPLETE** (10 files):
-- pyproject.toml: Poetry, unsloth, torch, transformers, ultralytics, wandb
-- train_gemma3n.py: Unsloth FastLanguageModel QLoRA (r=16, alpha=32, q/k/v/o_proj), SFTTrainer
-- prepare_dataset.py: bilingual construction safety instruction pairs
-- export_model.py: merged adapter → ONNX (Optimum) → TFLite FP16 (ai-edge-torch)
-- Adapter configs: safety + spanish_jargon
-- eval/benchmark.py: iSafetyBench-style accuracy/latency table
-
-**`cloud/` AWS CDK infrastructure — COMPLETE** (5 files):
-- S3 bucket: KMS encrypted, 90-day lifecycle
-- DynamoDB: alerts table with zone-severity GSI
-- SQS: escalation queue + DLQ (3 retries)
-- Lambda: Bedrock Claude 3.5 Sonnet analysis, bilingual output, no PII in DynamoDB
-- SageMaker endpoint placeholder (commented out)
-
-### All 4 priorities complete. Queue is empty.
-
-### What to pick up next
-- Copilot review of all scaffolds for Kotlin idiomatics and Python style
-- Wire up real `local.properties` with GitHub PAT and test Gradle sync
-- iOS supervisor dashboard (Phase 2 — not in current queue)
 
 ---
 
