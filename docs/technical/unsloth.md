@@ -49,7 +49,7 @@ Side-by-side comparison of **base vs. fine-tuned** model outputs on identical pr
 | SafeTensors | PyTorch / HF Transformers | Training checkpoints, Tier 4 cloud |
 | GGUF | llama.cpp / Ollama | Tier 2 phone (CPU), Tier 3 Mac server |
 | vLLM | vLLM server | High-throughput cloud inference |
-| TFLite / LiteRT | TensorFlow Lite | Tier 2 phone (NPU via MediaPipe) |
+| LiteRT | LiteRT Runtime | Tier 2 phone (NPU via MediaPipe) |
 
 ### Faster MoE Training
 
@@ -122,10 +122,10 @@ After fine-tuning, models are quantized for deployment across tiers. Lower-bit f
 | Q8_0 (GGUF) | ~2.3 GB | 1.5× | ~99% | Mac server (Tier 3) |
 | Q4_K_M (GGUF) | ~1.4 GB | 2.5× | ~95% | Phone — primary (Tier 2) |
 | Q4_0 (GGUF) | ~1.2 GB | 3× | ~92% | Phone — battery saver (Tier 2) |
-| INT8 (TFLite/LiteRT) | ~2.3 GB | 2× | ~98% | Phone NPU (Tier 2) |
+| INT8 (LiteRT) | ~2.3 GB | 2× | ~98% | Phone NPU (Tier 2) |
 | INT4 (LiteRT) | ~1.2 GB | 3× | ~93% | Phone NPU, low power (Tier 2) |
 
-**Q4_K_M** is the primary phone deployment format — it uses k-quant mixed precision (important weights kept at higher precision) to preserve 95% of base quality at 1.4 GB. For NPU-accelerated inference on the Pixel 9's Tensor G4, **INT8 TFLite/LiteRT** is the target format, leveraging hardware quantization support.
+**Q4_K_M** is the primary phone deployment format — it uses k-quant mixed precision (important weights kept at higher precision) to preserve 95% of base quality at 1.4 GB. For NPU-accelerated inference on the Pixel 9's Tensor G4, **INT8 LiteRT** is the target format, leveraging hardware quantization support.
 
 **Selection logic on the phone app:**
 
@@ -144,7 +144,7 @@ The export flow converts Unsloth training checkpoints into deployment-ready arti
 graph LR
     U[Unsloth Training] --> ST[SafeTensors Checkpoint]
     ST --> GGUF[GGUF Conversion]
-    ST --> TF[TFLite / LiteRT Conversion]
+    ST --> TF[LiteRT Conversion]
     GGUF --> LC[llama.cpp — Phone CPU]
     GGUF --> OL[Ollama — Mac Server]
     TF --> NPU[Phone NPU — Tensor G4]
@@ -156,7 +156,7 @@ graph LR
 
 1. **Unsloth → SafeTensors**: Training produces adapter weights in SafeTensors format. Merge adapter into base model using `unsloth.save_pretrained_merged()`.
 2. **SafeTensors → GGUF**: Convert via `llama.cpp/convert_hf_to_gguf.py`. Apply quantization: `llama-quantize model-f16.gguf model-q4_k_m.gguf Q4_K_M`.
-3. **SafeTensors → TFLite/LiteRT**: Convert through `ai_edge_torch` or MediaPipe Model Maker. Calibrate INT8 quantization with 500 representative samples from the training distribution.
+3. **SafeTensors → LiteRT**: Convert through `ai_edge_torch` or MediaPipe Model Maker. Calibrate INT8 quantization with 500 representative samples from the training distribution.
 4. **Publish**: Push all artifacts to Hugging Face Hub and Kaggle Models with model cards, benchmark results, and training configs.
 
 ---

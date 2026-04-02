@@ -94,7 +94,7 @@ class GlassesApplication : Application() {
         // through its own battery monitoring, but onLowMemory() is an additional
         // signal that we should reduce memory pressure.
         //
-        // We don't hold any static caches to clear here — the TFLite interpreter
+        // We don't hold any static caches to clear here — the LiteRT interpreter
         // and camera buffer pool are managed by their respective classes.
         // This callback is mostly a diagnostic signal.
     }
@@ -104,7 +104,7 @@ class GlassesApplication : Application() {
         // Alex: Same story as onLowMemory(). On the M400, we should NEVER hit
         // TRIM_MEMORY_RUNNING_CRITICAL because our total footprint should be <200MB.
         // If we do, something is leaking (probably RenderScript allocations or
-        // undestroyed TFLite interpreters). Check for those first.
+        // undestroyed LiteRT interpreters). Check for those first.
     }
 
     companion object {

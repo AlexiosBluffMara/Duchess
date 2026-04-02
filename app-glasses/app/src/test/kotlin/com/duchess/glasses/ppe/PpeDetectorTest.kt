@@ -11,10 +11,10 @@ import org.junit.Test
  * Unit tests for PpeDetector — the YOLOv8-nano inference engine.
  *
  * Alex: These tests cover the LOGIC parts of PpeDetector — NMS, thresholding,
- * label classification, output parsing. We do NOT test actual TFLite inference
+ * label classification, output parsing. We do NOT test actual LiteRT inference
  * here because:
  * 1. Unit tests run on the JVM, not on the XR1 GPU
- * 2. The TFLite model file isn't available in the test classpath
+ * 2. The LiteRT model file isn't available in the test classpath
  * 3. Actual inference testing belongs in instrumentation tests on real hardware
  *
  * What we CAN test:

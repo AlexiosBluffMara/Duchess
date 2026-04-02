@@ -270,7 +270,7 @@ class CameraSession(
      * Alex: This is the performance-critical path. Every frame goes through here.
      * RenderScript uses the GPU for the color space conversion, which is ~7x faster
      * than manual CPU conversion on the Qualcomm XR1. The output bitmap is ARGB_8888
-     * because that's what TFLite expects for its input tensor.
+     * because that's what LiteRT expects for its input tensor.
      *
      * NOTE: RenderScript is deprecated in API 31+ but AOSP 13 still ships it.
      * If Vuzix ever moves to API 35+, we'll need to switch to Vulkan compute

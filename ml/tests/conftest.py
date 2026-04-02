@@ -159,8 +159,8 @@ if not _is_package_available("onnx"):
     sys.modules["onnx"] = MagicMock()
 
 if not _is_package_available("ai_edge_torch"):
-    # PRIYA: ai-edge-torch converts ONNX → TFLite. Lazily imported inside
-    # export_model.export_to_tflite().
+    # PRIYA: ai-edge-torch converts ONNX → LiteRT. Lazily imported inside
+    # export_model.export_to_litert().
     sys.modules["ai_edge_torch"] = MagicMock()
 
 # ── End of mock setup ───────────────────────────────────────────────────────

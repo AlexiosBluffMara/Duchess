@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.RectF
 import com.duchess.glasses.model.Detection
-import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.gpu.GpuDelegate
+import com.google.ai.edge.litert.Interpreter
+import com.google.ai.edge.litert.gpu.GpuDelegate
 import java.io.Closeable
 import java.io.FileInputStream
 import java.nio.ByteBuffer
@@ -14,11 +14,11 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
 /**
- * Runs YOLOv8-nano PPE detection on camera frames using TensorFlow Lite.
+ * Runs YOLOv8-nano PPE detection on camera frames using LiteRT.
  *
  * Alex: This is the core ML inference engine for the glasses. It loads an INT8-quantized
  * YOLOv8-nano model from assets (~4MB) and runs it on the Qualcomm XR1's GPU via the
- * TFLite GPU delegate. If the GPU delegate fails (it does sometimes after suspend/resume
+ * LiteRT GPU delegate. If the GPU delegate fails (it does sometimes after suspend/resume
  * on the M400), we fall back to CPU with 2 threads.
  *
  * PERFORMANCE NUMBERS (measured on real M400 hardware):
@@ -30,7 +30,7 @@ import java.nio.channels.FileChannel
  *
  * MEMORY BUDGET:
  *   - Model file: ~4MB
- *   - TFLite interpreter + buffers: ~50MB
+ *   - LiteRT interpreter + buffers: ~50MB
  *   - Input tensor (640x640x3 float32): ~4.9MB
  *   - Output tensors: ~2MB
  *   - Total: ~61MB — well under the 500MB limit
@@ -47,7 +47,7 @@ import java.nio.channels.FileChannel
  *   8: person        (person detection anchor — not a violation)
  *
  * @param context Application context for loading model from assets
- * @param modelFileName TFLite model filename in assets. Default is the quantized YOLOv8-nano.
+ * @param modelFileName LiteRT model filename in assets. Default is the quantized YOLOv8-nano.
  * @param confidenceThreshold Minimum confidence to keep a detection. Default 0.35.
  * @param nmsIouThreshold IoU threshold for Non-Maximum Suppression. Default 0.45.
  * @param useGpuDelegate Whether to try GPU delegate first. Default true.
@@ -138,11 +138,26 @@ class PpeDetector(
             delegate = null
         }
 
-        isStubMode = stubMode
-        _interpreter = interp
-        gpuDelegate = delegate
-        inputBuffer = inBuf
-        outputArray = outArr
+        // Alex: CPU thread count. 2 is the sweet spot on the XR1:
+        // - 1 thread: 55ms (too slow, occasionally misses the 50ms deadline)
+        // - 2 threads: 35ms (safe margin)
+        // - 4 threads: 30ms but thermal throttles after 5 min of continuous inference
+        // With GPU delegate, this is a fallback so thread count matters less.
+        options.setNumThreads(CPU_THREAD_COUNT)
+
+        val model = loadModelFile(context.assets, modelFileName)
+        interpreter = Interpreter(model, options)
+
+        // Alex: Input tensor shape: [1, INPUT_SIZE, INPUT_SIZE, 3] (batch=1, RGB)
+        // We allocate a direct ByteBuffer (off-heap) for zero-copy transfer to LiteRT.
+        inputBuffer = ByteBuffer.allocateDirect(1 * INPUT_SIZE * INPUT_SIZE * 3 * 4)
+            .order(ByteOrder.nativeOrder())
+
+        // Alex: Output shape from YOLOv8 is [1, 4+numClasses, numDetections].
+        // We need to know numDetections from the output tensor shape.
+        val outputShape = interpreter.getOutputTensor(0).shape()
+        val numDetections = outputShape[2] // [1, 4+numClasses, numDetections]
+        outputArray = Array(outputShape[1]) { FloatArray(numDetections) }
     }
 
     /**
@@ -152,7 +167,7 @@ class PpeDetector(
      * InferenceMode. Every millisecond counts here. The flow is:
      * 1. Scale bitmap to 640x640 (model input size)
      * 2. Normalize pixel values to [0, 1] into the pre-allocated ByteBuffer
-     * 3. Run TFLite inference
+     * 3. Run LiteRT inference
      * 4. Parse output tensors into Detection objects
      * 5. Apply NMS to remove duplicate detections
      * 6. Filter by confidence threshold
@@ -365,10 +380,10 @@ class PpeDetector(
     }
 
     /**
-     * Loads a TFLite model file from Android assets.
+     * Loads a LiteRT model file from Android assets.
      *
      * Alex: We memory-map the file (MappedByteBuffer) for zero-copy loading.
-     * The TFLite interpreter reads directly from the mapped memory instead of
+     * The LiteRT interpreter reads directly from the mapped memory instead of
      * copying the entire model into a byte array. For a 4MB model this savings
      * is marginal, but it's the correct pattern for larger models too.
      */
@@ -387,7 +402,7 @@ class PpeDetector(
     }
 
     /**
-     * Releases the TFLite interpreter and GPU delegate.
+     * Releases the LiteRT interpreter and GPU delegate.
      *
      * Alex: Call this when the detection pipeline shuts down. The GPU delegate
      * holds native resources that won't be freed by the GC. The interpreter
@@ -429,7 +444,7 @@ class PpeDetector(
          * Alex: These MUST match the class order in the training dataset.
          * If the ML team reorders classes, this array must be updated or
          * every detection will be misclassified. The model file doesn't embed
-         * label names (thanks, TFLite), so we hardcode them.
+         * label names (thanks, LiteRT), so we hardcode them.
          *
          * Violation labels start with "no_" — this convention is used by
          * HudRenderer and BleGattClient to determine severity and color.

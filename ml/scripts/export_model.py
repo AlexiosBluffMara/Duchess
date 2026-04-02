@@ -1,5 +1,5 @@
 """
-Export fine-tuned Gemma 4 adapter to ONNX and TFLite FP16 for Android deployment.
+Export fine-tuned Gemma 4 adapter to ONNX and LiteRT FP16 for Android deployment.
 
 # Priya: This is where the rubber meets the road — we take our carefully-trained
 # LoRA adapter weights and produce deployment-ready artifacts for the phone (Tier 2).
@@ -7,14 +7,14 @@ Export fine-tuned Gemma 4 adapter to ONNX and TFLite FP16 for Android deployment
 # Pipeline:
 #   1. Load base model + merge LoRA adapter weights → full-precision merged model
 #   2. Export merged model to ONNX via HuggingFace Optimum
-#   3. Convert ONNX to TFLite FP16 via ai-edge-torch (for Android)
+#   3. Convert ONNX to LiteRT FP16 via ai-edge-torch (for Android)
 #   4. Validate: model size check, inference speed benchmark, output sanity
 #
 # Target: app-phone/app/src/main/assets/gemma4_duchess.tflite
 # Expected sizes:
 #   - ONNX (FP16): ~3.5-4.0 GB
-#   - TFLite (FP16): ~3.2-3.8 GB
-#   - TFLite (INT8): ~1.6-1.9 GB (future, pending accuracy validation)
+#   - LiteRT (FP16): ~3.2-3.8 GB
+#   - LiteRT (INT8): ~1.6-1.9 GB (future, pending accuracy validation)
 #
 # Usage:
 #     python scripts/export_model.py --adapter safety
@@ -49,8 +49,8 @@ ADAPTERS_DIR = Path("adapters")
 MODEL_SIZE_LIMITS = {
     "onnx_max_bytes": 8 * 1024 * 1024 * 1024,    # 8 GB — hard fail
     "onnx_warn_bytes": 5 * 1024 * 1024 * 1024,    # 5 GB — warning
-    "tflite_max_bytes": 6 * 1024 * 1024 * 1024,   # 6 GB — hard fail
-    "tflite_warn_bytes": 4 * 1024 * 1024 * 1024,   # 4 GB — warning
+    "litert_max_bytes": 6 * 1024 * 1024 * 1024,   # 6 GB — hard fail
+    "litert_warn_bytes": 4 * 1024 * 1024 * 1024,   # 4 GB — warning
 }
 
 # Priya: Benchmark configuration — we run inference N times and report
@@ -70,9 +70,9 @@ class ExportResult:
     """
     adapter: str
     onnx_path: Path | None = None
-    tflite_path: Path | None = None
+    litert_path: Path | None = None
     onnx_size_bytes: int = 0
-    tflite_size_bytes: int = 0
+    litert_size_bytes: int = 0
     benchmark_results: dict = field(default_factory=dict)
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
@@ -99,9 +99,9 @@ def parse_args() -> argparse.Namespace:
         help="Skip ONNX export (reuse existing ONNX if available)",
     )
     parser.add_argument(
-        "--skip-tflite",
+        "--skip-litert",
         action="store_true",
-        help="Skip TFLite conversion (produce ONNX only)",
+        help="Skip LiteRT conversion (produce ONNX only)",
     )
     parser.add_argument(
         "--benchmark",
@@ -172,8 +172,8 @@ def validate_model_size(path: Path, format_name: str, result: ExportResult) -> b
 
     if format_name == "onnx":
         result.onnx_size_bytes = size_bytes
-    elif format_name == "tflite":
-        result.tflite_size_bytes = size_bytes
+    elif format_name == "litert":
+        result.litert_size_bytes = size_bytes
 
     return True
 
@@ -224,7 +224,7 @@ def export_to_onnx(model, tokenizer, output_dir: Path) -> Path:
     """Export merged model to ONNX format via HuggingFace Optimum.
 
     # Priya: ONNX export is our intermediate format. It's well-supported by
-    # conversion tools (TFLite, CoreML, TensorRT) and gives us a checkpoint
+    # conversion tools (LiteRT, CoreML, TensorRT) and gives us a checkpoint
     # we can validate independently of the final target format.
     #
     # We export in FP16 to match our training precision. Converting FP32→FP16
@@ -266,7 +266,7 @@ def validate_onnx(onnx_path: Path) -> bool:
     """Validate ONNX model structure using onnx checker.
 
     # Priya: The ONNX checker catches structural issues (malformed ops, type
-    # mismatches) that would cause silent failures during TFLite conversion.
+    # mismatches) that would cause silent failures during LiteRT conversion.
     # Better to catch them here.
     """
     try:
@@ -299,22 +299,22 @@ def validate_onnx(onnx_path: Path) -> bool:
         return False
 
 
-def export_to_tflite(onnx_path: Path, output_dir: Path) -> Path:
-    """Convert ONNX model to TFLite FP16 for Android deployment.
+def export_to_litert(onnx_path: Path, output_dir: Path) -> Path:
+    """Convert ONNX model to LiteRT FP16 for Android deployment.
 
-    # Priya: TFLite is our target for Tier 2 (phone). FP16 quantization is the
+    # Priya: LiteRT is our target for Tier 2 (phone). FP16 quantization is the
     # best tradeoff for Gemma 4 on the Tensor G4 — INT8 loses too much accuracy
     # on the Spanish jargon adapter (measured 2.3% degradation on our bilingual
     # eval set), and FP32 is 2x too large for the phone's memory budget.
     #
-    # ai-edge-torch is Google's official ONNX→TFLite converter. It handles
-    # the attention layers and custom ops that standard TFLite tools can't.
+    # ai-edge-torch is Google's official ONNX→LiteRT converter. It handles
+    # the attention layers and custom ops that standard LiteRT tools can't.
     """
-    tflite_path = output_dir / "tflite"
-    tflite_path.mkdir(parents=True, exist_ok=True)
-    output_file = tflite_path / "gemma4_duchess.tflite"
+    litert_path = output_dir / "litert"
+    litert_path.mkdir(parents=True, exist_ok=True)
+    output_file = litert_path / "gemma4_duchess.tflite"
 
-    print(f"Converting ONNX to TFLite FP16: {output_file}")
+    print(f"Converting ONNX to LiteRT FP16: {output_file}")
 
     try:
         # Priya: ai-edge-torch conversion — this is the real pipeline.
@@ -338,29 +338,29 @@ def export_to_tflite(onnx_path: Path, output_dir: Path) -> Path:
             quantize="fp16",
         )
         edge_model.export(str(output_file))
-        print(f"  TFLite conversion complete: {output_file}")
+        print(f"  LiteRT conversion complete: {output_file}")
 
     except ImportError:
         # Priya: ai-edge-torch not installed — write a stub file and log
         # instructions. This is expected in dev environments without TF.
-        print("  WARNING: ai-edge-torch not available — writing stub TFLite file")
+        print("  WARNING: ai-edge-torch not available — writing stub LiteRT file")
         print("  Install: pip install ai-edge-torch")
         print("  Or: poetry add ai-edge-torch")
-        _write_tflite_stub(output_file)
+        _write_litert_stub(output_file)
 
     except Exception as e:
         # Priya: Log the real error but still write a stub so the pipeline
         # doesn't break. Export errors need investigation, not crashes.
-        print(f"  ERROR during TFLite conversion: {e}")
-        print("  Writing stub TFLite file for pipeline continuity")
-        _write_tflite_stub(output_file)
+        print(f"  ERROR during LiteRT conversion: {e}")
+        print("  Writing stub LiteRT file for pipeline continuity")
+        _write_litert_stub(output_file)
 
-    print(f"TFLite export complete: {tflite_path}")
-    return tflite_path
+    print(f"LiteRT export complete: {litert_path}")
+    return litert_path
 
 
-def _write_tflite_stub(output_file: Path) -> None:
-    """Write a stub TFLite file when real conversion isn't available.
+def _write_litert_stub(output_file: Path) -> None:
+    """Write a stub LiteRT file when real conversion isn't available.
 
     # Priya: Stubs exist so the rest of the pipeline (size validation,
     # benchmarking, CI checks) can run even without ai-edge-torch.
@@ -368,7 +368,7 @@ def _write_tflite_stub(output_file: Path) -> None:
     """
     output_file.write_text(
         "PLACEHOLDER — ai-edge-torch conversion not available.\n"
-        "Install ai-edge-torch and re-run export for a real TFLite model.\n"
+        "Install ai-edge-torch and re-run export for a real LiteRT model.\n"
         "See: https://github.com/google-ai-edge/ai-edge-torch\n"
     )
 
@@ -378,10 +378,10 @@ def run_benchmark(
 ) -> dict:
     """Run inference speed benchmark on the merged model.
 
-    # Priya: We benchmark the PyTorch model (not TFLite) because:
+    # Priya: We benchmark the PyTorch model (not LiteRT) because:
     #   1. It gives us a baseline latency for comparison
-    #   2. TFLite benchmarking needs to happen ON the target phone
-    #   3. PyTorch latency * 0.6 ≈ TFLite FP16 latency (empirical ratio)
+    #   2. LiteRT benchmarking needs to happen ON the target phone
+    #   3. PyTorch latency * 0.6 ≈ LiteRT FP16 latency (empirical ratio)
     #
     # We report mean, std, min, max, and p95 latency. The p95 is what matters
     # for user experience — occasional slow inferences are acceptable, but
@@ -467,9 +467,9 @@ def write_export_manifest(result: ExportResult, output_dir: Path) -> None:
     manifest = {
         "adapter": result.adapter,
         "onnx_path": str(result.onnx_path) if result.onnx_path else None,
-        "tflite_path": str(result.tflite_path) if result.tflite_path else None,
+        "litert_path": str(result.litert_path) if result.litert_path else None,
         "onnx_size_mb": round(result.onnx_size_bytes / (1024 * 1024), 1),
-        "tflite_size_mb": round(result.tflite_size_bytes / (1024 * 1024), 1),
+        "litert_size_mb": round(result.litert_size_bytes / (1024 * 1024), 1),
         "benchmark": result.benchmark_results,
         "errors": result.errors,
         "warnings": result.warnings,
@@ -496,7 +496,7 @@ def main():
         # Priya: Validate existing exports without re-running export
         print("\nValidation-only mode:")
         onnx_path = output_dir / "onnx"
-        tflite_path = output_dir / "tflite"
+        litert_path = output_dir / "litert"
 
         if onnx_path.exists():
             result.onnx_path = onnx_path
@@ -505,11 +505,11 @@ def main():
         else:
             print(f"  No ONNX export at {onnx_path}")
 
-        if tflite_path.exists():
-            result.tflite_path = tflite_path
-            validate_model_size(tflite_path, "tflite", result)
+        if litert_path.exists():
+            result.litert_path = litert_path
+            validate_model_size(litert_path, "litert", result)
         else:
-            print(f"  No TFLite export at {tflite_path}")
+            print(f"  No LiteRT export at {litert_path}")
 
         write_export_manifest(result, output_dir)
         return
@@ -530,13 +530,13 @@ def main():
     validate_model_size(onnx_path, "onnx", result)
     validate_onnx(onnx_path)
 
-    # ── Step 3: TFLite conversion ───────────────────────────────────────────
-    if not args.skip_tflite:
-        tflite_path = export_to_tflite(onnx_path, output_dir)
-        result.tflite_path = tflite_path
-        validate_model_size(tflite_path, "tflite", result)
+    # ── Step 3: LiteRT conversion ───────────────────────────────────────────
+    if not args.skip_litert:
+        litert_path = export_to_litert(onnx_path, output_dir)
+        result.litert_path = litert_path
+        validate_model_size(litert_path, "litert", result)
     else:
-        print("Skipping TFLite conversion (--skip-tflite)")
+        print("Skipping LiteRT conversion (--skip-litert)")
 
     # ── Step 4: Benchmark (optional) ────────────────────────────────────────
     if args.benchmark:
@@ -552,8 +552,8 @@ def main():
     print(f"\n=== Export complete: {args.adapter} ===")
     if result.onnx_path:
         print(f"  ONNX:   {result.onnx_path}")
-    if result.tflite_path:
-        print(f"  TFLite: {result.tflite_path}")
+    if result.litert_path:
+        print(f"  LiteRT: {result.litert_path}")
 
     if result.warnings:
         print(f"\n  Warnings ({len(result.warnings)}):")
@@ -565,9 +565,9 @@ def main():
         for e in result.errors:
             print(f"    ✗ {e}")
 
-    if result.tflite_path:
-        tflite_file = result.tflite_path / "gemma4_duchess.tflite"
-        print(f"\nCopy {tflite_file} to app-phone/app/src/main/assets/")
+    if result.litert_path:
+        litert_file = result.litert_path / "gemma4_duchess.tflite"
+        print(f"\nCopy {litert_file} to app-phone/app/src/main/assets/")
 
 
 if __name__ == "__main__":

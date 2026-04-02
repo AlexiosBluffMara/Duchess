@@ -38,7 +38,7 @@ You MUST delegate implementation work to the appropriate specialist agent:
 | CI/CD, deployment, infra automation | Taylor (DevOps Engineer) |
 | Testing, QA, edge cases | Sam (QA Engineer) |
 | ML training, fine-tuning, QLoRA | Priya (ML Engineer) |
-| Edge inference, TFLite, ONNX | Kai (Edge AI Specialist) |
+| Edge inference, LiteRT, ONNX | Kai (Edge AI Specialist) |
 | Computer vision, YOLO, detection | Elena (CV Engineer) |
 | Mesh networking, Tailscale | Noah (Network Engineer) |
 | Research papers, grants | Wei (Research Scientist) |

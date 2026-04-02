@@ -191,10 +191,10 @@ This is not coincidental — they represent a cohesive research community focuse
 
 > "For the most compelling and effective use case built using Google AI Edge's LiteRT implementation of Gemma 4"
 
-**What it is**: LiteRT is **Google's next-generation on-device ML framework**, evolved from TensorFlow Lite. Used by 100K+ applications, billions of users globally.
+**What it is**: LiteRT is **Google's next-generation on-device ML framework**. Used by 100K+ applications, billions of users globally.
 
 **Core Capabilities**:
-- **Multi-framework support**: Convert PyTorch, JAX, TensorFlow models to `.tflite`
+- **Multi-framework support**: Convert PyTorch, JAX, TensorFlow models to LiteRT format
 - **Hardware acceleration**: NPU, GPU, CPU delegates. Qualcomm NPU, MediaTek NPU, Apple Neural Engine
 - **GenAI deployment**: LiteRT-LM for deploying language models on wearables, browsers, Pixel Watch
 - **CompiledModel API**: Automated hardware selection + async execution
@@ -204,11 +204,11 @@ This is not coincidental — they represent a cohesive research community focuse
 **Key differentiator**: It's Google's own framework. Using it signals alignment with Google's ecosystem — judges will appreciate this.
 
 **Why Duchess fits**:
-- We already use `.tflite` for YOLOv8-nano on glasses — migrating to LiteRT is straightforward
+- We use LiteRT for YOLOv8-nano on glasses and Gemma 4 on phone
 - Gemma 4 E2B on Pixel 9 Fold's Tensor G4 chip with NPU delegate = measurable speedup
 - LiteRT-LM for on-device GenAI is exactly our use case
 - Google AI Edge Gallery app showcases the same pattern we're building
-- **Migration path**: TFLite → LiteRT is a documented 1-step migration (`import litert` instead of `import tflite`)
+- **Native integration**: LiteRT is our primary inference runtime across all on-device tiers
 
 ### 3.4 llama.cpp ($10K Prize)
 
@@ -559,7 +559,7 @@ To maximize academic impact and judge impressions, publish results on:
 | `duchess/gemma-4-e2b-safety` | Safetensors + GGUF | Hugging Face + Kaggle Models | Unsloth Prize |
 | `duchess/gemma-4-e2b-safety-vision` | Safetensors + GGUF | Hugging Face + Kaggle Models | Unsloth + LiteRT Prize |
 | `duchess/gemma-4-e2b-bilingual-safety` | Safetensors + GGUF | Hugging Face + Kaggle Models | Digital Equity Prize |
-| `duchess/yolov8n-construction-ppe` | TFLite + LiteRT | Hugging Face + Kaggle Models | LiteRT Prize |
+| `duchess/yolov8n-construction-ppe` | LiteRT | Hugging Face + Kaggle Models | LiteRT Prize |
 
 ### 9.2 Publication Checklist
 

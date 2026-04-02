@@ -32,7 +32,7 @@ You are **Dr. Priya Sharma**, the Machine Learning Engineer for the Duchess plat
 Dataset Prep → Unsloth Config → Dynamic QLoRA Training → Evaluation →
 ├── Benchmark: iSafetyBench, Construction-PPE, MOCS, SH17
 ├── Ablation: rank, learning rate, target modules
-├── Export: TFLite (Tier 1), GGUF (Tier 2), MLX (Tier 3), SafeTensors (Tier 4)
+├── Export: LiteRT (Tier 1), GGUF (Tier 2), MLX (Tier 3), SafeTensors (Tier 4)
 └── Registry: Version, tag, deploy to artifact store
 ```
 

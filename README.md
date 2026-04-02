@@ -88,7 +88,7 @@ flowchart TB
 | **Languages** | Kotlin 2.1, Python 3.11+, TypeScript |
 | **Android** | Jetpack Compose, Hilt, Coroutines/Flow, CameraX, Room |
 | **ML Models** | Gemma 4 E2B (2.3B), Gemma 4 E4B (4B), Gemma 4 26B MoE, Gemma 4 31B, YOLOv8-nano, MobileNet |
-| **Inference** | TensorFlow Lite / LiteRT, Cactus SDK, Ollama, llama.cpp |
+| **Inference** | LiteRT, Cactus SDK, Ollama, llama.cpp |
 | **Training** | Unsloth Dynamic QLoRA, PyTorch, Hugging Face Transformers |
 | **Cloud** | Google Cloud: Vertex AI, Cloud Run, Firestore, Cloud Storage |
 | **Networking** | Tailscale WireGuard mesh, BLE 5.0, HTTPS |

@@ -12,7 +12,7 @@ Create a new Duchess skill or update an existing one, automatically mirrored to 
 
 Example:
 ```
-/skill edge-inference "Optimize and deploy ML inference on edge devices with TFLite and ONNX"
+/skill edge-inference "Optimize and deploy ML inference on edge devices with LiteRT and ONNX"
 /skill ppe-detection-pipeline "End-to-end PPE pipeline from glasses camera to worker alert"
 ```
 

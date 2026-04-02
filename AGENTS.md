@@ -33,11 +33,11 @@ Tier 4: Cloud/AWS (Bedrock, SageMaker) → nightly batch + escalated inference
 
 - **Languages**: Kotlin (Android), Python (ML/backend), Swift (optional iOS), TypeScript (cloud functions)
 - **Android**: AOSP Android 13 (Vuzix), standard Android (companion phone), no Google Play Services on glasses
-- **ML Frameworks**: TensorFlow Lite, ONNX Runtime, MLX, Unsloth, PyTorch
+- **ML Frameworks**: LiteRT, ONNX Runtime, MLX, Unsloth, PyTorch
 - **Models**: YOLOv8-nano, MobileNet, Gemma 4 E2B, Qwen2.5-VL-7B/72B
 - **Cloud**: AWS Bedrock, SageMaker, IoT TwinMaker, Lambda
 - **Networking**: Tailscale, WireGuard, BLE 5.0
-- **Quantization**: Dynamic QLoRA (Unsloth), BitNet b1.58 (1-bit), TFLite FP16/INT8
+- **Quantization**: Dynamic QLoRA (Unsloth), BitNet b1.58 (1-bit), LiteRT FP16/INT8
 
 ## Code Style
 
