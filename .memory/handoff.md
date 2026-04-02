@@ -4,6 +4,41 @@ _Read this first at the start of every session. Update before session ends (befo
 
 ---
 
+## 2026-04-01 — Claude Code (Session 1, continued)
+
+### Additional accomplishments
+
+**`app-glasses/` Vuzix M400 AOSP app — COMPLETE** (17 files):
+- Camera2 API wrapped in `callbackFlow`, 15 FPS, 640x480 YUV→Bitmap
+- PpeDetector: TFLite Interpreter, GPU delegate + NNAPI fallback, YOLOv8-nano
+- BleGattClient: scans for phone GATT, subscribes to alerts, sends escalations (UUIDs match app-phone)
+- HudRenderer: Canvas-based 640x360, bounding boxes, bilingual EN/ES status
+- No GMS deps, no Compose (AOSP View-based), landscape-only, PARTIAL_WAKE_LOCK
+
+**`ml/` Python training pipeline — COMPLETE** (10 files):
+- pyproject.toml: Poetry, unsloth, torch, transformers, ultralytics, wandb
+- train_gemma3n.py: Unsloth FastLanguageModel QLoRA (r=16, alpha=32, q/k/v/o_proj), SFTTrainer
+- prepare_dataset.py: bilingual construction safety instruction pairs
+- export_model.py: merged adapter → ONNX (Optimum) → TFLite FP16 (ai-edge-torch)
+- Adapter configs: safety + spanish_jargon
+- eval/benchmark.py: iSafetyBench-style accuracy/latency table
+
+**`cloud/` AWS CDK infrastructure — COMPLETE** (5 files):
+- S3 bucket: KMS encrypted, 90-day lifecycle
+- DynamoDB: alerts table with zone-severity GSI
+- SQS: escalation queue + DLQ (3 retries)
+- Lambda: Bedrock Claude 3.5 Sonnet analysis, bilingual output, no PII in DynamoDB
+- SageMaker endpoint placeholder (commented out)
+
+### All 4 priorities complete. Queue is empty.
+
+### What to pick up next
+- Copilot review of all scaffolds for Kotlin idiomatics and Python style
+- Wire up real `local.properties` with GitHub PAT and test Gradle sync
+- iOS supervisor dashboard (Phase 2 — not in current queue)
+
+---
+
 ## 2026-04-01 — Claude Code (Session 1)
 
 ### What was accomplished this session
