@@ -4,6 +4,32 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 21:20 UTC — Commit a519f26
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: ci(glasses): bump compileSdk 33→35 and add missing specs for alerts+ppe
+
+### Modules touched
+- **app-glasses/**: 1 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1746 | Active (1746 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+app-glasses/app/build.gradle.kts
+specs/alerts.spec.md
+specs/ppe.spec.md
+```
+
+---
+
 ## 2026-04-02 21:12 UTC — Commit 4c3e99e
 
 **Branch**: `main`  
@@ -79,35 +105,6 @@ app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
 ### Changed files
 ```
 app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
-scripts/mirror-skills.sh
-```
-
----
-
-## 2026-04-02 20:48 UTC — Commit 5d0177d
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: fix(phone): resolve all Kotlin compilation and CI mirror errors
-
-### Modules touched
-- **app-phone/**: 3 file(s) changed
-- **infra**: 2 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.github/workflows/ci.yml
-app-phone/app/build.gradle.kts
-app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaInferenceEngine.kt
-app-phone/gradle/libs.versions.toml
 scripts/mirror-skills.sh
 ```
 

@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.duchess.glasses"
-    compileSdk = 33
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.duchess.glasses"
