@@ -1,0 +1,58 @@
+/* Duchess — Custom theme overrides for just-the-docs */
+
+:root {
+  --duchess-orange: #E65100;
+  --duchess-dark: #1a1a2e;
+  --duchess-accent: #FF8A65;
+}
+
+/* Construction-orange accents */
+.btn-primary {
+  background-color: var(--duchess-orange) !important;
+  border-color: var(--duchess-orange) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--duchess-accent) !important;
+}
+
+/* Navigation active state */
+.nav-list .nav-list-item .nav-list-link.active {
+  color: var(--duchess-orange);
+}
+
+/* Badge styling for status indicators */
+.label-green {
+  background-color: #2e7d32;
+}
+.label-yellow {
+  background-color: #f9a825;
+  color: #1a1a1a;
+}
+.label-red {
+  background-color: #c62828;
+}
+.label-blue {
+  background-color: #1565c0;
+}
+
+/* Mermaid diagram responsive sizing */
+.mermaid {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Sprint board kanban styles */
+table th:first-child {
+  min-width: 120px;
+}
+
+/* Hero section on landing page */
+.fs-9 {
+  color: var(--duchess-orange);
+}

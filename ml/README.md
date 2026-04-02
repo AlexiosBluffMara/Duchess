@@ -6,7 +6,7 @@ Fine-tuning pipeline for the Duchess Construction Site Intelligence Platform.
 
 | Model | Purpose | Method | Target Device |
 |-------|---------|--------|---------------|
-| Gemma 3n E2B (1.91B) | Safety NLU / triage | QLoRA (r=16, alpha=32) | Pixel 9 Fold (Tier 2) |
+| Gemma 4 E2B (2.3B effective) | Safety NLU / triage | QLoRA (r=16, alpha=32) | Pixel 9 Fold (Tier 2) |
 | YOLOv8-nano | PPE object detection | Transfer learning | Vuzix M400 (Tier 1) |
 
 ## Hardware Requirements
@@ -43,17 +43,17 @@ poetry run python scripts/prepare_dataset.py
 # Output: data/safety_dataset.jsonl
 ```
 
-### 2. Train Gemma 3n Adapters
+### 2. Train Gemma 4 Adapters
 
 ```bash
 # Safety domain adapter (PPE, OSHA, hazard classification)
-poetry run python scripts/train_gemma3n.py --adapter safety
+poetry run python scripts/train_gemma4.py --adapter safety
 
 # Construction Spanish jargon adapter
-poetry run python scripts/train_gemma3n.py --adapter spanish_jargon
+poetry run python scripts/train_gemma4.py --adapter spanish_jargon
 
 # Quick test run
-poetry run python scripts/train_gemma3n.py --adapter safety --max-steps 10 --no-wandb
+poetry run python scripts/train_gemma4.py --adapter safety --max-steps 10 --no-wandb
 ```
 
 ### 3. Export for Android
@@ -62,7 +62,7 @@ poetry run python scripts/train_gemma3n.py --adapter safety --max-steps 10 --no-
 # Export merged model → ONNX → TFLite FP16
 poetry run python scripts/export_model.py --adapter safety
 
-# Output: exports/safety/tflite/gemma3n_duchess.tflite
+# Output: exports/safety/tflite/gemma4_duchess.tflite
 # Copy to: app-phone/app/src/main/assets/
 ```
 
@@ -84,7 +84,7 @@ poetry run python eval/benchmark.py --adapter safety
 ```
 ml/
 ├── scripts/
-│   ├── train_gemma3n.py      # Unsloth QLoRA fine-tuning
+│   ├── train_gemma4.py      # Unsloth QLoRA fine-tuning
 │   ├── prepare_dataset.py    # Dataset preparation
 │   └── export_model.py       # ONNX + TFLite export
 ├── adapters/

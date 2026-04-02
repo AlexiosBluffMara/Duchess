@@ -169,7 +169,7 @@ class BleGattClient(
      * Sends an escalation payload to the companion phone.
      *
      * Alex: This is how the glasses tell the phone "I detected a PPE violation,
-     * please run Gemma 3n for confirmation." The payload is a JSON string with
+     * please run Gemma 4 for confirmation." The payload is a JSON string with
      * the detection label, confidence, and zone. We keep it small because BLE
      * MTU is limited (typically 247 bytes after negotiation).
      *

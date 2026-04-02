@@ -9,7 +9,7 @@ import org.junit.Test
  * Unit tests for the SafetyAlert data class.
  *
  * Alex: These tests are deceptively important. The SafetyAlert is the core data
- * structure that flows through the ENTIRE alert pipeline — from Gemma 3n inference
+ * structure that flows through the ENTIRE alert pipeline — from Gemma 4 inference
  * to mesh broadcast to cloud escalation. If someone adds a field with PII
  * (worker name, face ID, GPS coordinates), these tests catch it.
  *

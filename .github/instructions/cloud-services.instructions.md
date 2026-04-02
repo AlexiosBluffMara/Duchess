@@ -8,7 +8,7 @@ applyTo: ["cloud/**", "infra/**", "**/cdk/**"]
 ## Two Cloud Pipelines
 
 ### 1. Immediate Escalation (Real-Time Path)
-Triggered when Gemma 3n confirms a PPE violation:
+Triggered when Gemma 4 confirms a PPE violation:
 ```
 Phone → API Gateway (authenticated) → Lambda → Bedrock → 
 Confidence > 0.85? → SQS Human Review Queue → Dashboard →

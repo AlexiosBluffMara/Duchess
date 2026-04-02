@@ -14,7 +14,7 @@ _Use this to avoid relitigating decided questions. Add entries when a significan
 
 ## ADR-002: Video Never Leaves Jobsite Except Via PPE Escalation
 **Date**: 2026-03-xx  
-**Decision**: Raw video is on-device only. Cloud-bound video requires: (a) Gemma 3n triggers PPE escalation, OR (b) nightly batch upload after shift ends.  
+**Decision**: Raw video is on-device only. Cloud-bound video requires: (a) Gemma 4 triggers PPE escalation, OR (b) nightly batch upload after shift ends.  
 **Rationale**: HIPAA compliance, union contracts, worker privacy, data sovereignty.  
 **Consequences**: Any cloud upload path must go through the escalation pipeline with human-in-loop.
 
@@ -47,7 +47,7 @@ _Use this to avoid relitigating decided questions. Add entries when a significan
 **Date**: 2026-03-xx  
 **Decision**: System must function fully with only Tiers 1, 2, and 4. Tier 3 (Qwen2.5-VL on M4 Max) is an enhancement.  
 **Rationale**: Not all jobsites will have a local Mac. Graceful degradation is required.  
-**Consequences**: Tier 2 (Gemma 3n) must be capable of triage decisions independently.
+**Consequences**: Tier 2 (Gemma 4) must be capable of triage decisions independently.
 
 ---
 
@@ -67,8 +67,24 @@ _Use this to avoid relitigating decided questions. Add entries when a significan
 
 ---
 
-## ADR-009: Gemma 3n Runs Entirely On-Device (Tier 2)
-**Date**: 2026-04-01  
-**Decision**: Gemma 3n E2B (1.91B params) runs on-device on the companion phone. No cloud API calls for primary NLU/triage.  
-**Rationale**: Latency (<2s requirement), privacy (video frames can't leave mesh), offline operation requirement.  
-**Consequences**: Model must be bundled/downloaded to device at app setup. ML framework: MediaPipe LLM Inference API or llama.cpp Android.
+## ADR-009: Gemma 4 Runs Entirely On-Device (Tier 2)
+**Date**: 2026-04-01 (updated 2026-04-02)  
+**Decision**: Gemma 4 E2B (2.3B effective params, 5.1B with embeddings) runs on-device on the companion phone. No cloud API calls for primary NLU/triage.  
+**Rationale**: Latency (<2s requirement), privacy (video frames can't leave mesh), offline operation requirement. Gemma 4 E2B adds native vision+audio, function calling, and 128K context over Gemma 3n.  
+**Consequences**: Model must be bundled/downloaded to device at app setup. ML framework: MediaPipe LLM Inference API, LiteRT, or llama.cpp Android. Multimodal vision input enables direct PPE detection from camera frames.
+
+---
+
+## ADR-010: Hackathon Priorities Are the Golden Standard
+**Date**: 2026-04-02  
+**Decision**: All project priorities are now governed by HACKATHON_STRATEGY.md for the Kaggle "Gemma 4 Good Hackathon" ($200K prizes, deadline May 18, 2026).  
+**Rationale**: The hackathon is the single best opportunity to validate and showcase Duchess. $80K+ addressable across Main, Impact, and Special Technology tracks.  
+**Consequences**: Every sprint, every feature, every PR must be evaluated against hackathon value. Non-hackathon work is deferred. Video demo + writeup + live demo are mandatory deliverables.
+
+---
+
+## ADR-011: Gemma 4 26B MoE Replaces Qwen2.5-VL for Tier 3
+**Date**: 2026-04-02  
+**Decision**: Gemma 4 26B MoE (3.8B active params, 82.6% MMLU Pro) replaces Qwen2.5-VL-7B/72B as the Tier 3 local server model.  
+**Rationale**: Same model family as Tier 2 (Gemma 4) — unified fine-tuning pipeline. 3.8B active of 25.2B total runs fast on M4 Max. Supports 256K context for multi-worker video fusion. Required for Ollama Prize track.  
+**Consequences**: Tier 3 uses Ollama/MLX for inference. Unsloth fine-tuning targets E2B first, 26B MoE as stretch goal.

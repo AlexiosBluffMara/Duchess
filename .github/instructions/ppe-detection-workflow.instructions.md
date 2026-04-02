@@ -8,7 +8,7 @@ applyTo: ["app-glasses/**", "app-phone/**", "ml/**"]
 ## Critical Path: Detection → Alert
 
 ```
-Glasses (YOLOv8-nano) → [BLE] → Phone (Gemma 3n) → [HTTPS] → Cloud → Human → [Mesh] → Worker
+Glasses (YOLOv8-nano) → [BLE] → Phone (Gemma 4) → [HTTPS] → Cloud → Human → [Mesh] → Worker
 ```
 
 ### Step 1: Continuous Detection (Tier 1)
@@ -22,7 +22,7 @@ Glasses (YOLOv8-nano) → [BLE] → Phone (Gemma 3n) → [HTTPS] → Cloud → H
 
 ### Step 2: Tier 2 Confirmation (Phone)
 - Glasses sends high-resolution frame + detection metadata via BLE
-- Gemma 3n analyzes with context: "Is this a real PPE violation?"
+- Gemma 4 analyzes with context: "Is this a real PPE violation?"
 - If confirmed: IMMEDIATELY send video clip to cloud (do NOT wait for nightly batch)
 - If denied: Log for nightly batch review, continue monitoring
 

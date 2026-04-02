@@ -37,7 +37,7 @@ Daily safety report → SNS to supervisors
 
 ### Immediate Escalation (PPE Violation Path)
 ```
-Gemma 3n confirms PPE violation on phone → HTTPS POST to API Gateway →
+Gemma 4 confirms PPE violation on phone → HTTPS POST to API Gateway →
 Lambda → Bedrock (or SageMaker endpoint) → Confidence > threshold? →
 Yes: Push to human review queue (SQS + web dashboard) →
 Human confirms: SNS → targeted push notification via mesh

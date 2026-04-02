@@ -5,7 +5,7 @@ package com.duchess.companion.model
  *
  * Alex: This data class is the SINGLE source of truth for alert structure
  * across the entire platform. It flows through:
- *   - Gemma 3n inference output → SafetyAlert
+ *   - Gemma 4 inference output → SafetyAlert
  *   - Mesh broadcast payload → SafetyAlert serialized to JSON
  *   - BLE GATT notification → SafetyAlert serialized to bytes
  *   - Cloud escalation API → SafetyAlert in request body

@@ -239,7 +239,7 @@ class MainActivity : Activity() {
                     if (PpeDetector.isViolation(detection.label) &&
                         detection.confidence >= PpeDetector.CONFIDENCE_HIGH
                     ) {
-                        // Alex: High-confidence violation. Send to phone for Gemma 3n confirmation.
+                        // Alex: High-confidence violation. Send to phone for Gemma 4 confirmation.
                         bleClient.sendEscalation(
                             label = detection.label,
                             confidence = detection.confidence,

@@ -16,7 +16,7 @@ Real-time PPE (Personal Protective Equipment) detection running on the Vuzix M40
 | Tier | Component | Rationale |
 |------|-----------|-----------|
 | Tier 1 (Glasses) | CameraSession, PpeDetector, HudRenderer | Sub-50ms latency requirement. Video never leaves device (privacy). Battery-constrained — must run efficiently on Snapdragon XR1. |
-| Tier 2 (Phone) | BleGattServer receives escalations | Phone handles Gemma 3n triage for violations detected on-glasses. |
+| Tier 2 (Phone) | BleGattServer receives escalations | Phone handles Gemma 4 triage for violations detected on-glasses. |
 
 ## Acceptance Criteria
 

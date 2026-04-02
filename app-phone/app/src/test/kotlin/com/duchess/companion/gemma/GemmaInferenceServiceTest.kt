@@ -239,7 +239,7 @@ class GemmaInferenceServiceTest {
     // --- getModelPath test ---
 
     @Test
-    fun `getModelPath returns path ending in gemma3n-e2b_bin`() {
+    fun `getModelPath returns path ending in gemma4-e2b_bin`() {
         // Alex: We can't run the full getModelPath (needs filesDir) in unit tests,
         // but we verify the expected filename constant via a mock that delegates
         // to the real implementation with a stubbed filesDir.
@@ -247,8 +247,8 @@ class GemmaInferenceServiceTest {
         val fakePath = service.getModelPath()
 
         assertTrue(
-            "Model path must end with gemma3n-e2b.bin",
-            fakePath.endsWith("gemma3n-e2b.bin")
+            "Model path must end with gemma4-e2b.bin",
+            fakePath.endsWith("gemma4-e2b.bin")
         )
     }
 
@@ -286,11 +286,11 @@ class GemmaInferenceServiceTest {
         val tempDir = java.io.File(System.getProperty("java.io.tmpdir"), "duchess_test")
         tempDir.mkdirs()
         // Pre-create the model file so getModelPath doesn't try to copy from assets
-        java.io.File(tempDir, "gemma3n-e2b.bin").createNewFile()
+        java.io.File(tempDir, "gemma4-e2b.bin").createNewFile()
 
         return io.mockk.mockk<GemmaInferenceService>(relaxed = true) {
             io.mockk.every { buildSafetyPrompt(any()) } answers { callOriginal() }
-            io.mockk.every { getModelPath() } returns java.io.File(tempDir, "gemma3n-e2b.bin").absolutePath
+            io.mockk.every { getModelPath() } returns java.io.File(tempDir, "gemma4-e2b.bin").absolutePath
             io.mockk.every { parseGemmaOutput(any()) } answers { callOriginal() }
         }
     }

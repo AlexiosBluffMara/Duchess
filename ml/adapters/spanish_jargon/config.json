@@ -1,7 +1,7 @@
 {
   "adapter_name": "spanish_jargon",
   "description": "LoRA adapter for construction-register Spanish — jobsite terminology, code-switching patterns, OSHA bilingual compliance",
-  "base_model": "google/gemma-3n-e2b-it",
+  "base_model": "google/gemma-4-e2b-it",
   "dataset": "duchess/construction-spanish-jargon",
   "lora_config": {
     "r": 16,

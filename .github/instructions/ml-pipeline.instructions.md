@@ -7,7 +7,7 @@ applyTo: "ml/**"
 
 ## Training Stack
 
-- **Framework**: Unsloth (only framework supporting Gemma 3n quantization)
+- **Framework**: Unsloth (only framework supporting Gemma 4 quantization)
 - **Method**: Dynamic QLoRA (0% accuracy loss, 2-4x memory reduction over LoRA)
 - **GPU**: RTX 5090 (32GB VRAM)
 - **Language**: Python 3.11, PyTorch, managed via Poetry

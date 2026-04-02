@@ -30,7 +30,7 @@ import javax.inject.Singleton
  *      Workers see the alert on their HUD instantly via BLE push.
  *
  *   2. STATUS_CHARACTERISTIC — read + write. Glasses write frame metadata
- *      and escalation requests here. Phone reads it to decide if Gemma 3n
+ *      and escalation requests here. Phone reads it to decide if Gemma 4
  *      inference is needed.
  *
  * GATT server lifecycle on Android is finicky:

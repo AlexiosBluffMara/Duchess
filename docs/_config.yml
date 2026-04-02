@@ -1,0 +1,86 @@
+title: Duchess
+description: AI-Powered Construction Safety Platform — Gemma 4 Good Hackathon Entry
+url: "https://alexiosbluffmara.github.io"
+baseurl: "/Duchess"
+
+remote_theme: just-the-docs/just-the-docs@v0.10.1
+
+permalink: pretty
+
+# Site metadata
+aux_links:
+  "GitHub Repo":
+    - "https://github.com/AlexiosBluffMara/Duchess"
+  "Kaggle Competition":
+    - "https://www.kaggle.com/competitions/gemma-4-good-hackathon"
+
+aux_links_new_tab: true
+
+# Navigation
+nav_sort: case_insensitive
+nav_enabled: true
+
+# Footer
+footer_content: "Duchess &copy; 2026 Alexios Bluff Mara LLC &mdash; Bhattacharya, Baksi, Lahiri &mdash; Illinois State University"
+
+# Color scheme
+color_scheme: dark
+
+# Search
+search_enabled: true
+search:
+  heading_level: 3
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 10
+
+# Mermaid diagrams
+mermaid:
+  version: "11.4.1"
+
+# Collections for organizing pages
+collections:
+  hackathon:
+    permalink: "/:collection/:path/"
+    output: true
+  technical:
+    permalink: "/:collection/:path/"
+    output: true
+  project:
+    permalink: "/:collection/:path/"
+    output: true
+
+# Default front matter
+defaults:
+  - scope:
+      path: "hackathon"
+    values:
+      layout: default
+      parent: Hackathon
+  - scope:
+      path: "technical"
+    values:
+      layout: default
+      parent: Technical
+  - scope:
+      path: "project"
+    values:
+      layout: default
+      parent: Project Management
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-github-metadata
+  - jekyll-include-cache
+
+# Exclude from build
+exclude:
+  - HACKATHON_MASTER_STRATEGY.md
+  - GEMMA4_TECHNICAL_REVIEW.md
+  - gemma4_business_page.html
+  - "*.py"
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/

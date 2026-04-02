@@ -1,7 +1,7 @@
 {
   "adapter_name": "safety",
   "description": "LoRA adapter for construction safety domain — PPE detection, OSHA compliance, hazard classification",
-  "base_model": "google/gemma-3n-e2b-it",
+  "base_model": "google/gemma-4-e2b-it",
   "dataset": "duchess/construction-safety-instructions",
   "lora_config": {
     "r": 16,

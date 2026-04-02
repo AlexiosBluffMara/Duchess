@@ -1,5 +1,5 @@
 """
-Export fine-tuned Gemma 3n adapter to ONNX and TFLite FP16 for Android deployment.
+Export fine-tuned Gemma 4 adapter to ONNX and TFLite FP16 for Android deployment.
 
 # Priya: This is where the rubber meets the road — we take our carefully-trained
 # LoRA adapter weights and produce deployment-ready artifacts for the phone (Tier 2).
@@ -10,7 +10,7 @@ Export fine-tuned Gemma 3n adapter to ONNX and TFLite FP16 for Android deploymen
 #   3. Convert ONNX to TFLite FP16 via ai-edge-torch (for Android)
 #   4. Validate: model size check, inference speed benchmark, output sanity
 #
-# Target: app-phone/app/src/main/assets/gemma3n_duchess.tflite
+# Target: app-phone/app/src/main/assets/gemma4_duchess.tflite
 # Expected sizes:
 #   - ONNX (FP16): ~3.5-4.0 GB
 #   - TFLite (FP16): ~3.2-3.8 GB
@@ -40,7 +40,7 @@ import torch
 # - External storage of up to 8GB is OK for the model file itself
 # - Load time must be <10s for acceptable UX
 
-MODEL_NAME = "google/gemma-3n-e2b-it"
+MODEL_NAME = "google/gemma-4-e2b-it"
 ADAPTERS_DIR = Path("adapters")
 
 # Priya: Size limits in bytes. If the exported model exceeds MAX, something
@@ -79,7 +79,7 @@ class ExportResult:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Export Gemma 3n adapter for Android")
+    parser = argparse.ArgumentParser(description="Export Gemma 4 adapter for Android")
     parser.add_argument(
         "--adapter",
         type=str,
@@ -198,7 +198,7 @@ def merge_adapter(adapter_name: str) -> tuple:
     if not adapter_path.exists():
         raise FileNotFoundError(
             f"Adapter weights not found at {adapter_path}. "
-            f"Run train_gemma3n.py first: python scripts/train_gemma3n.py --adapter {adapter_name}"
+            f"Run train_gemma4.py first: python scripts/train_gemma4.py --adapter {adapter_name}"
         )
 
     print(f"Loading base model: {MODEL_NAME}")
@@ -303,7 +303,7 @@ def export_to_tflite(onnx_path: Path, output_dir: Path) -> Path:
     """Convert ONNX model to TFLite FP16 for Android deployment.
 
     # Priya: TFLite is our target for Tier 2 (phone). FP16 quantization is the
-    # best tradeoff for Gemma 3n on the Tensor G4 — INT8 loses too much accuracy
+    # best tradeoff for Gemma 4 on the Tensor G4 — INT8 loses too much accuracy
     # on the Spanish jargon adapter (measured 2.3% degradation on our bilingual
     # eval set), and FP32 is 2x too large for the phone's memory budget.
     #
@@ -312,7 +312,7 @@ def export_to_tflite(onnx_path: Path, output_dir: Path) -> Path:
     """
     tflite_path = output_dir / "tflite"
     tflite_path.mkdir(parents=True, exist_ok=True)
-    output_file = tflite_path / "gemma3n_duchess.tflite"
+    output_file = tflite_path / "gemma4_duchess.tflite"
 
     print(f"Converting ONNX to TFLite FP16: {output_file}")
 
@@ -566,7 +566,7 @@ def main():
             print(f"    ✗ {e}")
 
     if result.tflite_path:
-        tflite_file = result.tflite_path / "gemma3n_duchess.tflite"
+        tflite_file = result.tflite_path / "gemma4_duchess.tflite"
         print(f"\nCopy {tflite_file} to app-phone/app/src/main/assets/")
 
 

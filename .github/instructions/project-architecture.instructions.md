@@ -19,7 +19,7 @@ Every feature, model, and data flow MUST respect these tier boundaries:
 
 ### Tier 2: Companion Smartphone
 - **Latency**: <2s
-- **Models**: Gemma 3n E2B (1.91B params)
+- **Models**: Gemma 4 E2B (2.3B effective params)
 - **Capability**: NLU, bilingual alerts, PPE confirmation, triage decisions
 - **Constraint**: Battery life matters, but more headroom than glasses
 - **Communication**: BLE to glasses, Tailscale mesh to other phones/servers, HTTPS to cloud
@@ -45,7 +45,7 @@ Every feature, model, and data flow MUST respect these tier boundaries:
 ## Data Flow Rules
 
 1. **Video never leaves the jobsite** unless:
-   - Gemma 3n (Tier 2) triggers an immediate PPE escalation
+   - Gemma 4 (Tier 2) triggers an immediate PPE escalation
    - Nightly batch upload runs after shift ends
 2. **Escalation is always upward** (Tier 1→2→4, skip Tier 3 for PPE escalation)
 3. **Tier 3 is optional** — the system must fully function with only Tiers 1, 2, and 4

@@ -1,5 +1,5 @@
 """
-Construction safety dataset preparation for Gemma 3n fine-tuning.
+Construction safety dataset preparation for Gemma 4 fine-tuning.
 
 # Priya: This script is the data pipeline's front door. Garbage in, garbage out.
 # I've seen too many "fine-tuned" models that were just overfitting to noisy data.
@@ -11,7 +11,7 @@ Construction safety dataset preparation for Gemma 3n fine-tuning.
 #   5. Stratified splitting (so val set represents all violation types)
 #
 # Loads from HuggingFace, local JSONL, or generates placeholder data.
-# Output: JSONL formatted for instruction tuning with Gemma 3n.
+# Output: JSONL formatted for instruction tuning with Gemma 4.
 #
 # Usage:
 #     python scripts/prepare_dataset.py

@@ -118,7 +118,7 @@ class TestTfliteOptions:
         # ai-edge-torch isn't installed. It should clearly indicate
         # that it's a placeholder, not a real model.
         """
-        stub_file = tmp_path / "gemma3n_duchess.tflite"
+        stub_file = tmp_path / "gemma4_duchess.tflite"
         _write_tflite_stub(stub_file)
 
         assert stub_file.exists()

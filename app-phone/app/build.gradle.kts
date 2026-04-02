@@ -84,11 +84,11 @@ dependencies {
     implementation(libs.work.runtime)
 
 
-    // TFLite (for Gemma 3n inference)
-    implementation(libs.tflite)
-    implementation(libs.tflite.gpu)
+    // LiteRT (for Gemma 4 inference)
+    implementation(libs.litert)
+    implementation(libs.litert.gpu)
 
-    // MediaPipe LLM Inference (Gemma 3n on-device)
+    // MediaPipe LLM Inference (Gemma 4 on-device)
     implementation(libs.mediapipe.llm.inference)
 
     // Testing

@@ -164,7 +164,7 @@ def load_model(adapter_name: str | None, device: str):
     from peft import PeftModel
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    model_name = "google/gemma-3n-e2b-it"
+    model_name = "google/gemma-4-e2b-it"
     adapter_path = Path("adapters") / adapter_name / "weights" if adapter_name else None
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -561,7 +561,7 @@ def print_stub_results():
     print(f"{'Micro F1':<25} {'N/A':>10}")
     print("-" * 37)
     print(f"{'Note':<25} {'Model not loaded':>10}")
-    print("\nTrain a model first: python scripts/train_gemma3n.py")
+    print("\nTrain a model first: python scripts/train_gemma4.py")
 
 
 def main():

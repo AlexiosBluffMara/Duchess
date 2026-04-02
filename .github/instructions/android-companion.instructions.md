@@ -1,5 +1,5 @@
 ---
-description: "Use when developing the companion smartphone Android app. Covers Gemma 3n inference, BLE server for glasses, Tailscale mesh, Jetpack Compose UI, cloud API client, background processing, notifications."
+description: "Use when developing the companion smartphone Android app. Covers Gemma 4 inference, BLE server for glasses, Tailscale mesh, Jetpack Compose UI, cloud API client, background processing, notifications."
 applyTo: "app-phone/**"
 ---
 
@@ -8,7 +8,7 @@ applyTo: "app-phone/**"
 ## Role of the Phone
 
 The companion phone is the **central hub** of each worker's Duchess experience:
-- Runs Gemma 3n E2B for Tier 2 inference
+- Runs Gemma 4 E2B for Tier 2 inference
 - Acts as BLE GATT server for connected glasses
 - Participates in Tailscale mesh network
 - Handles cloud API communication (escalation + nightly batch upload)
@@ -24,7 +24,7 @@ The companion phone is the **central hub** of each worker's Duchess experience:
 - Foreground service for BLE server + mesh + location broadcasting
 - Notification channels: CRITICAL (PPE alerts), WARNING (hazards), INFO (status)
 - Offline-first: all data saved locally, synced when connectivity available
-- Gemma 3n model loaded lazily (only when Tier 2 inference needed)
+- Gemma 4 model loaded lazily (only when Tier 2 inference needed)
 - All strings bilingual (EN + ES)
 
 ## Key Services
@@ -41,7 +41,7 @@ The companion phone is the **central hub** of each worker's Duchess experience:
 - Receive mesh alerts from other devices
 - Route escalations to cloud via exit node
 
-### Gemma 3n Inference
+### Gemma 4 Inference
 - Load model on first escalation request (not at startup — saves memory)
 - Run with low temperature (0.1) for deterministic safety responses
 - Output structured JSON with EN and ES descriptions

@@ -26,7 +26,7 @@ import java.io.File
 import javax.inject.Inject
 
 /**
- * States for the Gemma 3n inference engine lifecycle.
+ * States for the Gemma 4 inference engine lifecycle.
  *
  * Alex: Sealed interface again. Every consumer of GemmaState must handle
  * all five variants. The Error state carries a message string for logging
@@ -42,7 +42,7 @@ sealed interface GemmaState {
 }
 
 /**
- * Structured result from Gemma 3n safety analysis.
+ * Structured result from Gemma 4 safety analysis.
  *
  * Alex: This is the parsed output of the model's JSON response.
  * We enforce structure here instead of passing raw JSON strings around,
@@ -62,7 +62,7 @@ data class GemmaAnalysisResult(
 )
 
 /**
- * Foreground service running the Gemma 3n E2B (1.91B param) on-device model.
+ * Foreground service running the Gemma 4 E2B (2.3B effective params) on-device model.
  *
  * Alex: Why a foreground Service and not WorkManager?
  *   1. WorkManager is for deferrable work. Safety inference is real-time.
@@ -93,7 +93,7 @@ class GemmaInferenceService : Service() {
 
         // Alex: 5 minutes = 300,000ms. Per the companion phone instructions:
         // "Unload model after 5 minutes of inactivity to free memory."
-        // The Gemma 3n E2B model takes ~1.2GB in RAM. On a Pixel 9 Fold with 12GB,
+        // The Gemma 4 E2B model takes ~1.2GB in RAM. On a Pixel 9 Fold with 12GB,
         // that's 10% of total RAM sitting idle. Unloading is the right call.
         const val INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000L  // 5 minutes
     }
@@ -143,10 +143,10 @@ class GemmaInferenceService : Service() {
     }
 
     /**
-     * Load the Gemma 3n E2B model into memory.
+     * Load the Gemma 4 E2B model into memory.
      *
      * Alex: Called lazily on first inference request, NOT at service startup.
-     * Loading a 1.91B param model takes 3-8 seconds on a Pixel 9 Fold.
+     * Loading a 2.3B effective param model takes 3-8 seconds on a Pixel 9 Fold.
      * We don't want that delay at app launch — workers need the camera stream
      * immediately. The model loads only when the first PPE escalation arrives.
      *
@@ -209,7 +209,7 @@ class GemmaInferenceService : Service() {
     }
 
     /**
-     * Analyze a video frame for safety violations using Gemma 3n.
+     * Analyze a video frame for safety violations using Gemma 4.
      *
      * Alex: This is the main entry point for Tier 2 inference. The flow:
      *   1. Lock the inference mutex (prevents concurrent model access)
@@ -260,10 +260,11 @@ class GemmaInferenceService : Service() {
     }
 
     /**
-     * Parse the raw JSON output from Gemma 3n into a typed GemmaAnalysisResult.
+     * Parse the raw JSON output from Gemma 4 into a typed GemmaAnalysisResult.
      *
-     * Alex: Gemma outputs JSON (we prompt it to do so), but LLMs are notoriously
-     * unreliable with JSON formatting. This parser is defensive:
+     * Alex: Gemma 4 has native function calling, so we can migrate to
+     * structured tool-call output. For now, we still parse JSON from prompting.
+     * This parser is defensive:
      *   - Missing fields get safe defaults (no violation, zero severity)
      *   - Malformed JSON returns a "no violation" result instead of crashing
      *   - We use org.json.JSONObject (built into Android) because it's zero-dependency
@@ -304,10 +305,10 @@ class GemmaInferenceService : Service() {
      * This supports both bundled and OTA-updated model binaries.
      */
     internal fun getModelPath(): String {
-        val modelFile = File(filesDir, "gemma3n-e2b.bin")
+        val modelFile = File(filesDir, "gemma4-e2b.bin")
         if (!modelFile.exists()) {
             // First run — copy from bundled assets to internal storage
-            assets.open("gemma3n-e2b.bin").use { input ->
+            assets.open("gemma4-e2b.bin").use { input ->
                 modelFile.outputStream().use { output ->
                     input.copyTo(output)
                 }
@@ -317,12 +318,14 @@ class GemmaInferenceService : Service() {
     }
 
     /**
-     * Build a safety-classification prompt for Gemma 3n.
+     * Build a safety-classification prompt for Gemma 4.
      *
-     * Alex: Gemma 3n E2B is a text model so we don't embed bitmap bytes.
-     * Instead, the prompt describes the frame metadata and what Tier 1 (YOLO)
-     * already detected, asking Gemma to classify and provide bilingual output.
-     * The strict JSON output format matches GemmaAnalysisResult fields.
+     * Alex: Gemma 4 E2B supports vision + audio natively, so we can pass
+     * frame data directly. For now we still describe frame metadata as text,
+     * but multimodal input is on the roadmap (TODO: pass bitmap via vision API).
+     * Gemma 4 also has native function calling, so we can migrate from
+     * JSON-in-prompt to structured tool calls. 128K context window gives us
+     * plenty of room for multi-frame analysis.
      */
     internal fun buildSafetyPrompt(frame: VideoFrame): String {
         val width = frame.bitmap?.width ?: 504

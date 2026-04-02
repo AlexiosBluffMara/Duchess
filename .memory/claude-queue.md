@@ -37,7 +37,7 @@ This is Tier 2 — the phone is the brain. Glasses are sensors/speakers only.
 **BLE server (for glasses ↔ phone):**
 - [ ] `.../ble/BleGattServer.kt` — GATT server skeleton, starts/stops with lifecycle, placeholder services/characteristics for alert delivery to glasses
 
-**Gemma 3n inference (Tier 2 NLU):**
+**Gemma 4 inference (Tier 2 NLU):**
 - [ ] `.../gemma/GemmaInferenceService.kt` — foreground Service skeleton, `StateFlow<GemmaState>` (IDLE, LOADING, READY, RUNNING, ERROR), placeholder `suspend fun analyze(frame: VideoFrame): String` that returns stub result
 
 **Mesh connectivity (Tailscale):**
@@ -108,12 +108,12 @@ Scaffold the `app-glasses/` AOSP Android app for the Vuzix M400 (AOSP Android 13
 **Assigned**: Claude Code
 
 ### Goal
-Scaffold the ML training environment for Gemma 3n fine-tuning and YOLOv8-nano PPE adaptation.
+Scaffold the ML training environment for Gemma 4 fine-tuning and YOLOv8-nano PPE adaptation.
 
 ### Deliverable Checklist
 - [ ] `ml/pyproject.toml` — Poetry project, Python 3.11+, deps: unsloth, torch, transformers, datasets, tqdm, peft, wandb, ultralytics
 - [ ] `ml/README.md` — setup instructions, hardware requirements (RTX 5090)
-- [ ] `ml/scripts/train_gemma3n.py` — Unsloth `FastLanguageModel.from_pretrained("google/gemma-3n-e2b-it")`, QLoRA config (r=16, alpha=32, target: q_proj, k_proj, v_proj, o_proj), SFTTrainer setup with placeholder dataset
+- [ ] `ml/scripts/train_gemma4.py` — Unsloth `FastLanguageModel.from_pretrained("google/gemma-4-e2b-it")`, QLoRA config (r=16, alpha=32, target: q_proj, k_proj, v_proj, o_proj), SFTTrainer setup with placeholder dataset
 - [ ] `ml/scripts/prepare_dataset.py` — construction safety dataset prep: loads from HuggingFace placeholder, formats for instruction tuning `{"instruction": ..., "input": ..., "output": ...}` with English + Spanish pairs
 - [ ] `ml/scripts/export_model.py` — exports adapter merged model to ONNX, then TFLite FP16 for Android deployment
 - [ ] `ml/adapters/safety/config.json` — LoRA adapter config for safety domain

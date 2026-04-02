@@ -53,10 +53,10 @@ dependencies {
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
 
-    // TFLite — INT8 quantized YOLOv8-nano for PPE detection
-    implementation(libs.tflite)
-    implementation(libs.tflite.gpu)
-    implementation(libs.tflite.support)
+    // LiteRT — INT8 quantized YOLOv8-nano for PPE detection
+    implementation(libs.litert)
+    implementation(libs.litert.gpu)
+    implementation(libs.litert.support)
 
     // Camera2 is part of Android SDK — no Maven dependency needed
 

@@ -49,5 +49,11 @@ Thumbs.db
 # Memory lock files
 .memory/.post-commit-lock
 
+# Jekyll build output
+docs/_site/
+docs/.jekyll-cache/
+docs/.jekyll-metadata
+docs/Gemfile.lock
+
 # Poetry
 poetry.lock

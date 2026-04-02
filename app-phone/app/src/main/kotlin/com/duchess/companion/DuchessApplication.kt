@@ -18,7 +18,7 @@ import dagger.hilt.android.HiltAndroidApp
  *
  * Do NOT add heavy work here. Application.onCreate() blocks the main thread
  * and delays app startup. The DAT SDK init is lightweight (~50ms) so it's fine.
- * Gemma 3n model loading happens lazily on first inference — NOT here.
+ * Gemma 4 model loading happens lazily on first inference — NOT here.
  */
 @HiltAndroidApp
 class DuchessApplication : Application() {

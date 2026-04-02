@@ -1,5 +1,5 @@
 """
-Tests for the Gemma 3n training script.
+Tests for the Gemma 4 training script.
 
 # Priya: These tests validate training configuration, argument parsing,
 # and helper functions WITHOUT loading actual models or running training.
@@ -19,7 +19,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from scripts.train_gemma3n import (
+from scripts.train_gemma4 import (
     GLOBAL_SEED,
     LORA_ALPHA,
     LORA_DROPOUT,
@@ -176,7 +176,7 @@ class TestAdapterLoading:
     def test_load_existing_adapter_config(self, tmp_adapters_dir):
         """Loading an existing adapter config should return its contents."""
         # Priya: Temporarily patch the ADAPTERS_DIR to our test dir
-        import scripts.train_gemma3n as train_module
+        import scripts.train_gemma4 as train_module
         original_dir = train_module.ADAPTERS_DIR
         try:
             train_module.ADAPTERS_DIR = tmp_adapters_dir
@@ -188,7 +188,7 @@ class TestAdapterLoading:
 
     def test_load_missing_adapter_returns_empty(self, tmp_path):
         """Loading a non-existent adapter config should return {}."""
-        import scripts.train_gemma3n as train_module
+        import scripts.train_gemma4 as train_module
         original_dir = train_module.ADAPTERS_DIR
         try:
             train_module.ADAPTERS_DIR = tmp_path / "nonexistent"
@@ -281,7 +281,7 @@ class TestWandbFlag:
         # Priya: We verify this by checking the build_training_args function
         # respects the no_wandb flag. This prevents accidental W&B runs in CI.
         """
-        from scripts.train_gemma3n import build_training_args
+        from scripts.train_gemma4 import build_training_args
 
         # Priya: Create a mock args namespace
         mock_args = MagicMock()

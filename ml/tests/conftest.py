@@ -90,7 +90,7 @@ class _MockTrainingArguments:
 
 if not _is_package_available("torch"):
     # PRIYA: torch is imported at module level in benchmark.py, export_model.py,
-    # and train_gemma3n.py. resolve_mixed_precision() calls
+    # and train_gemma4.py. resolve_mixed_precision() calls
     # torch.cuda.is_available() — must return False so it picks the fp16 path.
     _mock_torch = MagicMock()
     _mock_torch.cuda.is_available.return_value = False
@@ -103,7 +103,7 @@ if not _is_package_available("torch"):
 
 if not _is_package_available("datasets"):
     # PRIYA: datasets is imported at module level in prepare_dataset.py and
-    # train_gemma3n.py via `from datasets import Dataset, load_dataset`.
+    # train_gemma4.py via `from datasets import Dataset, load_dataset`.
     # _MockDataset supports from_list(), len(), and train_test_split().
     _mock_datasets = MagicMock()
     _mock_datasets.Dataset = _MockDataset
@@ -113,29 +113,29 @@ if not _is_package_available("datasets"):
 
 if not _is_package_available("transformers"):
     # PRIYA: transformers provides TrainingArguments, imported at module level
-    # in train_gemma3n.py. _MockTrainingArguments stores kwargs as attributes
+    # in train_gemma4.py. _MockTrainingArguments stores kwargs as attributes
     # and wraps report_to string → list (matching real HF behavior).
     _mock_transformers = MagicMock()
     _mock_transformers.TrainingArguments = _MockTrainingArguments
     sys.modules["transformers"] = _mock_transformers
 
 if not _is_package_available("wandb"):
-    # PRIYA: wandb is imported at module level in train_gemma3n.py for
+    # PRIYA: wandb is imported at module level in train_gemma4.py for
     # experiment tracking. Not exercised in unit tests.
     sys.modules["wandb"] = MagicMock()
 
 if not _is_package_available("peft"):
-    # PRIYA: peft provides LoraConfig (module-level import in train_gemma3n.py)
+    # PRIYA: peft provides LoraConfig (module-level import in train_gemma4.py)
     # and PeftModel (lazy import inside benchmark.py / export_model.py).
     sys.modules["peft"] = MagicMock()
 
 if not _is_package_available("trl"):
-    # PRIYA: trl provides SFTTrainer, imported at module level in train_gemma3n.py.
+    # PRIYA: trl provides SFTTrainer, imported at module level in train_gemma4.py.
     sys.modules["trl"] = MagicMock()
 
 if not _is_package_available("unsloth"):
     # PRIYA: unsloth provides FastLanguageModel for Dynamic QLoRA — imported at
-    # module level in train_gemma3n.py. Only framework supporting Gemma 3n quant.
+    # module level in train_gemma4.py. Only framework supporting Gemma 4 quant.
     sys.modules["unsloth"] = MagicMock()
 
 if not _is_package_available("ultralytics"):
@@ -359,7 +359,7 @@ def safety_adapter_config():
     """
     return {
         "adapter_name": "safety",
-        "base_model": "google/gemma-3n-e2b-it",
+        "base_model": "google/gemma-4-e2b-it",
         "dataset": "duchess/construction-safety-instructions",
         "lora_config": {
             "r": 16,
@@ -395,7 +395,7 @@ def spanish_jargon_adapter_config():
     """
     return {
         "adapter_name": "spanish_jargon",
-        "base_model": "google/gemma-3n-e2b-it",
+        "base_model": "google/gemma-4-e2b-it",
         "dataset": "duchess/construction-spanish-jargon",
         "lora_config": {
             "r": 16,

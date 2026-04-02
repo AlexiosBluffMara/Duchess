@@ -133,7 +133,7 @@ class StreamViewModel @Inject constructor(
      * the capture button when not streaming, but defensive coding never hurts.
      *
      * PRIVACY: The captured photo stays on-device. It only leaves through the
-     * escalation pipeline if Gemma 3n flags a PPE violation.
+     * escalation pipeline if Gemma 4 flags a PPE violation.
      */
     fun capturePhoto() {
         val currentState = _sessionState.value

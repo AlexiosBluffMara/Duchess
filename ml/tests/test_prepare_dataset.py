@@ -188,7 +188,7 @@ class TestBilingualPairs:
 
     def test_placeholder_count_minimum(self):
         """We need at least 6 placeholder examples for meaningful pipeline tests."""
-        # Priya: 6 is our MIN_DATASET_SIZE in train_gemma3n.py
+        # Priya: 6 is our MIN_DATASET_SIZE in train_gemma4.py
         assert len(PLACEHOLDER_EXAMPLES) >= 6
 
 

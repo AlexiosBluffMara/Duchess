@@ -157,7 +157,7 @@ class TestEndToEndFlow:
 
         # Step 1: Write escalation to SQS (simulates phone app sending PPE violation)
         # Jordan: This is exactly what the companion phone app does when
-        # Gemma 3n confirms a PPE violation on Tier 2.
+        # Gemma 4 confirms a PPE violation on Tier 2.
         escalation = {
             "source_event_id": "evt-e2e-001",
             "violation_type": "missing_hardhat",

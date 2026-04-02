@@ -1,14 +1,14 @@
 """
-Gemma 3n E2B fine-tuning with Unsloth Dynamic QLoRA.
+Gemma 4 E2B fine-tuning with Unsloth Dynamic QLoRA.
 
-Priya: This is the heart of Duchess ML. We fine-tune Gemma 3n E2B (1.91B params)
-using Dynamic QLoRA via Unsloth — the ONLY framework that supports Gemma 3n
+Priya: This is the heart of Duchess ML. We fine-tune Gemma 4 E2B (2.3B effective params)
+using Dynamic QLoRA via Unsloth — the ONLY framework that supports Gemma 4
 quantization with 0% accuracy loss vs full LoRA. We've benchmarked this against
 standard HuggingFace Trainer + PEFT LoRA and Unsloth consistently delivers 2-4x
 memory reduction with identical downstream performance on iSafetyBench.
 
 Hardware: NVIDIA RTX 5090 (64GB VRAM, 8TB NVMe)
-Model: google/gemma-3n-e2b-it (1.91B params)
+Model: google/gemma-4-e2b-it (2.3B effective params (5.1B with embeddings))
 Method: Dynamic QLoRA (r=16, alpha=32, targets: q/k/v/o projections)
 Dataset: Construction safety instruction pairs (EN + ES)
 Expected training time: ~12-16 hrs for full 3-epoch run on RTX 5090
@@ -24,11 +24,11 @@ Key design decisions (see .memory/decisions.md for ablation evidence):
     by 1.2% on our held-out construction safety eval set.
 
 Usage:
-    python scripts/train_gemma3n.py
-    python scripts/train_gemma3n.py --adapter safety
-    python scripts/train_gemma3n.py --adapter spanish_jargon
-    python scripts/train_gemma3n.py --adapter safety --resume-from-checkpoint
-    python scripts/train_gemma3n.py --adapter safety --max-steps 10 --no-wandb
+    python scripts/train_gemma4.py
+    python scripts/train_gemma4.py --adapter safety
+    python scripts/train_gemma4.py --adapter spanish_jargon
+    python scripts/train_gemma4.py --adapter safety --resume-from-checkpoint
+    python scripts/train_gemma4.py --adapter safety --max-steps 10 --no-wandb
 """
 
 from __future__ import annotations
@@ -53,7 +53,7 @@ from unsloth import FastLanguageModel
 # experiment log. I'm serious — undocumented hyperparam changes are how you
 # get 3% regressions that nobody notices until production.
 
-MODEL_NAME = "google/gemma-3n-e2b-it"
+MODEL_NAME = "google/gemma-4-e2b-it"
 MAX_SEQ_LENGTH = 2048  # Priya: 2048 covers 99.7% of our construction safety examples
 DTYPE = None  # Priya: Auto-detect — float16 on RTX 5090, bfloat16 on A100/H100
 LOAD_IN_4BIT = True  # Priya: QLoRA 4-bit quantization via bitsandbytes
@@ -93,7 +93,7 @@ def parse_args() -> argparse.Namespace:
     # training from CI/CD or Docker without modifying command lines. This is
     # how we run automated nightly training sweeps.
     """
-    parser = argparse.ArgumentParser(description="Fine-tune Gemma 3n for Duchess")
+    parser = argparse.ArgumentParser(description="Fine-tune Gemma 4 for Duchess")
     parser.add_argument(
         "--adapter",
         type=str,
@@ -165,7 +165,7 @@ def load_adapter_config(adapter_name: str) -> dict:
 def format_instruction(example: dict) -> str:
     """Format a single example into Gemma instruction format.
 
-    # Priya: Gemma 3n uses <start_of_turn>/<end_of_turn> delimiters for
+    # Priya: Gemma 4 uses <start_of_turn>/<end_of_turn> delimiters for
     # instruction tuning. The format MUST match the base model's chat template
     # exactly, or you'll get garbage outputs. I validated this against the
     # official Gemma tokenizer's apply_chat_template() output.
@@ -371,7 +371,7 @@ def get_checkpoint_dir(output_path: Path) -> str | None:
 def resolve_mixed_precision(force_fp16: bool = False) -> dict:
     """Detect and configure mixed precision training.
 
-    # Priya: Mixed precision is essential for fitting Gemma 3n in VRAM on the
+    # Priya: Mixed precision is essential for fitting Gemma 4 in VRAM on the
     # 5090. BF16 is preferred (better dynamic range, no loss scaling needed),
     # but falls back to FP16 + loss scaling on older hardware. The RTX 5090
     # supports BF16 natively, so that's our default.
@@ -404,7 +404,7 @@ def build_training_args(args, output_path: Path, has_val: bool) -> TrainingArgum
     #   - warmup_ratio=0.03: ~50 steps of warmup on a 1600-step run. Prevents
     #     the initial gradient explosion I observed with cosine schedule.
     #   - save_total_limit=3: keeps last 3 checkpoints. At ~4GB per checkpoint
-    #     for Gemma 3n LoRA, that's 12GB — manageable on our 8TB NVMe.
+    #     for Gemma 4 LoRA, that's 12GB — manageable on our 8TB NVMe.
     #   - optim="adamw_8bit": Unsloth's 8-bit AdamW. Same convergence as
     #     full-precision AdamW but uses 4x less optimizer state memory.
     """
@@ -471,7 +471,7 @@ def main():
     if not args.no_wandb:
         wandb.init(
             project=os.getenv("WANDB_PROJECT", "duchess-ml"),
-            name=f"gemma3n-{args.adapter}-qlora",
+            name=f"gemma4-{args.adapter}-qlora",
             config={
                 "model": MODEL_NAME,
                 "adapter": args.adapter,
@@ -518,8 +518,8 @@ def main():
         random_state=GLOBAL_SEED,
     )
 
-    # Priya: Log trainable parameter count. For r=16 on Gemma 3n E2B,
-    # expect ~6.8M trainable params out of 1.91B total (0.36%).
+    # Priya: Log trainable parameter count. For r=16 on Gemma 4 E2B,
+    # expect ~6.8M trainable params out of 2.3B effective total (0.36%).
     # If this number looks wrong, something is misconfigured.
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     total_params = sum(p.numel() for p in model.parameters())
@@ -534,7 +534,7 @@ def main():
     train_dataset, val_dataset = split_dataset(dataset, args.val_split)
 
     # ── Training ────────────────────────────────────────────────────────────
-    output_path = OUTPUT_DIR / f"gemma3n-{args.adapter}"
+    output_path = OUTPUT_DIR / f"gemma4-{args.adapter}"
     output_path.mkdir(parents=True, exist_ok=True)
 
     has_val = len(val_dataset) > 0 and id(val_dataset) != id(train_dataset)
