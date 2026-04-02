@@ -4,6 +4,30 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 22:37 UTC — Commit d1dde36
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: ci(infra): pass GITHUB_TOKEN to Jekyll build for github-metadata plugin
+
+### Modules touched
+- **infra**: 1 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1746 | Active (1746 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+.github/workflows/pages.yml
+```
+
+---
+
 ## 2026-04-02 21:55 UTC — Commit a5b04ca
 
 **Branch**: `main`  
@@ -80,30 +104,6 @@ app-glasses/gradle/wrapper/gradle-wrapper.jar
 app-glasses/gradle/wrapper/gradle-wrapper.properties
 app-glasses/gradlew
 app-glasses/gradlew.bat
-```
-
----
-
-## 2026-04-02 21:02 UTC — Commit 1c554e1
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: fix(phone): make DuchessMainApp modelManager optional (nullable default)
-
-### Modules touched
-- **app-phone/**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
 ```
 
 ---
