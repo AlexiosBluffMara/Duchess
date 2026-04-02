@@ -4,6 +4,30 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 20:09 UTC — Commit 100d1ea
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: chore: update subproject commit reference in adoring-jackson worktree
+
+### Modules touched
+- **infra**: 1 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1744 | Active (1744 files) |
+| app-glasses/ | 29 | Active (29 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+.claude/worktrees/adoring-jackson
+```
+
+---
+
 ## 2026-04-02 19:55 UTC — Commit 3c2ef09
 
 **Branch**: `claude/adoring-jackson`  
@@ -123,63 +147,6 @@ scripts/install.sh
 - Wire `StreamScreen.kt` to show the new `inferenceEnabled` toggle and zone picker UI
 - Connect `GemmaInferenceService` lifecycle to `MainActivity` (start/stop with app)
 - Test on real Pixel 9 Fold with Gemma 4 E2B model file in assets
-
----
-
-## 2026-04-02 19:15 UTC — Commit d187094
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: feat(ml): add Gemma 4 E2B fine-tuning script with Unsloth Dynamic QLoRA
-
-### Modules touched
-- **app-phone/**: 10 file(s) changed
-- **app-glasses/**: 4 file(s) changed
-- **ml/**: 13 file(s) changed
-- **cloud/**: 1 file(s) changed
-- **infra**: 19 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1738 | Active (1738 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.claude/agents/jordan.md
-.claude/agents/kai.md
-.claude/agents/priya.md
-.claude/settings.json
-.claude/skills/edge-inference.md
-.claude/skills/ml-model-training.md
-.githooks/post-commit
-.github/agents/jordan.agent.md
-.github/agents/kai.agent.md
-.github/agents/priya.agent.md
-.github/instructions/android-companion.instructions.md
-.github/instructions/cloud-services.instructions.md
-.github/instructions/ml-pipeline.instructions.md
-.github/instructions/ppe-detection-workflow.instructions.md
-.github/instructions/project-architecture.instructions.md
-.github/skills/edge-inference/SKILL.md
-.github/skills/ml-model-training/SKILL.md
-.github/workflows/pages.yml
-.gitignore
-.memory/claude-queue.md
-.memory/decisions.md
-.memory/handoff.md
-.memory/project-state.md
-AGENTS.md
-HACKATHON_STRATEGY.md
-LICENSE
-README.md
-app-glasses/app/build.gradle.kts
-app-glasses/app/src/main/kotlin/com/duchess/glasses/MainActivity.kt
-app-glasses/app/src/main/kotlin/com/duchess/glasses/ble/BleGattClient.kt
-```
 
 ---
 
