@@ -69,9 +69,10 @@ github_to_claude() {
   local desc; desc=$(frontmatter_field "$src" "description")
   local body; body=$(strip_frontmatter "$src")
 
-  # Strip one layer of surrounding double-quotes that claude_to_github() adds.
-  # Raw YAML: description: ""text""  →  desc var: ""text""  →  stripped: "text"
-  if [[ "${desc}" == '"'*'"' ]]; then
+  # Strip ONE layer of outer double-quotes ONLY when the description is wrapped
+  # in double-double-quotes (i.e. ""\text\""" → "text\") as produced by
+  # claude_to_github(). Single-quoted descriptions ("text") are kept as-is.
+  if [[ "${desc}" == '""'*'""' ]]; then
     desc="${desc:1:${#desc}-2}"
   fi
 

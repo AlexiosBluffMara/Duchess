@@ -4,6 +4,32 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 20:56 UTC — Commit e8113b7
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: fix(phone): fix modelManager scope and CI mirror quote-stripping
+
+### Modules touched
+- **app-phone/**: 1 file(s) changed
+- **infra**: 1 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1746 | Active (1746 files) |
+| app-glasses/ | 29 | Active (29 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
+scripts/mirror-skills.sh
+```
+
+---
+
 ## 2026-04-02 20:48 UTC — Commit 5d0177d
 
 **Branch**: `main`  
@@ -80,29 +106,6 @@ app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaState.kt
 ### Changed files
 ```
 .github/workflows/ci.yml
-```
-
----
-
-## 2026-04-02 20:12 UTC — Commit 6c7bc8a
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: fix(ux): remove docs/index.md to resolve Jekyll build collision with index.html
-
-### Modules touched
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1744 | Active (1744 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-docs/index.md
 ```
 
 ---

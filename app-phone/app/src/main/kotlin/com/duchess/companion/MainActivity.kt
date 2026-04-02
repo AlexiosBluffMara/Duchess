@@ -108,7 +108,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DuchessTheme(dynamicColor = false) {
                 if (DEMO_MODE) {
-                    DuchessMainApp()
+                    DuchessMainApp(modelManager = modelManager)
                 } else {
                     val regState by registrationState.collectAsState()
                     MainContent(
@@ -147,7 +147,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DuchessMainApp() {
+fun DuchessMainApp(modelManager: GemmaModelManager) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
