@@ -42,4 +42,102 @@
     <string name="upload_partial">Upload incomplete — will retry</string>
     <string name="upload_channel_name">Video Upload</string>
     <string name="upload_channel_description">Nightly batch video upload status</string>
+
+    <!-- Navigation -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_stream">Stream</string>
+    <string name="nav_alerts">Alerts</string>
+    <string name="nav_settings">Settings</string>
+    <string name="app_tagline">Construction Site Intelligence</string>
+
+    <!-- Dashboard -->
+    <string name="safety_score">Site Safety Score</string>
+    <string name="active_workers">Active Workers</string>
+    <string name="active_alerts">Active Alerts</string>
+    <string name="zones">Zones</string>
+    <string name="workers_label">Workers</string>
+    <string name="connection_demo">Demo Mode</string>
+    <string name="connection_connected">Connected</string>
+    <string name="connection_disconnected">Disconnected</string>
+    <string name="zone_framing">Framing</string>
+    <string name="zone_excavation">Excavation</string>
+    <string name="zone_electrical">Electrical</string>
+    <string name="zone_roofing">Roofing</string>
+    <string name="zone_staging">Staging</string>
+
+    <!-- Alerts -->
+    <string name="alerts_title">Safety Alerts</string>
+    <string name="filter_all">All</string>
+    <string name="filter_critical">Critical</string>
+    <string name="filter_warning">Warning</string>
+    <string name="filter_info">Info</string>
+    <string name="all_clear">All Clear</string>
+    <string name="all_clear_description">No alerts match this filter</string>
+    <string name="severity_critical">CRITICAL</string>
+    <string name="severity_warning">WARNING</string>
+    <string name="severity_info">INFO</string>
+    <string name="ago_minutes">%dm ago</string>
+    <string name="ago_hours">%dh ago</string>
+    <string name="ago_days">%dd ago</string>
+    <string name="alert_description">Description</string>
+    <string name="alert_details">Details</string>
+    <string name="alert_zone">Zone</string>
+    <string name="alert_time">Time</string>
+    <string name="alert_severity">Severity</string>
+    <string name="alert_violation_type">Violation Type</string>
+    <string name="alert_acknowledge">Acknowledge</string>
+    <string name="alert_escalate">Escalate</string>
+    <string name="alert_dismiss">Dismiss</string>
+    <string name="no_hard_hat">Missing Hard Hat</string>
+    <string name="no_safety_vest">Missing Safety Vest</string>
+    <string name="no_safety_glasses">Missing Safety Glasses</string>
+    <string name="fall_hazard">Fall Hazard</string>
+    <string name="restricted_zone">Restricted Zone Entry</string>
+    <string name="multiple_violations">Multiple Violations</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_device">Device</string>
+    <string name="settings_preferences">Preferences</string>
+    <string name="settings_safety">Safety</string>
+    <string name="settings_about">About</string>
+    <string name="glasses_connection">Glasses Connection</string>
+    <string name="device_name">Device Name</string>
+    <string name="no_device_paired">No device paired</string>
+    <string name="language">Language</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_desc">Receive PPE violation alerts</string>
+    <string name="nightly_upload">Nightly Upload</string>
+    <string name="nightly_upload_desc">Upload video over WiFi when charging</string>
+    <string name="detection_sensitivity">Detection Sensitivity</string>
+    <string name="sensitivity_low">Low</string>
+    <string name="sensitivity_medium">Medium</string>
+    <string name="sensitivity_high">High</string>
+    <string name="alert_sound">Alert Sound</string>
+    <string name="version">Version</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="licenses">Licenses</string>
+
+    <!-- Stream Demo -->
+    <string name="stream_demo_title">Glasses Camera Feed</string>
+    <string name="stream_demo_badge">DEMO</string>
+    <string name="stream_demo_connect_hint">Connect Meta glasses for live feed</string>
+    <string name="stream_fps">%d FPS</string>
+    <string name="stream_inference_time">%dms</string>
+    <string name="stream_battery">%d%%</string>
+
+    <!-- HUD Simulator -->
+    <string name="hud_sim_title">Glasses HUD Simulator</string>
+    <string name="hud_sim_description">Preview what workers see through AR glasses</string>
+    <string name="hud_normal_mode">Normal</string>
+    <string name="hud_violation_mode">Violation Detected</string>
+    <string name="hud_fps_label">Simulated FPS</string>
+    <string name="hud_ble_connected">BLE Connected</string>
+    <string name="hud_battery">Battery</string>
+    <string name="hud_all_clear">ALL CLEAR ✓</string>
+    <string name="hud_all_clear_es">Sin alertas ✓</string>
+    <string name="hud_ppe_alert">⚠ PPE ALERT</string>
+    <string name="hud_ppe_alert_es">⚠ ALERTA EPP</string>
+    <string name="hud_no_glasses_detected">NO GLASSES DETECTED</string>
+    <string name="view_hud_sim">View Glasses HUD</string>
 </resources>

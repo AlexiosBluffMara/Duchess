@@ -1,5 +1,3 @@
-import java.util.Properties
-
 pluginManagement {
     repositories {
         google()
@@ -8,24 +6,11 @@ pluginManagement {
     }
 }
 
-val localProps = Properties().apply {
-    val f = file("local.properties")
-    if (f.exists()) load(f.inputStream())
-}
-
-dependencyResolution {
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-
-        // Meta DAT SDK — requires GitHub PAT with read:packages scope
-        maven {
-            url = uri("https://maven.pkg.github.com/facebook/meta-wearables-dat-android")
-            credentials {
-                username = localProps.getProperty("github_user", "")
-                password = localProps.getProperty("github_token", "")
-            }
-        }
     }
 }
 

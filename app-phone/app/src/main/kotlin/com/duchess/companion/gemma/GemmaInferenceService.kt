@@ -161,8 +161,6 @@ class GemmaInferenceService : Service() {
         try {
             val options = LlmInference.LlmInferenceOptions.builder()
                 .setModelPath(getModelPath())
-                .setTemperature(INFERENCE_TEMPERATURE)
-                .setTopK(40)
                 .setMaxTokens(512)
                 .build()
             llmInference = LlmInference.createFromOptions(this, options)
@@ -327,8 +325,8 @@ class GemmaInferenceService : Service() {
      * The strict JSON output format matches GemmaAnalysisResult fields.
      */
     internal fun buildSafetyPrompt(frame: VideoFrame): String {
-        val width = frame.bitmap.width
-        val height = frame.bitmap.height
+        val width = frame.bitmap?.width ?: 504
+        val height = frame.bitmap?.height ?: 896
         return """
             |You are a construction site safety analyst. Analyze the following frame from a construction site camera for PPE violations and safety hazards.
             |

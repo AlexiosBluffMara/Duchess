@@ -42,4 +42,102 @@
     <string name="upload_partial">Carga incompleta — se reintentará</string>
     <string name="upload_channel_name">Carga de video</string>
     <string name="upload_channel_description">Estado de la carga nocturna de video</string>
+
+    <!-- Navigation -->
+    <string name="nav_dashboard">Panel</string>
+    <string name="nav_stream">Transmisión</string>
+    <string name="nav_alerts">Alertas</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="app_tagline">Inteligencia de Sitio de Construcción</string>
+
+    <!-- Dashboard -->
+    <string name="safety_score">Puntuación de seguridad del sitio</string>
+    <string name="active_workers">Trabajadores activos</string>
+    <string name="active_alerts">Alertas activas</string>
+    <string name="zones">Zonas</string>
+    <string name="workers_label">Trabajadores</string>
+    <string name="connection_demo">Modo de demostración</string>
+    <string name="connection_connected">Conectado</string>
+    <string name="connection_disconnected">Desconectado</string>
+    <string name="zone_framing">Estructura</string>
+    <string name="zone_excavation">Excavación</string>
+    <string name="zone_electrical">Eléctrico</string>
+    <string name="zone_roofing">Techado</string>
+    <string name="zone_staging">Preparación</string>
+
+    <!-- Alerts -->
+    <string name="alerts_title">Alertas de Seguridad</string>
+    <string name="filter_all">Todas</string>
+    <string name="filter_critical">Críticas</string>
+    <string name="filter_warning">Advertencia</string>
+    <string name="filter_info">Info</string>
+    <string name="all_clear">Sin alertas</string>
+    <string name="all_clear_description">No hay alertas con este filtro</string>
+    <string name="severity_critical">CRÍTICO</string>
+    <string name="severity_warning">ADVERTENCIA</string>
+    <string name="severity_info">INFO</string>
+    <string name="ago_minutes">hace %dm</string>
+    <string name="ago_hours">hace %dh</string>
+    <string name="ago_days">hace %dd</string>
+    <string name="alert_description">Descripción</string>
+    <string name="alert_details">Detalles</string>
+    <string name="alert_zone">Zona</string>
+    <string name="alert_time">Hora</string>
+    <string name="alert_severity">Gravedad</string>
+    <string name="alert_violation_type">Tipo de violación</string>
+    <string name="alert_acknowledge">Reconocer</string>
+    <string name="alert_escalate">Escalar</string>
+    <string name="alert_dismiss">Descartar</string>
+    <string name="no_hard_hat">Falta casco</string>
+    <string name="no_safety_vest">Falta chaleco</string>
+    <string name="no_safety_glasses">Faltan lentes de seguridad</string>
+    <string name="fall_hazard">Peligro de caída</string>
+    <string name="restricted_zone">Entrada a zona restringida</string>
+    <string name="multiple_violations">Múltiples violaciones</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_device">Dispositivo</string>
+    <string name="settings_preferences">Preferencias</string>
+    <string name="settings_safety">Seguridad</string>
+    <string name="settings_about">Acerca de</string>
+    <string name="glasses_connection">Conexión de lentes</string>
+    <string name="device_name">Nombre del dispositivo</string>
+    <string name="no_device_paired">Sin dispositivo vinculado</string>
+    <string name="language">Idioma</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="notifications_desc">Recibir alertas de violaciones EPP</string>
+    <string name="nightly_upload">Carga nocturna</string>
+    <string name="nightly_upload_desc">Cargar video por WiFi al cargar</string>
+    <string name="detection_sensitivity">Sensibilidad de detección</string>
+    <string name="sensitivity_low">Baja</string>
+    <string name="sensitivity_medium">Media</string>
+    <string name="sensitivity_high">Alta</string>
+    <string name="alert_sound">Sonido de alerta</string>
+    <string name="version">Versión</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="licenses">Licencias</string>
+
+    <!-- Stream Demo -->
+    <string name="stream_demo_title">Cámara de los lentes</string>
+    <string name="stream_demo_badge">DEMO</string>
+    <string name="stream_demo_connect_hint">Conecte lentes Meta para transmisión en vivo</string>
+    <string name="stream_fps">%d FPS</string>
+    <string name="stream_inference_time">%dms</string>
+    <string name="stream_battery">%d%%</string>
+
+    <!-- HUD Simulator -->
+    <string name="hud_sim_title">Simulador HUD de lentes</string>
+    <string name="hud_sim_description">Vista previa de lo que ven los trabajadores</string>
+    <string name="hud_normal_mode">Normal</string>
+    <string name="hud_violation_mode">Violación detectada</string>
+    <string name="hud_fps_label">FPS simulado</string>
+    <string name="hud_ble_connected">BLE conectado</string>
+    <string name="hud_battery">Batería</string>
+    <string name="hud_all_clear">SIN ALERTAS ✓</string>
+    <string name="hud_all_clear_es">Sin alertas ✓</string>
+    <string name="hud_ppe_alert">⚠ ALERTA EPP</string>
+    <string name="hud_ppe_alert_es">⚠ ALERTA EPP</string>
+    <string name="hud_no_glasses_detected">LENTES NO DETECTADOS</string>
+    <string name="view_hud_sim">Ver HUD de lentes</string>
 </resources>

@@ -59,6 +59,10 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     debugImplementation(libs.compose.ui.tooling)
+    implementation(libs.compose.material.icons.extended)
+
+    // Navigation
+    implementation(libs.navigation.compose)
 
     // Lifecycle
     implementation(libs.lifecycle.runtime.ktx)
@@ -79,9 +83,6 @@ dependencies {
     // WorkManager
     implementation(libs.work.runtime)
 
-    // Meta DAT SDK
-    implementation(libs.mwdat.core)
-    implementation(libs.mwdat.camera)
 
     // TFLite (for Gemma 3n inference)
     implementation(libs.tflite)
@@ -96,5 +97,4 @@ dependencies {
     testImplementation(libs.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.work.testing)
-    androidTestImplementation(libs.mwdat.mockdevice)
 }
