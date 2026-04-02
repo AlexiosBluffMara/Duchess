@@ -4,6 +4,36 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 21:12 UTC — Commit 4c3e99e
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: ci(infra): eliminate mirror drift and add missing gradlew to app-glasses
+
+### Modules touched
+- **app-glasses/**: 4 file(s) changed
+- **infra**: 2 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1746 | Active (1746 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+.github/skills/edge-inference/SKILL.md
+.github/skills/model-quantization/SKILL.md
+app-glasses/gradle/wrapper/gradle-wrapper.jar
+app-glasses/gradle/wrapper/gradle-wrapper.properties
+app-glasses/gradlew
+app-glasses/gradlew.bat
+```
+
+---
+
 ## 2026-04-02 21:02 UTC — Commit 1c554e1
 
 **Branch**: `main`  
@@ -79,33 +109,6 @@ app-phone/app/build.gradle.kts
 app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaInferenceEngine.kt
 app-phone/gradle/libs.versions.toml
 scripts/mirror-skills.sh
-```
-
----
-
-## 2026-04-02 20:33 UTC — Commit 13e6d7f
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: fix(phone): add GemmaState and GemmaAnalysisResult, fix CI skill mirror check
-
-### Modules touched
-- **app-phone/**: 2 file(s) changed
-- **infra**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.github/workflows/ci.yml
-app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaAnalysisResult.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaState.kt
 ```
 
 ---
