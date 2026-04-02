@@ -4,6 +4,104 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 19:54 UTC — Commit b69b637
+
+**Branch**: `claude/adoring-jackson`  
+**Author**: AlexiosBluffMara  
+**Message**: feat(shared): inference pipeline, hardware deploy scripts, secrets management
+
+### Modules touched
+- **app-phone/**: 16 file(s) changed
+- **app-glasses/**: 2 file(s) changed
+- **infra**: 5 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 75 | Active (75 files) |
+| app-glasses/ | 29 | Active (29 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 12 | Active (12 files) |
+
+### Changed files
+```
+.github/workflows/ci.yml
+.memory/handoff.md
+QUICKSTART.md
+app-glasses/app/src/main/kotlin/com/duchess/glasses/ppe/PpeDetector.kt
+app-glasses/settings.gradle.kts
+app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/alerts/AlertsViewModel.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaInferenceEngine.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaInferenceService.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaModelManager.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/gemma/ModelSetupScreen.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/navigation/DuchessNavigation.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/stream/InferencePipelineCoordinator.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/stream/StreamViewModel.kt
+app-phone/app/src/main/res/values-es/strings.xml
+app-phone/app/src/main/res/values/strings.xml
+app-phone/app/src/test/kotlin/com/duchess/companion/gemma/GemmaInferenceEngineTest.kt
+app-phone/app/src/test/kotlin/com/duchess/companion/gemma/GemmaInferenceServiceTest.kt
+app-phone/app/src/test/kotlin/com/duchess/companion/stream/InferencePipelineCoordinatorTest.kt
+app-phone/local.properties.example
+app-phone/settings.gradle.kts
+scripts/build-glasses.sh
+scripts/build-phone.sh
+scripts/download-ppe-model.py
+scripts/install.sh
+```
+
+---
+
+## 2026-04-02 — Real-time Inference Pipeline (Claude Code Session)
+
+**Branch**: `claude/adoring-jackson`
+
+### What Was Built
+
+**Feature: End-to-end real-time inference pipeline** connecting glass camera frames → Gemma 4 E2B vision → bilingual SafetyAlerts → BLE HUD push.
+
+#### Root cause fixed
+`GemmaInferenceService.buildSafetyPrompt()` was sending only frame dimensions (text) to Gemma. The actual bitmap was NEVER passed to the vision model. Fixed by using MediaPipe's session API with `session.addImage(MPImage)`.
+
+#### New files
+- `gemma/GemmaInferenceEngine.kt` — Injectable `@Singleton` with real inference logic:
+  - `setMaxImages(1)` in `LlmInferenceOptions` to enable vision input
+  - `session.addImage(BitmapImageBuilder(bitmap).build())` → actual multimodal
+  - `extractJson()` strips markdown fences from model output (Gemma wraps JSON in ``` sometimes)
+  - `coerceIn()` clamps severity/confidence to valid ranges
+  - `internal` methods for testability
+- `stream/InferencePipelineCoordinator.kt` — `@Singleton` bridge:
+  - 1 FPS throttle with double-checked locking under `Mutex`
+  - Confidence filter: drops results < 0.5
+  - Emits `SafetyAlert` via `SharedFlow<SafetyAlert>(replay=0, extraBufferCapacity=32)`
+  - BLE push for severity >= 3 (serious+) via `BleGattServer.sendAlert()`
+  - `emitManualAlert()` for worker-triggered hazard reports
+
+#### Modified files
+- `GemmaInferenceService.kt` — Slimmed to foreground service lifecycle wrapper; delegates all inference to `GemmaInferenceEngine` via `@Inject`
+- `AlertsViewModel.kt` — Added `addAlert()` + `observeInferenceAlerts()` subscribing to `coordinator.alertFlow`; caps list at 500 alerts
+- `StreamViewModel.kt` — Added `InferencePipelineCoordinator` injection, `inferenceEnabled: StateFlow<Boolean>`, `currentZoneId: StateFlow<String>`, and frame routing in `collectFrames()` via non-blocking `viewModelScope.launch {}`
+
+#### New tests
+- `GemmaInferenceEngineTest.kt` — 25 tests: constants, parseGemmaOutput (7 cases including severity/confidence clamping), extractJson (6 cases including markdown fences), SAFETY_PROMPT content, PII guardrail
+- `InferencePipelineCoordinatorTest.kt` — 20 tests: throttling, confidence filter, alert emission, BLE routing, manual alerts, `toSafetyAlert()` extension function
+- `GemmaInferenceServiceTest.kt` — Trimmed to test GemmaState and constants only (logic moved to engine)
+
+### Architecture Notes
+- `GemmaInferenceEngine` solves the "can't @Inject a Service" problem — other singletons inject the engine directly
+- `GemmaInferenceService` is still needed for `START_STICKY` + foreground notification
+- Inference pipeline is opt-in: `StreamViewModel.setInferenceEnabled(true)` must be called from UI
+- Zone selection: `StreamViewModel.setCurrentZone("zone-A-framing")` labels all subsequent alerts
+
+### What's Next
+- Wire `StreamScreen.kt` to show the new `inferenceEnabled` toggle and zone picker UI
+- Connect `GemmaInferenceService` lifecycle to `MainActivity` (start/stop with app)
+- Test on real Pixel 9 Fold with Gemma 4 E2B model file in assets
+
+---
+
 ## 2026-04-02 19:15 UTC — Commit d187094
 
 **Branch**: `main`  
@@ -91,71 +189,6 @@ app-glasses/app/src/main/kotlin/com/duchess/glasses/ble/BleGattClient.kt
 - Register team on Kaggle (max 5)
 - Begin Cactus SDK integration (Week 2 task)
 - Start Unsloth fine-tuning sprint (Week 3)
-
----
-
-## 2026-04-02 — Gemma 4 Migration + Hackathon Strategy (Copilot Session)
-
-**MAJOR PIVOT**: Project priorities reengineered for Kaggle "Gemma 4 Good Hackathon" ($200K prizes, May 18, 2026 deadline).
-
-### What Changed
-1. **All Gemma 3n references → Gemma 4** across entire codebase (~100+ replacements in 37+ files)
-2. `ml/scripts/train_gemma3n.py` → renamed to `ml/scripts/train_gemma4.py`
-3. `ml/tests/test_train_gemma3n.py` → renamed to `ml/tests/test_train_gemma4.py`
-4. Model ID: `google/gemma-3n-e2b-it` → `google/gemma-4-e2b-it` everywhere
-5. Param count: `1.91B` → `2.3B effective (5.1B with embeddings)` in docs
-6. Model file refs: `gemma3n-e2b.bin` → `gemma4-e2b.bin`, `gemma3n_duchess.tflite` → `gemma4_duchess.tflite`
-
-### New Files Created
-- `HACKATHON_STRATEGY.md` — Complete hackathon strategy with track alignment, timeline, priority stack
-- `docs/GEMMA4_TECHNICAL_REVIEW.md` — 10-section technical analysis (capabilities, benchmarks, deployment, cost, monetization)
-- `docs/gemma4_business_page.html` — Google Sites-ready HTML business page with responsive design
-
-### Key Gemma 4 Capabilities for Duchess
-- **E2B**: 2.3B effective, vision+audio, 128K context, Apache 2.0 — direct phone deployment
-- **E4B**: 4.5B effective, vision+audio, enhanced quality
-- **26B MoE**: 3.8B active of 25.2B, replaces Qwen2.5-VL for Tier 3
-- **31B Dense**: Maximum quality for cloud tier
-- Native function calling, thinking mode, system prompts, 140+ languages
-
-### Hackathon Target Prizes
-- Main Track ($50K): End-to-end safety demo
-- Safety & Trust ($10K): Core use case
-- Digital Equity ($10K): Bilingual, 140+ languages
-- Cactus ($10K): Multi-tier model routing (PERFECT match)
-- Unsloth ($10K): Fine-tuned Gemma 4 E2B for construction safety
-- Global Resilience ($10K): Edge-first, offline safety
-
-### Local Inference Verified
-- Ollama 0.20.0-rc0 installed, Gemma 4 E2B (7.2GB) and E4B (9.6GB) pulled
-- Tested construction safety prompt → structured JSON output with bilingual EN/ES ✅
-
-### Next Priority
-See `HACKATHON_STRATEGY.md` — Week 1 tasks: Gemma 4 E2B integration in phone app, Cactus research, Unsloth support check
-
----
-
-## 2026-04-02 16:51 UTC — Commit 21b44d0
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: docs(phone): add demo setup guide with step-by-step instructions
-
-### Modules touched
-- **app-phone/**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1738 | Active (1738 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 22 | Active (22 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-app-phone/DEMO_SETUP.md
-```
 
 ---
 

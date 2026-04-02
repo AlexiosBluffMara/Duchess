@@ -48,12 +48,15 @@ import androidx.navigation.navArgument
 import com.duchess.companion.alerts.AlertDetailScreen
 import com.duchess.companion.alerts.AlertListScreen
 import com.duchess.companion.dashboard.DashboardScreen
+import com.duchess.companion.gemma.GemmaModelManager
+import com.duchess.companion.gemma.ModelSetupScreen
 import com.duchess.companion.navigation.Screen
 import com.duchess.companion.navigation.bottomNavScreens
 import com.duchess.companion.settings.SettingsScreen
 import com.duchess.companion.splash.SplashScreen
 import com.duchess.companion.stream.StreamScreen
 import com.duchess.companion.ui.theme.DuchessTheme
+import javax.inject.Inject
 import com.meta.wearable.dat.core.Wearables
 import com.meta.wearable.dat.core.registration.RegistrationState
 import com.meta.wearable.dat.core.permissions.Permission
@@ -79,6 +82,8 @@ class MainActivity : ComponentActivity() {
          */
         const val DEMO_MODE = true
     }
+
+    @Inject lateinit var modelManager: GemmaModelManager
 
     private val _registrationState = MutableStateFlow<RegistrationState?>(null)
     private val registrationState: StateFlow<RegistrationState?> = _registrationState.asStateFlow()
@@ -160,10 +165,33 @@ fun DuchessMainApp() {
             modifier = Modifier.padding(innerPadding),
         ) {
             composable(Screen.Splash.route) {
+                // Alex: Route through ModelSetup if this is the first launch and
+                // the Gemma model hasn't been downloaded yet. In DEMO_MODE we skip
+                // model setup entirely (demo runs without the model).
                 SplashScreen(
                     onSplashComplete = {
-                        navController.navigate(Screen.Dashboard.route) {
+                        // Inject modelManager from outer scope via closure
+                        val dest = if (!MainActivity.DEMO_MODE && !modelManager.isModelReady()) {
+                            Screen.ModelSetup.route
+                        } else {
+                            Screen.Dashboard.route
+                        }
+                        navController.navigate(dest) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    },
+                )
+            }
+            composable(Screen.ModelSetup.route) {
+                ModelSetupScreen(
+                    onModelReady = {
+                        navController.navigate(Screen.Dashboard.route) {
+                            popUpTo(Screen.ModelSetup.route) { inclusive = true }
+                        }
+                    },
+                    onSkipToDemo = {
+                        navController.navigate(Screen.Dashboard.route) {
+                            popUpTo(Screen.ModelSetup.route) { inclusive = true }
                         }
                     },
                 )

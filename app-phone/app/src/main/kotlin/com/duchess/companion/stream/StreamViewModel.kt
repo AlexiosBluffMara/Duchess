@@ -9,9 +9,6 @@ import com.meta.wearable.dat.camera.types.StreamConfiguration
 import com.meta.wearable.dat.camera.types.VideoFrame
 import com.meta.wearable.dat.camera.types.VideoQuality
 import com.meta.wearable.dat.core.Wearables
-// Alex: The AutoDeviceSelector lives in core.selectors, NOT core.device.
-// I wasted an hour on this import once. The DAT SDK docs show the correct path
-// but the package explorer in Android Studio auto-suggests the wrong one.
 import com.meta.wearable.dat.core.selectors.AutoDeviceSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,10 +18,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// Alex: Sealed interface because we need exhaustive when-checks.
-// If you add a new state, the compiler FORCES you to handle it everywhere.
-// Trust me, I've debugged enough "else -> {}" branches to appreciate this.
-// Using a sealed interface (not sealed class) so we get value equality on data objects.
+// Alex: Sealed interface for exhaustive when-checks on stream session state.
+// Compiler enforces handling of all 4 variants — no silent "else -> {}" gaps.
 sealed interface StreamUiState {
     data object Idle : StreamUiState
     data object Connecting : StreamUiState
@@ -32,9 +27,7 @@ sealed interface StreamUiState {
     data class Error(val message: String) : StreamUiState
 }
 
-// Alex: Typed PhotoData here — NOT Any. The DAT SDK gives us PhotoData with
-// a .data ByteArray and metadata. Using Any loses all that type safety
-// and means the UI layer has to do ugly casts. Don't do that. Be precise.
+// Alex: Typed PhotoData — NOT Any. Preserves type safety into the UI layer.
 sealed interface PhotoCaptureResult {
     data class Success(val data: PhotoData) : PhotoCaptureResult
     data class Failure(val message: String) : PhotoCaptureResult
@@ -42,11 +35,11 @@ sealed interface PhotoCaptureResult {
 
 @HiltViewModel
 class StreamViewModel @Inject constructor(
-    // Alex: We inject Application context via Hilt because startStreamSession()
-    // needs a Context parameter. Using @ApplicationContext avoids Activity lifecycle
-    // issues — the ViewModel outlives configuration changes (rotation, etc.) and
-    // holding an Activity context here would leak it on rotation. Classic mistake.
-    @ApplicationContext private val appContext: Context
+    @ApplicationContext private val appContext: Context,
+    // Alex: InferencePipelineCoordinator is injected here (not in AlertsViewModel) because
+    // frames arrive in StreamViewModel. The coordinator is a @Singleton — same instance
+    // is also injected into AlertsViewModel for the alert flow subscription.
+    private val coordinator: InferencePipelineCoordinator,
 ) : ViewModel() {
 
     private val _sessionState = MutableStateFlow<StreamUiState>(StreamUiState.Idle)
@@ -58,19 +51,57 @@ class StreamViewModel @Inject constructor(
     private val _photoCaptureResult = MutableStateFlow<PhotoCaptureResult?>(null)
     val photoCaptureResult: StateFlow<PhotoCaptureResult?> = _photoCaptureResult.asStateFlow()
 
+    // Alex: inferenceEnabled gates whether frames are sent to Gemma.
+    // Off by default — the supervisor explicitly enables it from StreamScreen when they
+    // want active monitoring. Starting with it off prevents accidental NPU load during
+    // the initial BLE pairing and stream-quality check.
+    private val _inferenceEnabled = MutableStateFlow(false)
+    val inferenceEnabled: StateFlow<Boolean> = _inferenceEnabled.asStateFlow()
+
+    // Alex: Current zone ID used to label live alerts. The supervisor selects this
+    // from a zone picker in StreamScreen before starting inference. Defaults to
+    // "zone-unknown" so alerts are never silently unlabeled if zone selection is skipped.
+    // zoneId is zone-level granularity (NOT exact GPS) per ADR-002 + privacy policy.
+    private val _currentZoneId = MutableStateFlow("zone-unknown")
+    val currentZoneId: StateFlow<String> = _currentZoneId.asStateFlow()
+
+    /**
+     * Enable or disable live inference on incoming frames.
+     *
+     * Alex: Designed as a toggle so the UI (StreamScreen) can show a clear
+     * "AI Monitoring: ON/OFF" indicator and let the supervisor control when
+     * active scanning is happening. This matters for:
+     *   1. Battery conservation during non-critical periods
+     *   2. Worker awareness — they should know when AI is actively watching
+     *   3. Targeted monitoring — supervisor enables it when entering a high-risk zone
+     */
+    fun setInferenceEnabled(enabled: Boolean) {
+        _inferenceEnabled.value = enabled
+    }
+
+    /**
+     * Set the current zone ID for alert labeling.
+     *
+     * Alex: The supervisor selects a zone from a dropdown (e.g., "zone-A-framing")
+     * before enabling inference. All alerts detected while in this zone are labeled
+     * with this ID. Zone changes mid-session are fine — the new zoneId takes effect
+     * on the next processFrame() call. No alert is retroactively re-labeled.
+     *
+     * @param zoneId Zone identifier from the site map (e.g., "zone-B-excavation")
+     */
+    fun setCurrentZone(zoneId: String) {
+        _currentZoneId.value = zoneId
+    }
+
     /**
      * Start streaming video from the connected Meta glasses.
      *
-     * Alex: The correct API signature is startStreamSession(context, deviceSelector, config).
-     * The old code was missing the context param entirely and passing the wrong arg order.
-     * Also: MEDIUM quality (504x896) is the sweet spot for BLE bandwidth. HIGH looks better
-     * per-frame but the Bluetooth Classic pipe chokes and the SDK auto-downgrades anyway.
-     * 24fps is the max before compression artifacts get ugly on BLE bandwidth.
+     * Alex: MEDIUM quality (504x896) is the sweet spot for BLE bandwidth.
+     * HIGH quality looks better per-frame but the Bluetooth Classic pipe chokes
+     * and the SDK auto-downgrades anyway. 24fps max before compression artifacts
+     * get ugly on BLE bandwidth. Three-param API: context, deviceSelector, config.
      */
     fun startStream() {
-        // Alex: Guard against double-start. If we're already streaming or connecting,
-        // don't spin up a second session. The DAT SDK would technically handle it
-        // (it returns an error), but we shouldn't waste the round-trip.
         if (_sessionState.value is StreamUiState.Active ||
             _sessionState.value is StreamUiState.Connecting
         ) return
@@ -79,24 +110,18 @@ class StreamViewModel @Inject constructor(
             _sessionState.value = StreamUiState.Connecting
 
             val config = StreamConfiguration(
-                videoQuality = VideoQuality.MEDIUM,  // 504x896 — best quality-to-bandwidth ratio
-                frameRate = 24                        // Higher than 24 = too much compression on BLE
+                videoQuality = VideoQuality.MEDIUM,
+                frameRate = 24
             )
 
-            // Alex: The THREE-parameter version is the correct API.
-            // context comes first, then deviceSelector, then config.
-            // AutoDeviceSelector picks the best available paired device — which is
-            // what we want since most workers only have one pair of glasses paired.
             val result = Wearables.startStreamSession(
                 context = appContext,
                 deviceSelector = AutoDeviceSelector(),
                 streamConfiguration = config
             )
 
-            // Alex: DatResult<T, E>.fold() — ALWAYS use fold(), NEVER getOrThrow().
-            // The DAT SDK returns typed errors we can act on (device not found,
-            // permission denied, etc.). Swallowing them with getOrThrow() means
-            // we crash instead of showing the user a helpful recovery screen.
+            // Alex: Always use fold(). Never getOrThrow() — typed errors let us
+            // show the user a helpful recovery screen instead of crashing.
             result.fold(
                 onSuccess = { session ->
                     _sessionState.value = StreamUiState.Active(session)
@@ -110,11 +135,11 @@ class StreamViewModel @Inject constructor(
     }
 
     /**
-     * Stop the active streaming session and release resources.
+     * Stop the active stream and clear the latest frame.
      *
-     * Alex: We null out the latestFrame too, because stale frames from a previous
-     * session shouldn't linger in the UI. The Compose layer observes this and
-     * switches back to the idle state automatically.
+     * Alex: Null out latestFrame — stale frames from a previous session shouldn't
+     * linger in the UI after reconnect. Also disables inference so we don't try
+     * to route frames to the coordinator when no session is active.
      */
     fun stopStream() {
         val currentState = _sessionState.value
@@ -122,18 +147,16 @@ class StreamViewModel @Inject constructor(
             currentState.session.stop()
             _sessionState.value = StreamUiState.Idle
             _latestFrame.value = null
+            _inferenceEnabled.value = false
         }
     }
 
     /**
      * Capture a still photo from the active stream.
      *
-     * Alex: capturePhoto() only works when the session is ACTIVE and STREAMING.
-     * If we're idle/connecting/error, this is a no-op. The UI should disable
-     * the capture button when not streaming, but defensive coding never hurts.
-     *
-     * PRIVACY: The captured photo stays on-device. It only leaves through the
-     * escalation pipeline if Gemma 4 flags a PPE violation.
+     * Alex: capturePhoto() only works when ACTIVE. The UI disables the capture
+     * button when not streaming, but we guard defensively here too.
+     * PRIVACY: Captured photo stays on-device unless Gemma flags a violation.
      */
     fun capturePhoto() {
         val currentState = _sessionState.value
@@ -141,10 +164,6 @@ class StreamViewModel @Inject constructor(
 
         viewModelScope.launch {
             val result = currentState.session.capturePhoto()
-
-            // Alex: DatResult fold again — notice the typed PhotoData in Success.
-            // PhotoData.data gives us the raw image bytes, PhotoData has metadata too.
-            // The old code used Any here which is... not great.
             result.fold(
                 onSuccess = { photoData ->
                     _photoCaptureResult.value = PhotoCaptureResult.Success(photoData)
@@ -157,35 +176,54 @@ class StreamViewModel @Inject constructor(
     }
 
     /**
-     * Clear the photo capture result after the UI has shown a snackbar.
-     * Without this, re-composition would re-trigger the snackbar every time.
+     * Clear the photo capture result after the UI has shown the snackbar.
+     * Without this, re-composition re-triggers the snackbar on every state change.
      */
     fun clearPhotoCaptureResult() {
         _photoCaptureResult.value = null
     }
 
     /**
-     * Collect video frames from the active session.
+     * Collect video frames from the active session and optionally route to inference.
      *
-     * Alex: The correct property is session.videoStream — NOT session.videoFrames.
-     * The DAT SDK docs clearly show .videoStream as a Flow<VideoFrame>.
-     * I've seen .videoFrames in older SDK versions but 0.5.0 renamed it.
-     * This is a hot Flow that emits frames as they arrive from the glasses.
+     * Alex: For each frame we do two things:
+     *   1. Update _latestFrame for the StreamScreen preview (always, regardless of inference)
+     *   2. If inferenceEnabled, launch a separate coroutine to call coordinator.processFrame()
+     *
+     * Why a separate launch() for inference? Because coordinator.processFrame() is a
+     * suspend function that can take up to ~2 seconds (model inference time). If we called
+     * it directly in the collect block, frame collection would stall — no new frames would
+     * update the preview while inference is running. The separate launch() lets collection
+     * and inference run concurrently.
+     *
+     * The coordinator's internal throttle + mutex handles the case where launches accumulate
+     * faster than inference completes. The throttle (1 FPS) means at most 1 inference runs
+     * at a time; extra launches return immediately at the pre-mutex throttle check.
+     *
+     * Alex: session.videoStream is the correct property name in DAT SDK 0.5.0.
+     * The old name was session.videoFrames — renamed in 0.5.0 (wasted an hour on this).
      */
     private fun collectFrames(session: StreamSession) {
         viewModelScope.launch {
             session.videoStream.collect { frame ->
                 _latestFrame.value = frame
+
+                if (_inferenceEnabled.value) {
+                    // Alex: launch{} — don't suspend the collect block on inference.
+                    // The coordinator's throttle ensures this doesn't pile up.
+                    viewModelScope.launch {
+                        coordinator.processFrame(frame, _currentZoneId.value)
+                    }
+                }
             }
         }
     }
 
     /**
-     * Alex: onCleared() is called when the ViewModel is about to be destroyed
-     * (Activity finishing, Fragment detached, etc.). We MUST stop the stream
-     * here or we leak the BLE connection and the DAT SDK session.
-     * The session keeps the Bluetooth Classic pipe open, which drains battery
-     * at ~150mA on the glasses side. Not stopping = angry workers with dead glasses.
+     * Stop stream on ViewModel destruction to avoid leaking the BLE connection.
+     *
+     * Alex: The DAT SDK session holds a Bluetooth Classic pipe open at ~150mA on
+     * the glasses side. Not stopping = angry workers with dead glasses by lunchtime.
      */
     override fun onCleared() {
         super.onCleared()

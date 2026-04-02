@@ -1,4 +1,12 @@
-# Create local.properties (gitignored) with your real values.
-# GitHub PAT needs read:packages scope for Meta DAT SDK.
+# Copy this file to local.properties (gitignored) and fill in your real values.
+# Do NOT commit local.properties — it contains credentials.
+#
+# GitHub PAT requirements:
+#   Scope needed: read:packages (no other scopes required)
+#   Formats supported: classic (ghp_...) or fine-grained (github_pat_...)
+#   Get one at: https://github.com/settings/tokens
+#
+# Android SDK path — update to match your machine:
+sdk.dir=/Users/YOUR_USER/Library/Android/sdk
 github_user=your-github-username
-github_token=ghp_your_token_here
+github_token=github_pat_your_token_here
