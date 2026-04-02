@@ -4,6 +4,39 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 15:36 UTC — Commit 99d809b
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: feat(phone): MediaPipe Gemma model loading + nightly batch upload pipeline
+
+### Modules touched
+- **app-phone/**: 10 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 34 | Active (34 files) |
+| app-glasses/ | 29 | Active (29 files) |
+| ml/ | 22 | Active (22 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+app-phone/app/build.gradle.kts
+app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaInferenceService.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/upload/BatchUploadScheduler.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/upload/NightlyBatchWorker.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/upload/UploadMetadata.kt
+app-phone/app/src/main/res/values-es/strings.xml
+app-phone/app/src/main/res/values/strings.xml
+app-phone/app/src/test/kotlin/com/duchess/companion/gemma/GemmaInferenceServiceTest.kt
+app-phone/app/src/test/kotlin/com/duchess/companion/upload/NightlyBatchWorkerTest.kt
+app-phone/gradle/libs.versions.toml
+```
+
+---
+
 ## 2026-04-02 15:25 UTC — Commit 9c093db
 
 **Branch**: `main`  
@@ -100,43 +133,6 @@ ml/tests/conftest.py
 - [ ] Offline-first queue-and-retry for alert delivery
 - [ ] Nightly batch upload pipeline implementation
 - [ ] GitHub Actions CI/CD (Taylor agent)
-
----
-
-## 2026-04-02 11:39 UTC — Commit f656da6
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: chore(infra): add .gitignore, fix post-commit hook variable, remove __pycache__
-
-### Modules touched
-- **cloud/**: 9 file(s) changed
-- **infra**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 28 | Active (28 files) |
-| app-glasses/ | 26 | Active (26 files) |
-| ml/ | 22 | Active (22 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.githooks/post-commit
-.gitignore
-.memory/handoff.md
-.memory/project-state.md
-cloud/lambda/ppe_escalation/__pycache__/handler.cpython-314.pyc
-cloud/poetry.lock
-cloud/stacks/__pycache__/__init__.cpython-314.pyc
-cloud/stacks/__pycache__/duchess_stack.cpython-314.pyc
-cloud/tests/__pycache__/__init__.cpython-314.pyc
-cloud/tests/__pycache__/conftest.cpython-314-pytest-8.4.2.pyc
-cloud/tests/__pycache__/test_duchess_stack.cpython-314-pytest-8.4.2.pyc
-cloud/tests/__pycache__/test_handler.cpython-314-pytest-8.4.2.pyc
-cloud/tests/__pycache__/test_integration.cpython-314-pytest-8.4.2.pyc
-```
 
 ---
 

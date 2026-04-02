@@ -69,10 +69,15 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.work)
+    ksp(libs.hilt.work.compiler)
 
     // Coroutines
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
+
+    // WorkManager
+    implementation(libs.work.runtime)
 
     // Meta DAT SDK
     implementation(libs.mwdat.core)
@@ -82,10 +87,14 @@ dependencies {
     implementation(libs.tflite)
     implementation(libs.tflite.gpu)
 
+    // MediaPipe LLM Inference (Gemma 3n on-device)
+    implementation(libs.mediapipe.llm.inference)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.turbine)
+    testImplementation(libs.work.testing)
     androidTestImplementation(libs.mwdat.mockdevice)
 }

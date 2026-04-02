@@ -35,4 +35,11 @@
     <!-- Mesh -->
     <string name="mesh_connected">Connected to site mesh</string>
     <string name="mesh_disconnected">Site mesh unavailable</string>
+
+    <!-- Nightly batch upload -->
+    <string name="upload_in_progress">Uploading video data…</string>
+    <string name="upload_complete">Video upload complete</string>
+    <string name="upload_partial">Upload incomplete — will retry</string>
+    <string name="upload_channel_name">Video Upload</string>
+    <string name="upload_channel_description">Nightly batch video upload status</string>
 </resources>

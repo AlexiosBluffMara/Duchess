@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import com.meta.wearable.dat.camera.types.VideoFrame
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.json.JSONObject
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -101,6 +103,10 @@ class GemmaInferenceService : Service() {
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    // Alex: Nullable because the model is loaded lazily and unloaded on inactivity.
+    // Access is serialized via inferenceMutex — no concurrent read/write races.
+    private var llmInference: LlmInference? = null
+
     private val _state = MutableStateFlow<GemmaState>(GemmaState.Idle)
     val state: StateFlow<GemmaState> = _state.asStateFlow()
 
@@ -152,19 +158,21 @@ class GemmaInferenceService : Service() {
 
         _state.value = GemmaState.Loading
 
-        // TODO: Load Gemma 3n E2B model via MediaPipe LLM Inference API
-        // - Model path: loaded from app assets or downloaded on first run
-        // - Configure with INFERENCE_TEMPERATURE for deterministic output
-        // - Use GPU delegate if available for faster inference
-        // Example (when MediaPipe integration is complete):
-        //   val options = LlmInference.LlmInferenceOptions.builder()
-        //       .setModelPath(getModelPath())
-        //       .setTemperature(INFERENCE_TEMPERATURE)
-        //       .build()
-        //   llmInference = LlmInference.createFromOptions(this, options)
-
-        _state.value = GemmaState.Ready
-        resetInactivityTimer()
+        try {
+            val options = LlmInference.LlmInferenceOptions.builder()
+                .setModelPath(getModelPath())
+                .setTemperature(INFERENCE_TEMPERATURE)
+                .setTopK(40)
+                .setMaxTokens(512)
+                .build()
+            llmInference = LlmInference.createFromOptions(this, options)
+            _state.value = GemmaState.Ready
+            resetInactivityTimer()
+        } catch (e: Exception) {
+            // Alex: Never log the model path — reveals internal storage structure.
+            // Only log a sanitized error category.
+            _state.value = GemmaState.Error("Model load failed: ${e.javaClass.simpleName}")
+        }
     }
 
     /**
@@ -175,9 +183,8 @@ class GemmaInferenceService : Service() {
      * the next analyze() call will automatically re-load the model (lazy loading).
      */
     private fun unloadModel() {
-        // TODO: Release MediaPipe LLM Inference instance
-        // llmInference?.close()
-        // llmInference = null
+        llmInference?.close()
+        llmInference = null
         _state.value = GemmaState.Idle
         inactivityTimerJob?.cancel()
         inactivityTimerJob = null
@@ -231,28 +238,21 @@ class GemmaInferenceService : Service() {
 
             _state.value = GemmaState.Running
 
-            // TODO: Run actual Gemma 3n inference on frame
-            // - Convert VideoFrame bitmap to model input tensor
-            // - Run inference with temperature=INFERENCE_TEMPERATURE
-            // - Parse structured JSON response
-            //
-            // Example (when MediaPipe integration is complete):
-            //   val prompt = buildSafetyPrompt(frame)
-            //   val rawOutput = llmInference?.generateResponse(prompt)
-            //   val result = parseGemmaOutput(rawOutput ?: "{}")
-
-            val stubJson = """
-                {
-                    "violation_detected": false,
-                    "violation_type": null,
-                    "severity": 0,
-                    "description_en": "No safety violations detected",
-                    "description_es": "No se detectaron violaciones de seguridad",
-                    "confidence": 0.0
-                }
-            """.trimIndent()
-
-            val result = parseGemmaOutput(stubJson)
+            val result = if (llmInference != null) {
+                val prompt = buildSafetyPrompt(frame)
+                val rawOutput = llmInference!!.generateResponse(prompt)
+                parseGemmaOutput(rawOutput)
+            } else {
+                // Defensive fallback — shouldn't happen after loadModel succeeds
+                GemmaAnalysisResult(
+                    violationDetected = false,
+                    violationType = null,
+                    severity = 0,
+                    descriptionEn = "Model not loaded",
+                    descriptionEs = "Modelo no cargado",
+                    confidence = 0.0
+                )
+            }
 
             _state.value = GemmaState.Ready
             resetInactivityTimer()
@@ -296,6 +296,62 @@ class GemmaInferenceService : Service() {
                 confidence = 0.0
             )
         }
+    }
+
+    /**
+     * Resolve the model file path, copying from assets on first run if needed.
+     *
+     * Alex: We check internal storage first because downloaded/updated models
+     * go there. If the file doesn't exist yet, we copy the bundled asset.
+     * This supports both bundled and OTA-updated model binaries.
+     */
+    internal fun getModelPath(): String {
+        val modelFile = File(filesDir, "gemma3n-e2b.bin")
+        if (!modelFile.exists()) {
+            // First run — copy from bundled assets to internal storage
+            assets.open("gemma3n-e2b.bin").use { input ->
+                modelFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }
+        return modelFile.absolutePath
+    }
+
+    /**
+     * Build a safety-classification prompt for Gemma 3n.
+     *
+     * Alex: Gemma 3n E2B is a text model so we don't embed bitmap bytes.
+     * Instead, the prompt describes the frame metadata and what Tier 1 (YOLO)
+     * already detected, asking Gemma to classify and provide bilingual output.
+     * The strict JSON output format matches GemmaAnalysisResult fields.
+     */
+    internal fun buildSafetyPrompt(frame: VideoFrame): String {
+        val width = frame.bitmap.width
+        val height = frame.bitmap.height
+        return """
+            |You are a construction site safety analyst. Analyze the following frame from a construction site camera for PPE violations and safety hazards.
+            |
+            |Frame information:
+            |- Source: construction site safety camera
+            |- Resolution: ${width}x${height}
+            |- Tier 1 (YOLO) has pre-screened this frame and flagged it for further analysis.
+            |
+            |Respond ONLY with a valid JSON object using this exact format:
+            |{
+            |  "violation_detected": true/false,
+            |  "violation_type": "TYPE" or null,
+            |  "severity": 0-5,
+            |  "description_en": "English description of findings",
+            |  "description_es": "Spanish description of findings",
+            |  "confidence": 0.0-1.0
+            |}
+            |
+            |Known violation types: NO_HARD_HAT, NO_SAFETY_VEST, NO_SAFETY_GLASSES, NO_GLOVES, NO_STEEL_TOE_BOOTS, FALL_HAZARD, RESTRICTED_ZONE, MULTIPLE_VIOLATIONS
+            |Severity scale: 0=none, 1=minor, 2=moderate, 3=serious, 4=severe, 5=critical/life-threatening
+            |Provide description_en in English and description_es in Spanish.
+            |Do not include any text outside the JSON object.
+        """.trimMargin()
     }
 
     private fun createNotificationChannel() {

@@ -35,4 +35,11 @@
     <!-- Mesh -->
     <string name="mesh_connected">Conectado a la red del sitio</string>
     <string name="mesh_disconnected">Red del sitio no disponible</string>
+
+    <!-- Nightly batch upload -->
+    <string name="upload_in_progress">Subiendo datos de video…</string>
+    <string name="upload_complete">Carga de video completa</string>
+    <string name="upload_partial">Carga incompleta — se reintentará</string>
+    <string name="upload_channel_name">Carga de video</string>
+    <string name="upload_channel_description">Estado de la carga nocturna de video</string>
 </resources>
