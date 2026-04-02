@@ -109,9 +109,19 @@ jobs:
 
       - name: "Check 1: Skill mirror sync"
         run: |
-          # TAYLOR: mirror-skills.sh "check" mode does a dry-run diff.
+          # TAYLOR: Run the sync (github→claude direction) then check if any
+          # files actually changed using git diff --exit-code. This avoids the
+          # mtime-based false positives that "check" mode triggers in CI
+          # (git checkout assigns all files the same timestamp, making .github/
+          # files appear "newer" than .claude/ files every time).
           if [[ -f scripts/mirror-skills.sh ]]; then
-            bash scripts/mirror-skills.sh check
+            bash scripts/mirror-skills.sh github
+            if ! git diff --exit-code .claude/; then
+              echo "❌ Skill mirror drift: .github/skills ↔ .claude/skills are out of sync."
+              echo "   Run 'bash scripts/mirror-skills.sh' locally and commit the result."
+              exit 1
+            fi
+            echo "✓ Skills and agents are in sync."
           else
             echo "⚠ mirror-skills.sh not found — skipping"
           fi
