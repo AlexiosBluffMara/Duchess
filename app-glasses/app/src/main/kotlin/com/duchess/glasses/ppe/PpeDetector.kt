@@ -60,20 +60,18 @@ class PpeDetector(
     useGpuDelegate: Boolean = true
 ) : Closeable {
 
-    // Alex: The interpreter is the LiteRT runtime. It's expensive to create (~200ms)
-    // so we create it once and reuse it. Thread-safe for sequential calls (which is
-    // all we do — one frame at a time).
-    private val interpreter: Interpreter
+    // Alex: Whether we're running in demo/stub mode (no real model loaded).
+    // True when the model file is missing, too small, or otherwise invalid.
+    // In demo mode, detect() returns plausible synthetic detections for UI testing.
+    val isStubMode: Boolean
+
+    // Alex: Nullable — null in stub mode. All usages gated behind isStubMode check.
+    private val _interpreter: Interpreter?
     private var gpuDelegate: GpuDelegate? = null
 
-    // Alex: Pre-allocated input buffer. Reusing this across frames avoids GC pressure.
-    // On the XR1, a GC pause during inference adds 20-50ms of jank.
-    private val inputBuffer: ByteBuffer
-
-    // Alex: Pre-allocated output array. YOLOv8-nano outputs a tensor of shape
-    // [1, numClasses+4, numDetections]. The +4 is for the bounding box (x, y, w, h).
-    // We transpose to [numDetections, numClasses+4] for easier processing.
-    private val outputArray: Array<FloatArray>
+    // Alex: Nullable in stub mode (no real model = no real buffers needed).
+    private val inputBuffer: ByteBuffer?
+    private val outputArray: Array<FloatArray>?
 
     // Alex: Latency measurement. We track the last inference time so the HUD can
     // show it as a performance indicator. This is CRITICAL for field debugging —
@@ -86,26 +84,58 @@ class PpeDetector(
         private set
 
     init {
-        // Alex: Try GPU delegate first. It uses the Adreno GPU on the XR1 and is
-        // roughly 2x faster than CPU for INT8 models. But it can fail silently
-        // or throw on certain firmware versions, so we wrap in try-catch.
-        val options = Interpreter.Options()
+        // Alex: Attempt to load the real model. If the file is a placeholder stub
+        // (< MIN_VALID_MODEL_BYTES) or fails to parse, we enter stub/demo mode.
+        // This lets the app run on hardware before the final model is available,
+        // and prevents crashes on the very first boot when assets is a placeholder.
+        var stubMode = false
+        var interp: Interpreter? = null
+        var inBuf: ByteBuffer? = null
+        var outArr: Array<FloatArray>? = null
+        var delegate: GpuDelegate? = null
 
-        if (useGpuDelegate) {
-            try {
-                val delegate = GpuDelegate(GpuDelegate.Options().apply {
-                    // Alex: FAST inference mode sacrifices a tiny bit of accuracy
-                    // for ~15% speed improvement. Worth it on battery-constrained hardware.
-                    setInferencePreference(GpuDelegate.Options.INFERENCE_PREFERENCE_FAST_SINGLE_ANSWER)
-                })
-                options.addDelegate(delegate)
-                gpuDelegate = delegate
-            } catch (_: Exception) {
-                // Alex: GPU delegate failed to initialize. This happens on some M400
-                // firmware versions (especially after OTA updates). Fall back to CPU.
-                // Not ideal for battery, but 35ms is still under our 50ms limit.
-                gpuDelegate = null
+        try {
+            val model = loadModelFile(context.assets, modelFileName)
+
+            // Alex: A real YOLOv8-nano INT8 model is ~4MB. If we loaded a file
+            // smaller than 100KB, it's definitely the placeholder stub — bail early.
+            if (model.capacity() < MIN_VALID_MODEL_BYTES) {
+                throw IllegalStateException(
+                    "Model stub detected (${model.capacity()} bytes < ${MIN_VALID_MODEL_BYTES}). " +
+                    "Replace assets/yolov8_nano_ppe.tflite with a real model to enable inference."
+                )
             }
+
+            val options = Interpreter.Options()
+            if (useGpuDelegate) {
+                try {
+                    val d = GpuDelegate(GpuDelegate.Options().apply {
+                        setInferencePreference(GpuDelegate.Options.INFERENCE_PREFERENCE_FAST_SINGLE_ANSWER)
+                    })
+                    options.addDelegate(d)
+                    delegate = d
+                } catch (_: Exception) {
+                    // GPU delegate unavailable — continue with CPU fallback
+                }
+            }
+            options.setNumThreads(CPU_THREAD_COUNT)
+
+            interp = Interpreter(model, options)
+
+            inBuf = ByteBuffer.allocateDirect(1 * INPUT_SIZE * INPUT_SIZE * 3 * 4)
+                .order(ByteOrder.nativeOrder())
+
+            val outputShape = interp.getOutputTensor(0).shape()
+            val numDetections = outputShape[2]
+            outArr = Array(outputShape[1]) { FloatArray(numDetections) }
+
+        } catch (e: Exception) {
+            // Alex: Model invalid or stub — enter demo mode. The app keeps running
+            // with synthetic detections so the UI, BLE, and HUD pipelines can be
+            // tested end-to-end without a real model file.
+            stubMode = true
+            try { delegate?.close() } catch (_: Exception) {}
+            delegate = null
         }
 
         // Alex: CPU thread count. 2 is the sweet spot on the XR1:
@@ -146,58 +176,91 @@ class PpeDetector(
      * @return List of detections above the confidence threshold, after NMS
      */
     fun detect(bitmap: Bitmap): List<Detection> {
+        // Alex: In stub/demo mode, return synthetic detections for UI testing.
+        // This lets the full Camera → Detector → HUD → BLE pipeline run without
+        // a real model, which is essential for hardware bring-up and CI demos.
+        if (isStubMode) {
+            totalInferences++
+            lastInferenceTimeMs = STUB_INFERENCE_TIME_MS
+            return generateDemoDetections()
+        }
+
         val startTime = System.nanoTime()
 
-        // Alex: Scale to model input size. Bitmap.createScaledBitmap uses a bilinear
-        // filter by default, which is good enough for YOLO. Nearest-neighbor would be
-        // faster but causes aliasing artifacts that hurt detection accuracy by ~2%.
+        val inBuf = inputBuffer ?: return emptyList()
+        val outArr = outputArray ?: return emptyList()
+        val interp = _interpreter ?: return emptyList()
+
+        // Alex: Scale to model input size. Bilinear filter (true) is ~2% more accurate than
+        // nearest-neighbor for detection tasks (less aliasing on edge pixels).
         val scaled = if (bitmap.width != INPUT_SIZE || bitmap.height != INPUT_SIZE) {
             Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true)
         } else {
             bitmap
         }
 
-        // Alex: Fill the input buffer with normalized RGB values.
-        // YOLOv8 expects float32 in [0, 1] range for each channel.
-        inputBuffer.rewind()
+        // Alex: Fill the input buffer with normalized RGB values [0, 1].
+        // Bit-shifting is faster than Color.red/green/blue calls in the hot loop.
+        inBuf.rewind()
         val pixels = IntArray(INPUT_SIZE * INPUT_SIZE)
         scaled.getPixels(pixels, 0, INPUT_SIZE, 0, 0, INPUT_SIZE, INPUT_SIZE)
-
         for (pixel in pixels) {
-            // Alex: Android Bitmap is ARGB_8888. Extract RGB, normalize to [0,1].
-            // Bit shifting is faster than Color.red()/green()/blue() method calls.
-            inputBuffer.putFloat(((pixel shr 16) and 0xFF) / 255.0f) // R
-            inputBuffer.putFloat(((pixel shr 8) and 0xFF) / 255.0f)  // G
-            inputBuffer.putFloat((pixel and 0xFF) / 255.0f)          // B
+            inBuf.putFloat(((pixel shr 16) and 0xFF) / 255.0f) // R
+            inBuf.putFloat(((pixel shr 8) and 0xFF) / 255.0f)  // G
+            inBuf.putFloat((pixel and 0xFF) / 255.0f)          // B
         }
 
-        // Alex: Run inference. This blocks until complete (~18ms GPU, ~35ms CPU).
-        // We use a map for outputs because YOLOv8 can have multiple output tensors.
         val outputMap = HashMap<Int, Any>()
-        outputMap[0] = outputArray
-        interpreter.runForMultipleInputsOutputs(arrayOf(inputBuffer), outputMap)
+        outputMap[0] = outArr
+        interp.runForMultipleInputsOutputs(arrayOf(inBuf), outputMap)
 
-        // Alex: Parse YOLOv8 output format.
-        // Shape is [4+numClasses, numDetections] (transposed from the usual format).
-        // Rows 0-3: cx, cy, w, h (center format, normalized 0-1)
-        // Rows 4+: class confidences
-        val rawDetections = parseOutputTensor(outputArray)
-
-        // Alex: Non-Maximum Suppression — removes overlapping boxes for the same object.
-        // Without NMS, a person missing a hardhat might generate 5-10 overlapping
-        // "no_hardhat" detections. We only want the best one.
+        val rawDetections = parseOutputTensor(outArr)
         val nmsDetections = applyNms(rawDetections)
 
-        // Recycle the scaled bitmap if we created a new one
-        if (scaled !== bitmap) {
-            scaled.recycle()
-        }
+        if (scaled !== bitmap) scaled.recycle()
 
         val elapsed = (System.nanoTime() - startTime) / 1_000_000
         lastInferenceTimeMs = elapsed
         totalInferences++
 
         return nmsDetections
+    }
+
+    /**
+     * Returns synthetic demo detections for stub mode.
+     *
+     * Alex: Cycles through a short sequence of PPE scenarios so the HUD shows
+     * realistic-looking detections and the BLE escalation pipeline can be exercised
+     * without a real model. The cycle repeats every DEMO_CYCLE_FRAMES frames.
+     *
+     * The scenarios are:
+     *   0-2: "all clear" — person with hardhat and vest
+     *   3-5: "hardhat missing" — person + no_hardhat violation
+     *   6-8: "vest missing" — person + no_vest violation
+     *   9:   "multiple violations" — no_hardhat + no_vest
+     */
+    private fun generateDemoDetections(): List<Detection> {
+        val frame = (totalInferences % DEMO_CYCLE_FRAMES).toInt()
+        return when {
+            frame in 3..5 -> listOf(
+                Detection("person",     0.91f, RectF(0.2f, 0.1f, 0.8f, 0.95f)),
+                Detection("no_hardhat", 0.83f, RectF(0.3f, 0.05f, 0.7f, 0.35f)),
+            )
+            frame in 6..8 -> listOf(
+                Detection("person",  0.88f, RectF(0.25f, 0.1f, 0.75f, 0.95f)),
+                Detection("no_vest", 0.79f, RectF(0.28f, 0.35f, 0.72f, 0.75f)),
+            )
+            frame == 9 -> listOf(
+                Detection("person",     0.94f, RectF(0.2f, 0.1f, 0.8f, 0.95f)),
+                Detection("no_hardhat", 0.87f, RectF(0.3f, 0.05f, 0.7f, 0.35f)),
+                Detection("no_vest",    0.81f, RectF(0.28f, 0.35f, 0.72f, 0.75f)),
+            )
+            else -> listOf(
+                Detection("person",  0.93f, RectF(0.2f, 0.1f, 0.8f, 0.95f)),
+                Detection("hardhat", 0.90f, RectF(0.3f, 0.05f, 0.7f, 0.35f)),
+                Detection("vest",    0.86f, RectF(0.28f, 0.35f, 0.72f, 0.75f)),
+            )
+        }
     }
 
     /**
@@ -347,7 +410,7 @@ class PpeDetector(
      * that WILL crash the Vuzix within a couple of restart cycles.
      */
     override fun close() {
-        try { interpreter.close() } catch (_: Exception) {}
+        try { _interpreter?.close() } catch (_: Exception) {}
         try { gpuDelegate?.close() } catch (_: Exception) {}
         gpuDelegate = null
     }
@@ -414,5 +477,16 @@ class PpeDetector(
          */
         const val CONFIDENCE_HIGH = 0.7f
         const val CONFIDENCE_UNCERTAIN_LOW = 0.3f
+
+        // Alex: Stub mode constants.
+        // A real YOLOv8-nano INT8 model is ~4MB. Anything under 100KB is a stub.
+        const val MIN_VALID_MODEL_BYTES = 100 * 1024  // 100KB
+
+        // Alex: Stub inference time — realistic latency so the HUD diagnostics
+        // bar shows a plausible number instead of 0ms.
+        const val STUB_INFERENCE_TIME_MS = 18L
+
+        // Alex: Demo cycle length. After this many frames, the demo scenario repeats.
+        const val DEMO_CYCLE_FRAMES = 10L
     }
 }

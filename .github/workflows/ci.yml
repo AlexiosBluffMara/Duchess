@@ -1,11 +1,14 @@
 # ━━━ Duchess CI Pipeline ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# TAYLOR: First CI pipeline for Duchess. Three parallel jobs:
-#   1. python-tests   — Cloud CDK + ML tests (mocked deps, no GPU needed)
-#   2. pre-commit     — The same 4 checks from .githooks/pre-commit
-#   3. kotlin-lint    — Basic project structure validation (no Gradle build)
+# TAYLOR: CI pipeline for Duchess. Four parallel jobs:
+#   1. python-tests    — Cloud CDK + ML tests (mocked deps, no GPU needed)
+#   2. pre-commit      — The same 4 checks from .githooks/pre-commit
+#   3. kotlin-lint     — Basic project structure validation
+#   4. android-build   — Full Gradle debug build (requires GH_PACKAGES_TOKEN secret)
 #
-# Secrets required: NONE. All AWS calls are mocked via moto.
-# Full Android builds are deferred until we add GitHub PAT for DAT SDK Maven.
+# Secrets required:
+#   GH_PACKAGES_TOKEN — GitHub PAT with read:packages scope for Meta DAT SDK.
+#   Set this in: repo Settings → Secrets and variables → Actions → New repository secret.
+#   android-build job is skipped if the secret is not set (safe for forks/external PRs).
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 name: Duchess CI
@@ -154,6 +157,7 @@ jobs:
 
           SECRET_PATTERNS=(
             'ghp_[A-Za-z0-9]{36}'
+            'github_pat_[A-Za-z0-9_]{80,}'
             'AKIA[0-9A-Z]{16}'
             'sk-[a-zA-Z0-9]{48,}'
             'aws_secret_access_key\s*=\s*[A-Za-z0-9/+]{40}'
@@ -299,3 +303,76 @@ jobs:
             echo "::error::Missing AndroidManifest.xml"
             exit 1
           fi
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 4: Android Build (phone + glasses debug APKs)
+  # Requires GH_PACKAGES_TOKEN secret — skipped for external forks.
+  # ─────────────────────────────────────────────────────────────────────────
+  android-build:
+    name: Android Debug Build
+    runs-on: ubuntu-latest
+    # TAYLOR: Only run when the secret is present. For PRs from forks the secret
+    # is not exposed, so we skip rather than fail. Internal PRs and main branch
+    # always have access to the secret.
+    if: ${{ secrets.GH_PACKAGES_TOKEN != '' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: temurin
+
+      # TAYLOR: Cache Gradle wrapper + caches to save ~2min on every run.
+      # Key includes all build files so cache busts when deps or AGP change.
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', '**/libs.versions.toml', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      # TAYLOR: Write local.properties for both apps. Credentials come from the
+      # GH_PACKAGES_TOKEN secret — never hardcoded, never logged.
+      - name: Write local.properties
+        env:
+          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+        run: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > app-phone/local.properties
+          echo "github_user=duchess-ci" >> app-phone/local.properties
+          echo "github_token=${GH_PACKAGES_TOKEN}" >> app-phone/local.properties
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > app-glasses/local.properties
+
+      # TAYLOR: Build the phone companion app. --no-daemon is important in CI —
+      # the Gradle daemon persists between runs and causes memory issues on runners.
+      - name: Build phone app (debug)
+        working-directory: app-phone
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      # TAYLOR: Build the glasses app. Uses a stub TFLite model in CI
+      # (the real ~4MB model is produced by scripts/download-ppe-model.py at
+      # deployment time — too large to store in the repo).
+      - name: Build glasses app (debug)
+        working-directory: app-glasses
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      # TAYLOR: Upload APKs as build artifacts so they can be downloaded and
+      # side-loaded onto devices without re-running the build.
+      - name: Upload phone APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: duchess-phone-debug-${{ github.sha }}
+          path: app-phone/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
+
+      - name: Upload glasses APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: duchess-glasses-debug-${{ github.sha }}
+          path: app-glasses/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14

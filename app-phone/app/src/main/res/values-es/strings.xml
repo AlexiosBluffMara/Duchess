@@ -6,6 +6,9 @@
     <string name="register_button">Registrar dispositivo</string>
     <string name="registration_error">Error de registro. Inténtelo de nuevo.</string>
 
+    <!-- Model setup -->
+    <string name="model_setup_title">Configuración del modelo IA</string>
+
     <!-- Stream screen -->
     <string name="stream_connecting">Conectando a los lentes…</string>
     <string name="stream_active">Transmisión en vivo</string>

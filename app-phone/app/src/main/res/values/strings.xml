@@ -6,6 +6,9 @@
     <string name="register_button">Register Device</string>
     <string name="registration_error">Registration failed. Please try again.</string>
 
+    <!-- Model setup -->
+    <string name="model_setup_title">AI Model Setup</string>
+
     <!-- Stream screen -->
     <string name="stream_connecting">Connecting to glasses…</string>
     <string name="stream_active">Live Feed</string>
