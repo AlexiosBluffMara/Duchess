@@ -4,6 +4,30 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 21:55 UTC — Commit a5b04ca
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: fix(glasses): correct LiteRT import packages and remove duplicate init code in PpeDetector
+
+### Modules touched
+- **app-glasses/**: 1 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1746 | Active (1746 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+app-glasses/app/src/main/kotlin/com/duchess/glasses/ppe/PpeDetector.kt
+```
+
+---
+
 ## 2026-04-02 21:20 UTC — Commit a519f26
 
 **Branch**: `main`  
@@ -80,32 +104,6 @@ app-glasses/gradlew.bat
 ### Changed files
 ```
 app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
-```
-
----
-
-## 2026-04-02 20:56 UTC — Commit e8113b7
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: fix(phone): fix modelManager scope and CI mirror quote-stripping
-
-### Modules touched
-- **app-phone/**: 1 file(s) changed
-- **infra**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
-scripts/mirror-skills.sh
 ```
 
 ---

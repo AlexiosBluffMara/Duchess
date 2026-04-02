@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.RectF
 import com.duchess.glasses.model.Detection
-import com.google.ai.edge.litert.Interpreter
-import com.google.ai.edge.litert.gpu.GpuDelegate
+import org.tensorflow.lite.Interpreter
+import org.tensorflow.lite.gpu.GpuDelegate
 import java.io.Closeable
 import java.io.FileInputStream
 import java.nio.ByteBuffer
@@ -138,26 +138,11 @@ class PpeDetector(
             delegate = null
         }
 
-        // Alex: CPU thread count. 2 is the sweet spot on the XR1:
-        // - 1 thread: 55ms (too slow, occasionally misses the 50ms deadline)
-        // - 2 threads: 35ms (safe margin)
-        // - 4 threads: 30ms but thermal throttles after 5 min of continuous inference
-        // With GPU delegate, this is a fallback so thread count matters less.
-        options.setNumThreads(CPU_THREAD_COUNT)
-
-        val model = loadModelFile(context.assets, modelFileName)
-        interpreter = Interpreter(model, options)
-
-        // Alex: Input tensor shape: [1, INPUT_SIZE, INPUT_SIZE, 3] (batch=1, RGB)
-        // We allocate a direct ByteBuffer (off-heap) for zero-copy transfer to LiteRT.
-        inputBuffer = ByteBuffer.allocateDirect(1 * INPUT_SIZE * INPUT_SIZE * 3 * 4)
-            .order(ByteOrder.nativeOrder())
-
-        // Alex: Output shape from YOLOv8 is [1, 4+numClasses, numDetections].
-        // We need to know numDetections from the output tensor shape.
-        val outputShape = interpreter.getOutputTensor(0).shape()
-        val numDetections = outputShape[2] // [1, 4+numClasses, numDetections]
-        outputArray = Array(outputShape[1]) { FloatArray(numDetections) }
+        isStubMode = stubMode
+        _interpreter = interp
+        gpuDelegate = delegate
+        inputBuffer = inBuf
+        outputArray = outArr
     }
 
     /**
