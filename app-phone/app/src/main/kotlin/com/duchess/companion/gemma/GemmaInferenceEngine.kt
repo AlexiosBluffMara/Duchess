@@ -3,7 +3,9 @@ package com.duchess.companion.gemma
 import android.content.Context
 import android.graphics.Bitmap
 import com.google.mediapipe.framework.image.BitmapImageBuilder
+import com.google.mediapipe.tasks.genai.llminference.GraphOptions
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
+import com.google.mediapipe.tasks.genai.llminference.LlmInferenceSession
 import com.meta.wearable.dat.camera.types.VideoFrame
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -101,7 +103,7 @@ class GemmaInferenceEngine @Inject constructor(
             val options = LlmInference.LlmInferenceOptions.builder()
                 .setModelPath(getModelPath())
                 .setMaxTokens(512)
-                .setMaxImages(MAX_IMAGES)
+                .setMaxNumImages(MAX_IMAGES)
                 .build()
             llmInference = LlmInference.createFromOptions(context, options)
             _state.value = GemmaState.Ready
@@ -202,7 +204,12 @@ class GemmaInferenceEngine @Inject constructor(
      * (it has no image data). The calling layer may filter by confidence threshold.
      */
     private fun analyzeWithVision(engine: LlmInference, bitmap: Bitmap?): GemmaAnalysisResult {
-        val session = engine.createSession()
+        val sessionOptions = LlmInferenceSession.LlmInferenceSessionOptions.builder()
+            .setGraphOptions(
+                GraphOptions.builder().setEnableVisionModality(true).build()
+            )
+            .build()
+        val session = LlmInferenceSession.createFromOptions(engine, sessionOptions)
         try {
             if (bitmap != null) {
                 // Alex: BitmapImageBuilder wraps the Bitmap in MediaPipe's MPImage format.

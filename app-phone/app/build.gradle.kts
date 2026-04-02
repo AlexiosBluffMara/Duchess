@@ -90,6 +90,8 @@ dependencies {
 
     // MediaPipe LLM Inference (Gemma 4 on-device)
     implementation(libs.mediapipe.llm.inference)
+    // MediaPipe tasks-core: provides MPImage and BitmapImageBuilder for vision input
+    implementation(libs.mediapipe.tasks.core)
 
     // Testing
     testImplementation(libs.junit)

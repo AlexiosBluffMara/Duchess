@@ -69,6 +69,12 @@ github_to_claude() {
   local desc; desc=$(frontmatter_field "$src" "description")
   local body; body=$(strip_frontmatter "$src")
 
+  # Strip one layer of surrounding double-quotes that claude_to_github() adds.
+  # Raw YAML: description: ""text""  →  desc var: ""text""  →  stripped: "text"
+  if [[ "${desc}" == '"'*'"' ]]; then
+    desc="${desc:1:${#desc}-2}"
+  fi
+
   mkdir -p "$(dirname "$dst")"
   {
     echo "---"

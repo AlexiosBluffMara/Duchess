@@ -4,6 +4,35 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 20:48 UTC — Commit 5d0177d
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: fix(phone): resolve all Kotlin compilation and CI mirror errors
+
+### Modules touched
+- **app-phone/**: 3 file(s) changed
+- **infra**: 2 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1746 | Active (1746 files) |
+| app-glasses/ | 29 | Active (29 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+.github/workflows/ci.yml
+app-phone/app/build.gradle.kts
+app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaInferenceEngine.kt
+app-phone/gradle/libs.versions.toml
+scripts/mirror-skills.sh
+```
+
+---
+
 ## 2026-04-02 20:33 UTC — Commit 13e6d7f
 
 **Branch**: `main`  
@@ -74,30 +103,6 @@ app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaState.kt
 ### Changed files
 ```
 docs/index.md
-```
-
----
-
-## 2026-04-02 20:09 UTC — Commit 85c0257
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: chore: update subproject commit reference in adoring-jackson worktree
-
-### Modules touched
-- **infra**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1744 | Active (1744 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.claude/worktrees/adoring-jackson
 ```
 
 ---

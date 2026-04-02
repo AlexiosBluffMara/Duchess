@@ -116,7 +116,10 @@ jobs:
           # files appear "newer" than .claude/ files every time).
           if [[ -f scripts/mirror-skills.sh ]]; then
             bash scripts/mirror-skills.sh github
-            if ! git diff --exit-code .claude/; then
+            # Exclude settings.json — it is always rebuilt by the sync and its
+            # content depends on the Python version / json.dump sort order, which
+            # is deterministic but not meaningful as a drift signal.
+            if ! git diff --exit-code .claude/skills .claude/agents; then
               echo "❌ Skill mirror drift: .github/skills ↔ .claude/skills are out of sync."
               echo "   Run 'bash scripts/mirror-skills.sh' locally and commit the result."
               exit 1
