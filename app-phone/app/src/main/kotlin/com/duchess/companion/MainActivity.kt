@@ -51,6 +51,7 @@ import com.duchess.companion.dashboard.DashboardScreen
 import com.duchess.companion.navigation.Screen
 import com.duchess.companion.navigation.bottomNavScreens
 import com.duchess.companion.settings.SettingsScreen
+import com.duchess.companion.splash.SplashScreen
 import com.duchess.companion.stream.StreamScreen
 import com.duchess.companion.ui.theme.DuchessTheme
 import com.meta.wearable.dat.core.Wearables
@@ -143,20 +144,39 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DuchessMainApp() {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val showBars = currentRoute in bottomNavScreens.map { it.route }
+            || currentRoute == Screen.AlertDetail.route
 
     Scaffold(
-        topBar = { DuchessTopBar() },
-        bottomBar = { DuchessBottomBar(navController) },
+        topBar = { if (showBars) DuchessTopBar() },
+        bottomBar = { if (showBars) DuchessBottomBar(navController) },
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Dashboard.route,
+            startDestination = Screen.Splash.route,
             modifier = Modifier.padding(innerPadding),
         ) {
+            composable(Screen.Splash.route) {
+                SplashScreen(
+                    onSplashComplete = {
+                        navController.navigate(Screen.Dashboard.route) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    },
+                )
+            }
             composable(Screen.Dashboard.route) {
                 DashboardScreen(
                     onNavigateToHudSim = {
                         navController.navigate(Screen.HudSimulator.route)
+                    },
+                    onZoneClick = {
+                        navController.navigate(Screen.Alerts.route) {
+                            launchSingleTop = true
+                        }
                     },
                 )
             }

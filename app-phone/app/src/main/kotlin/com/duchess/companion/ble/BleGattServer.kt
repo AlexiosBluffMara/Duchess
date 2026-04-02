@@ -44,6 +44,7 @@ import javax.inject.Singleton
  * Without that, notifyCharacteristicChanged() silently does nothing. I burned
  * two days debugging this once because the glasses client wasn't subscribing.
  */
+@Suppress("DEPRECATION")
 @Singleton
 class BleGattServer @Inject constructor(
     @ApplicationContext private val context: Context

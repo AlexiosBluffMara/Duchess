@@ -68,6 +68,7 @@ private fun scoreColor(score: Int): Color = when {
 fun DashboardScreen(
     modifier: Modifier = Modifier,
     onNavigateToHudSim: () -> Unit = {},
+    onZoneClick: (String) -> Unit = {},
     viewModel: DashboardViewModel = hiltViewModel(),
 ) {
     val safetyScore by viewModel.safetyScore.collectAsState()
@@ -94,7 +95,7 @@ fun DashboardScreen(
         SectionHeader(text = stringResource(R.string.zones))
         Spacer(modifier = Modifier.height(12.dp))
         zones.forEach { zone ->
-            ZoneCard(zone = zone)
+            ZoneCard(zone = zone, onClick = { onZoneClick(zone.zoneId) })
             Spacer(modifier = Modifier.height(12.dp))
         }
 
@@ -188,11 +189,13 @@ private fun SafetyScoreSection(score: Int) {
 // region Zone Card
 
 @Composable
-private fun ZoneCard(zone: ZoneStatus) {
+private fun ZoneCard(zone: ZoneStatus, onClick: () -> Unit = {}) {
     val zoneColor = scoreColor(zone.safetyScore)
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = CardShape,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),

@@ -17,6 +17,7 @@ sealed class Screen(val route: String, val titleResId: Int, val icon: ImageVecto
         fun createRoute(alertId: String) = "alert_detail/$alertId"
     }
     data object HudSimulator : Screen("hud_simulator", R.string.hud_sim_title, Icons.Filled.Videocam)
+    data object Splash : Screen("splash", R.string.app_name, Icons.Filled.Dashboard)
 }
 
 val bottomNavScreens = listOf(

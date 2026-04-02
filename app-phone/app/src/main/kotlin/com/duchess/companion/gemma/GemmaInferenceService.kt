@@ -276,7 +276,7 @@ class GemmaInferenceService : Service() {
             val json = JSONObject(rawJson)
             GemmaAnalysisResult(
                 violationDetected = json.optBoolean("violation_detected", false),
-                violationType = json.optString("violation_type", null),
+                violationType = if (json.has("violation_type")) json.optString("violation_type") else null,
                 severity = json.optInt("severity", 0),
                 descriptionEn = json.optString("description_en", "Analysis complete"),
                 descriptionEs = json.optString("description_es", "Análisis completo"),

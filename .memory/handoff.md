@@ -4,6 +4,38 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 16:49 UTC — Commit fc1582b
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: feat(phone): splash screen, alert actions, zone navigation, build polish
+
+### Modules touched
+- **app-phone/**: 9 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1737 | Active (1737 files) |
+| app-glasses/ | 29 | Active (29 files) |
+| ml/ | 22 | Active (22 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/alerts/AlertDetailScreen.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/ble/BleGattServer.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/dashboard/DashboardScreen.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaInferenceService.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/navigation/DuchessNavigation.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/splash/SplashScreen.kt
+app-phone/app/src/main/res/values-es/strings.xml
+app-phone/app/src/main/res/values/strings.xml
+```
+
+---
+
 ## 2026-04-02 16:35 UTC — Commit 3122ead
 
 **Branch**: `main`  
@@ -120,36 +152,6 @@ app-phone/app/src/main/kotlin/com/duchess/companion/mesh/MeshManager.kt
 app-phone/app/src/test/kotlin/com/duchess/companion/ble/AlertSerializerTest.kt
 app-phone/app/src/test/kotlin/com/duchess/companion/gemma/GemmaInferenceServiceTest.kt
 app-phone/app/src/test/kotlin/com/duchess/companion/mesh/MeshManagerTest.kt
-```
-
----
-
-## 2026-04-02 14:43 UTC — Commit 872feab
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: fix(shared): BLE UUID mismatch, ML test mocking, QA audit
-
-### Modules touched
-- **app-glasses/**: 2 file(s) changed
-- **ml/**: 2 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 28 | Active (28 files) |
-| app-glasses/ | 26 | Active (26 files) |
-| ml/ | 22 | Active (22 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.memory/handoff.md
-.memory/project-state.md
-app-glasses/app/src/main/kotlin/com/duchess/glasses/ble/BleGattClient.kt
-app-glasses/app/src/test/kotlin/com/duchess/glasses/ble/BleGattClientTest.kt
-ml/pyproject.toml
-ml/tests/conftest.py
 ```
 
 ---

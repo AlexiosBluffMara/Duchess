@@ -140,4 +140,12 @@
     <string name="hud_ppe_alert_es">⚠ ALERTA EPP</string>
     <string name="hud_no_glasses_detected">LENTES NO DETECTADOS</string>
     <string name="view_hud_sim">Ver HUD de lentes</string>
+
+    <!-- Splash -->
+    <string name="tagline">Inteligencia de Sitio de Construcción</string>
+
+    <!-- Alert actions -->
+    <string name="alert_acknowledged">Alerta reconocida</string>
+    <string name="alert_escalated">Alerta escalada a revisión en la nube</string>
+    <string name="alert_dismissed">Alerta descartada</string>
 </resources>

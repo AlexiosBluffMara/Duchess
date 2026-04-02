@@ -140,4 +140,12 @@
     <string name="hud_ppe_alert_es">⚠ ALERTA EPP</string>
     <string name="hud_no_glasses_detected">NO GLASSES DETECTED</string>
     <string name="view_hud_sim">View Glasses HUD</string>
+
+    <!-- Splash -->
+    <string name="tagline">Construction Site Intelligence</string>
+
+    <!-- Alert actions -->
+    <string name="alert_acknowledged">Alert acknowledged</string>
+    <string name="alert_escalated">Alert escalated to cloud review</string>
+    <string name="alert_dismissed">Alert dismissed</string>
 </resources>

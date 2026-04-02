@@ -34,12 +34,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +54,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.duchess.companion.R
 import com.duchess.companion.model.SafetyAlert
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -70,6 +76,12 @@ fun AlertDetailScreen(
     viewModel: AlertsViewModel = hiltViewModel(),
 ) {
     val alert = viewModel.getAlertById(alertId)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val acknowledgedMsg = stringResource(R.string.alert_acknowledged)
+    val escalatedMsg = stringResource(R.string.alert_escalated)
+    val dismissedMsg = stringResource(R.string.alert_dismissed)
 
     Scaffold(
         topBar = {
@@ -88,6 +100,7 @@ fun AlertDetailScreen(
                 ),
             )
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = modifier,
     ) { innerPadding ->
         if (alert == null) {
@@ -187,7 +200,13 @@ fun AlertDetailScreen(
 
             // Acknowledge button (primary, orange)
             Button(
-                onClick = { /* Placeholder */ },
+                onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(acknowledgedMsg)
+                        delay(600)
+                        onBack()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -204,7 +223,11 @@ fun AlertDetailScreen(
 
             // Escalate button (outlined, red)
             OutlinedButton(
-                onClick = { /* Placeholder */ },
+                onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(escalatedMsg)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -224,7 +247,13 @@ fun AlertDetailScreen(
 
             // Dismiss button (text only, gray)
             TextButton(
-                onClick = { onBack() },
+                onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(dismissedMsg)
+                        delay(600)
+                        onBack()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
