@@ -147,7 +147,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DuchessMainApp(modelManager: GemmaModelManager) {
+fun DuchessMainApp(modelManager: GemmaModelManager? = null) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -171,7 +171,7 @@ fun DuchessMainApp(modelManager: GemmaModelManager) {
                 SplashScreen(
                     onSplashComplete = {
                         // Inject modelManager from outer scope via closure
-                        val dest = if (!MainActivity.DEMO_MODE && !modelManager.isModelReady()) {
+                        val dest = if (!MainActivity.DEMO_MODE && modelManager?.isModelReady() == false) {
                             Screen.ModelSetup.route
                         } else {
                             Screen.Dashboard.route
