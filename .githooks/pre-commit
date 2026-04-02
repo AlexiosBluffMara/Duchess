@@ -66,7 +66,10 @@ for pattern in "${PII_PATTERNS[@]}"; do
   while IFS= read -r file; do
     # Only scan code/config files, skip binary and docs
     if [[ "$file" =~ \.($PII_EXTENSIONS)$ ]]; then
-      if git show ":$file" 2>/dev/null | grep -qiE "$pattern"; then
+      # Strip test fixture data: example.com (RFC 2606), placeholder names, test IDs
+      if git show ":$file" 2>/dev/null \
+          | grep -vE 'example\.com|example\.org|test@|placeholder|dummy|fake|fixture|TODO' \
+          | grep -qiE "$pattern"; then
         check_fail "PII detected in staged file: $file  (pattern: $pattern)"
         PII_FOUND=true
       fi

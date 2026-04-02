@@ -11,9 +11,12 @@
     <string name="stream_active">Transmisión en vivo</string>
     <string name="stream_disconnected">Lentes desconectados</string>
     <string name="stream_error">Error de transmisión</string>
+    <string name="start_stream">Iniciar transmisión</string>
+    <string name="stop_stream">Detener transmisión</string>
     <string name="capture_photo">Capturar foto</string>
     <string name="photo_captured">Foto capturada</string>
     <string name="photo_capture_failed">Error al capturar foto</string>
+    <string name="retry_button">Reintentar</string>
 
     <!-- Safety alerts -->
     <string name="alert_critical">ALERTA DE SEGURIDAD CRÍTICA</string>

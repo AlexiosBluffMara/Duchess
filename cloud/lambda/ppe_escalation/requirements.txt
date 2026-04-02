@@ -1,0 +1,17 @@
+# Jordan: Lambda runtime dependencies.
+#
+# These get packaged into the Lambda deployment zip (or a Lambda layer).
+# Keep this list MINIMAL — every dependency increases cold start time.
+# boto3 is included in the Lambda runtime by default, but we pin it here
+# for reproducibility and Lambda layer builds.
+#
+# Cost impact of cold starts:
+#   - Base Lambda: ~200ms cold start
+#   - Each MB of dependencies: ~10-20ms additional cold start
+#   - boto3 is ~60MB but already in runtime, so $0 impact
+#
+# DO NOT add heavy ML libraries here. This Lambda does JSON processing
+# and API calls, not inference. ML inference happens on Bedrock.
+
+boto3>=1.36.0,<2.0.0
+botocore>=1.36.0,<2.0.0

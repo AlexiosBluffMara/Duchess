@@ -11,9 +11,12 @@
     <string name="stream_active">Live Feed</string>
     <string name="stream_disconnected">Glasses disconnected</string>
     <string name="stream_error">Stream error</string>
+    <string name="start_stream">Start Stream</string>
+    <string name="stop_stream">Stop Stream</string>
     <string name="capture_photo">Capture Photo</string>
     <string name="photo_captured">Photo captured</string>
     <string name="photo_capture_failed">Photo capture failed</string>
+    <string name="retry_button">Retry</string>
 
     <!-- Safety alerts -->
     <string name="alert_critical">CRITICAL SAFETY ALERT</string>

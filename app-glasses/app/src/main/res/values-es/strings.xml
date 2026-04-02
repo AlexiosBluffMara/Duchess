@@ -12,6 +12,10 @@
     <string name="label_vest">Chaleco</string>
     <string name="label_no_hardhat">SIN CASCO</string>
     <string name="label_no_vest">SIN CHALECO</string>
+    <string name="label_glasses">Lentes</string>
+    <string name="label_no_glasses">SIN LENTES</string>
+    <string name="label_gloves">Guantes</string>
+    <string name="label_no_gloves">SIN GUANTES</string>
 
     <!-- BLE -->
     <string name="ble_scanning">Buscando teléfono…</string>
@@ -27,4 +31,10 @@
     <string name="notif_detection_title">Detección EPP activa</string>
     <string name="notif_detection_text">Monitoreando cumplimiento de seguridad</string>
     <string name="notif_alert_title">Alerta de seguridad</string>
+
+    <!-- Battery modes -->
+    <string name="battery_full">Detección completa</string>
+    <string name="battery_reduced">Detección reducida</string>
+    <string name="battery_minimal">Detección mínima</string>
+    <string name="battery_suspended">Detección pausada</string>
 </resources>

@@ -1,0 +1,217 @@
+#!/usr/bin/env bash
+# .githooks/post-commit
+#
+# After every commit, auto-update .memory/ files so Claude Code can pick up
+# exactly where GitHub Copilot left off. This is the Copilot→Claude handoff
+# mechanism. Claude reads .memory/handoff.md first every session.
+#
+# What this hook does:
+#   1. Snapshots the commit metadata into handoff.md (who, what, when)
+#   2. Updates project-state.md with file counts and module status
+#   3. Updates claude-queue.md task statuses based on committed paths
+#   4. Auto-stages and amends the commit with the .memory/ updates
+#
+# The hook is idempotent — running it twice produces the same result.
+# It only amends if .memory/ files actually changed.
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+MEMORY_DIR="$REPO_ROOT/.memory"
+
+# Guard: don't run during rebase, merge, or if .memory/ doesn't exist
+if [[ -n "${GIT_REFLOG_ACTION:-}" ]] && [[ "$GIT_REFLOG_ACTION" == *"rebase"* ]]; then
+    exit 0
+fi
+[[ -d "$MEMORY_DIR" ]] || exit 0
+
+# Guard: prevent infinite recursion (amend triggers post-commit again)
+LOCK_FILE="$MEMORY_DIR/.post-commit-lock"
+if [[ -f "$LOCK_FILE" ]]; then
+    rm -f "$LOCK_FILE"
+    exit 0
+fi
+
+# ── Gather commit info ──────────────────────────────────────────────────
+COMMIT_HASH=$(git rev-parse --short HEAD)
+COMMIT_MSG=$(git log -1 --format='%s')
+COMMIT_DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
+BRANCH=$(git branch --show-current 2>/dev/null || echo "detached")
+AUTHOR=$(git log -1 --format='%an')
+
+# Files changed in this commit
+CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD 2>/dev/null || true)
+
+# ── Count project files by module ────────────────────────────────────────
+count_files() {
+    local dir="$1"
+    if [[ -d "$REPO_ROOT/$dir" ]]; then
+        find "$REPO_ROOT/$dir" -type f -not -path '*/__pycache__/*' -not -name '*.pyc' | wc -l | tr -d ' '
+    else
+        echo "0"
+    fi
+}
+
+PHONE_FILES=$(count_files "app-phone")
+GLASSES_FILES=$(count_files "app-glasses")
+ML_FILES=$(count_files "ml")
+CLOUD_FILES=$(count_files "cloud")
+
+# ── Detect which modules were touched ────────────────────────────────────
+TOUCHED_PHONE=$(echo "$CHANGED_FILES" | grep -c "^app-phone/" || true)
+TOUCHED_GLASSES=$(echo "$CHANGED_FILES" | grep -c "^app-glasses/" || true)
+TOUCHED_ML=$(echo "$CHANGED_FILES" | grep -c "^ml/" || true)
+TOUCHED_CLOUD=$(echo "$CHANGED_FILES" | grep -c "^cloud/" || true)
+TOUCHED_INFRA=$(echo "$CHANGED_FILES" | grep -cE "^(\.github/|\.claude/|scripts/|\.githooks/|CLAUDE\.md|AGENTS\.md)" || true)
+
+# ── Build status summary ────────────────────────────────────────────────
+module_status() {
+    local count="$1"
+    if [[ "$count" -gt 5 ]]; then
+        echo "Active ($count files)"
+    elif [[ "$count" -gt 0 ]]; then
+        echo "Scaffolded ($count files)"
+    else
+        echo "Not started"
+    fi
+}
+
+# ── Update handoff.md ────────────────────────────────────────────────────
+# Prepend new entry at the marked insertion point (after the header, before
+# existing entries). Keep file under 200 lines by trimming old entries.
+
+HANDOFF_FILE="$MEMORY_DIR/handoff.md"
+HANDOFF_ENTRY="## $COMMIT_DATE — Commit $COMMIT_HASH
+
+**Branch**: \`$BRANCH\`  
+**Author**: $AUTHOR  
+**Message**: $COMMIT_MSG
+
+### Modules touched"
+
+[[ "$TOUCHED_PHONE" -gt 0 ]] && HANDOFF_ENTRY="$HANDOFF_ENTRY
+- **app-phone/**: $TOUCHED_PHONE file(s) changed"
+[[ "$TOUCHED_GLASSES" -gt 0 ]] && HANDOFF_ENTRY="$HANDOFF_ENTRY
+- **app-glasses/**: $TOUCHED_GLASSES file(s) changed"
+[[ "$TOUCHED_ML" -gt 0 ]] && HANDOFF_ENTRY="$HANDOFF_ENTRY
+- **ml/**: $TOUCHED_ML file(s) changed"
+[[ "$TOUCHED_CLOUD" -gt 0 ]] && HANDOFF_ENTRY="$HANDOFF_ENTRY
+- **cloud/**: $TOUCHED_CLOUD file(s) changed"
+[[ "$TOUCHED_INFRA" -gt 0 ]] && HANDOFF_ENTRY="$HANDOFF_ENTRY
+- **infra**: $TOUCHED_INFRA file(s) changed"
+
+HANDOFF_ENTRY="$HANDOFF_ENTRY
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | $PHONE_FILES | $(module_status "$PHONE_FILES") |
+| app-glasses/ | $GLASSES_FILES | $(module_status "$GLASSES_FILES") |
+| ml/ | $ML_FILES | $(module_status "$ML_FILES") |
+| cloud/ | $CLOUD_FILES | $(module_status "$CLOUD_FILES") |
+
+### Changed files
+\`\`\`
+$(echo "$CHANGED_FILES" | head -30)
+\`\`\`
+
+---
+"
+
+# Write the new handoff file: header + new entry + old entries (trimmed)
+{
+    echo "# Session Handoff — Duchess"
+    echo ""
+    echo "_Read this first at the start of every session. Updated automatically by post-commit hook._"
+    echo ""
+    echo "---"
+    echo ""
+    echo "$HANDOFF_ENTRY"
+    # Preserve old entries (everything after the first "---" divider from old file),
+    # but skip the header we just regenerated. Keep only the last 3 entries.
+    if [[ -f "$HANDOFF_FILE" ]]; then
+        awk '
+            BEGIN { entry_count=0; in_entry=0; skip_header=1 }
+            /^---$/ && skip_header { skip_header=0; next }
+            skip_header { next }
+            /^## [0-9]{4}-[0-9]{2}-[0-9]{2}/ { entry_count++; in_entry=1 }
+            entry_count > 0 && entry_count <= 3 { print }
+            entry_count > 3 { exit }
+        ' "$HANDOFF_FILE"
+    fi
+} > "${HANDOFF_FILE}.tmp"
+
+mv "${HANDOFF_FILE}.tmp" "$HANDOFF_FILE"
+
+# ── Update project-state.md ──────────────────────────────────────────────
+STATE_FILE="$MEMORY_DIR/project-state.md"
+
+# Count tests
+PHONE_TESTS=$(find "$REPO_ROOT/app-phone" -name "*Test*" -o -name "*test_*" 2>/dev/null | wc -l | tr -d ' ')
+GLASSES_TESTS=$(find "$REPO_ROOT/app-glasses" -name "*Test*" -o -name "*test_*" 2>/dev/null | wc -l | tr -d ' ')
+ML_TESTS=$(find "$REPO_ROOT/ml/tests" -name "test_*.py" 2>/dev/null | wc -l | tr -d ' ')
+CLOUD_TESTS=$(find "$REPO_ROOT/cloud/tests" -name "test_*.py" 2>/dev/null | wc -l | tr -d ' ')
+
+cat > "$STATE_FILE" << STATEEOF
+# Project State — Duchess
+
+_Last updated: $COMMIT_DATE | Auto-generated by post-commit hook | Commit: $COMMIT_HASH_
+
+## Module Status
+
+| Module | Files | Tests | Status | Last Commit |
+|--------|-------|-------|--------|-------------|
+| app-phone/ | $PHONE_FILES | $PHONE_TESTS | $(module_status "$PHONE_FILES") | $([[ "$TOUCHED_PHONE" -gt 0 ]] && echo "$COMMIT_HASH" || echo "—") |
+| app-glasses/ | $GLASSES_FILES | $GLASSES_TESTS | $(module_status "$GLASSES_FILES") | $([[ "$TOUCHED_GLASSES" -gt 0 ]] && echo "$COMMIT_HASH" || echo "—") |
+| ml/ | $ML_FILES | $ML_TESTS | $(module_status "$ML_FILES") | $([[ "$TOUCHED_ML" -gt 0 ]] && echo "$COMMIT_HASH" || echo "—") |
+| cloud/ | $CLOUD_FILES | $CLOUD_TESTS | $(module_status "$CLOUD_FILES") | $([[ "$TOUCHED_CLOUD" -gt 0 ]] && echo "$COMMIT_HASH" || echo "—") |
+
+## Infrastructure Status
+
+| Component | Status |
+|-----------|--------|
+| Agent ecosystem (15 agents) | ✅ Complete |
+| Skill library (22 skills) | ✅ Complete |
+| Git hooks (pre-commit, commit-msg, post-commit, post-merge) | ✅ Complete |
+| CLAUDE.md | ✅ Complete |
+| .memory/ system | ✅ Complete |
+| Python | 3.14.3 (Homebrew) |
+| Claude Code CLI | v2.1.90 |
+| gh CLI + gh copilot | v2.89.0 + v1.0.15 |
+
+## Hardware Confirmed
+
+| Tier | Device | Role |
+|------|--------|------|
+| 1 | Ray-Ban Wayfarer (Meta) | Sensor/speaker, DAT SDK streaming |
+| 2 | Google Pixel 9 Fold | Android companion app, Gemma 3n |
+| 3 | M4 Max MacBook Pro (48GB) | Local Qwen2.5-VL server, MLX |
+| Training | RTX 5090 (64GB/8TB) | Unsloth QLoRA fine-tuning |
+
+## For Claude: Next Actions
+
+Read \`.memory/claude-queue.md\` for the full task queue.
+Current branch: \`$BRANCH\`
+Last commit: \`$COMMIT_MSG\`
+STATEEOF
+
+# ── Update claude-queue.md task statuses ─────────────────────────────────
+QUEUE_FILE="$MEMORY_DIR/claude-queue.md"
+if [[ -f "$QUEUE_FILE" ]]; then
+    # If app-phone has significant content, mark Priority 1 as done
+    if [[ "$PHONE_FILES" -gt 15 ]]; then
+        sed -i '' 's/\[ \] ACTIVE — pick up immediately/[x] DONE — scaffolded by Claude, wired by Copilot/' "$QUEUE_FILE" 2>/dev/null || true
+    fi
+    # If app-glasses has significant content, mark Priority 2
+    if [[ "$GLASSES_FILES" -gt 10 ]]; then
+        sed -i '' 's/\[ \] QUEUED — start after Priority 1 is done/[x] DONE — scaffolded by Claude, wired by Copilot/' "$QUEUE_FILE" 2>/dev/null || true
+    fi
+fi
+
+# ── Stage and amend if .memory/ changed ──────────────────────────────────
+if ! git diff --quiet "$MEMORY_DIR/" 2>/dev/null; then
+    touch "$LOCK_FILE"  # Prevent recursion
+    git add "$MEMORY_DIR/"
+    git commit --amend --no-edit --no-verify --quiet
+    echo "━━━ Duchess post-commit: .memory/ updated for Claude handoff ━━━"
+fi

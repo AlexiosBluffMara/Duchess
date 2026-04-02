@@ -12,6 +12,10 @@
     <string name="label_vest">Vest</string>
     <string name="label_no_hardhat">NO HARDHAT</string>
     <string name="label_no_vest">NO VEST</string>
+    <string name="label_glasses">Glasses</string>
+    <string name="label_no_glasses">NO GLASSES</string>
+    <string name="label_gloves">Gloves</string>
+    <string name="label_no_gloves">NO GLOVES</string>
 
     <!-- BLE -->
     <string name="ble_scanning">Scanning for phone…</string>
@@ -27,4 +31,10 @@
     <string name="notif_detection_title">PPE Detection Active</string>
     <string name="notif_detection_text">Monitoring for safety compliance</string>
     <string name="notif_alert_title">Safety Alert</string>
+
+    <!-- Battery modes -->
+    <string name="battery_full">Full Detection</string>
+    <string name="battery_reduced">Reduced Detection</string>
+    <string name="battery_minimal">Minimal Detection</string>
+    <string name="battery_suspended">Detection Paused</string>
 </resources>

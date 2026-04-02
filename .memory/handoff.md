@@ -1,6 +1,53 @@
 # Session Handoff — Duchess
 
-_Read this first at the start of every session. Update before session ends (before compaction)._
+_Read this first at the start of every session. Updated automatically by post-commit hook._
+
+---
+
+## 2026-04-02 — GitHub Copilot (Handoff Session)
+
+### What was accomplished this session
+
+1. **Fixed Python syntax errors** from Claude's scaffold:
+   - `ml/scripts/train_gemma3n.py`: Unclosed docstring (line 1 `"""` never terminated before imports). Fixed by closing docstring before `from __future__`.
+   - `ml/eval/benchmark.py`: f-string backslash error on line 409 (`f"{'Actual\\Pred':<20}"` illegal in Python <3.12). Extracted to variable.
+   - All 21 Python files now pass `ast.parse()` on Python 3.14.3.
+
+2. **Upgraded Python to 3.14.3** (system-wide):
+   - Homebrew had Python 3.14.3 and 3.13.12 installed but PATH was wrong
+   - `/usr/bin/python3` (Apple 3.9.6) was taking precedence over `/opt/homebrew/bin/python3` (3.14.3)
+   - Added `eval "$(/opt/homebrew/bin/brew shellenv)"` to `~/.zshrc` and created `~/.zprofile`
+   - Python 3.14.3 is now the default `python3`
+   - Project `pyproject.toml` constraint `^3.11` already covers 3.14 — no changes needed
+
+3. **Created post-commit handoff hook** (`.githooks/post-commit`):
+   - Auto-snapshots commit metadata into `handoff.md` (branch, author, message, files touched)
+   - Auto-generates `project-state.md` with file counts, test counts, module status
+   - Auto-updates `claude-queue.md` task statuses based on committed paths
+   - Uses lock file to prevent infinite recursion (amend triggers post-commit again)
+   - Amends the commit with `.memory/` updates so Claude always has fresh context
+
+4. **Wired up real code across all 4 modules** (previous session, continued):
+   - app-phone: StreamViewModel, BleGattServer, GemmaInferenceService, MockDeviceKit tests
+   - app-glasses: CameraSession (Camera2 callbackFlow), PpeDetector (TFLite), BleGattClient, HudRenderer
+   - ml: train_gemma3n.py (Unsloth QLoRA), prepare_dataset.py, export_model.py, benchmark.py + 4 test files
+   - cloud: duchess_stack.py (CDK), handler.py (Lambda+Bedrock) + 3 test files
+
+### For Claude: What to pick up next
+
+1. **Run the actual tests** — `cd ml && pip install -e ".[dev]" && pytest` and `cd cloud && pip install -e ".[dev]" && pytest`
+2. **Install Poetry** and lock deps: `pip install poetry && cd ml && poetry install && cd ../cloud && poetry install`
+3. **Wire GemmaInferenceService** to MediaPipe LLM Inference API (currently stub)
+4. **Wire PpeDetector** to real TFLite model loading (currently placeholder asset)
+5. **Create integration tests** for the PPE pipeline: Tier 1 detection → Tier 2 triage → Tier 4 escalation
+6. **Set up GitHub Actions CI** for automated test runs on PR
+
+### Gotchas / Context for Claude
+
+- Python 3.14.3 is now the system default (`/opt/homebrew/bin/python3`)
+- The post-commit hook auto-amends with .memory/ updates — don't be surprised by amend on commit
+- All Kotlin files are untested (no Android Studio / Gradle sync yet — needs `github_token` in `local.properties`)
+- VS Code Source Control panel may show stale errors — always run `bash .githooks/pre-commit` to verify
 
 ---
 

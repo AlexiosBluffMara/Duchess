@@ -12,7 +12,19 @@ constructs = "^10.4.0"
 boto3 = "^1.36.0"
 
 [tool.poetry.group.dev.dependencies]
+# Jordan: Test dependencies — everything needed to validate the stack and
+# handler without touching real AWS. Total install size ~40MB.
+#
+# pytest: Test runner — the gold standard for Python testing
+# pytest-mock: Thin wrapper around unittest.mock for pytest fixtures
+# moto[all]: Full AWS service mocking (DynamoDB, SQS, SNS, S3, etc.)
+#   "all" includes all services — ~15MB overhead but avoids missing-service
+#   errors when testing new resources. Cost: $0/month (unlike real AWS).
+# aws-cdk.assertions: CDK template assertion library (bundled in aws-cdk-lib
+#   but listed for clarity)
 pytest = "^8.3.0"
+pytest-mock = "^3.14.0"
+moto = {version = "^5.0.0", extras = ["all"]}
 ruff = "^0.9.0"
 
 [build-system]
@@ -25,3 +37,12 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
+
+[tool.pytest.ini_options]
+# Jordan: pytest configuration. pythonpath includes the lambda directory
+# so handler tests can import 'handler' directly without path hacks.
+testpaths = ["tests"]
+pythonpath = [".", "lambda/ppe_escalation"]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
