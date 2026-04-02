@@ -1,0 +1,4 @@
+PLACEHOLDER — This file will be replaced with the real YOLOv8-nano PPE detection model.
+See ml/scripts/export_model.py for the export pipeline.
+Model: INT8 quantized, ~4MB, trained on construction PPE dataset.
+Classes: hardhat, vest, no_hardhat, no_vest

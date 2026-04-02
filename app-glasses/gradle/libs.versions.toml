@@ -1,0 +1,42 @@
+[versions]
+agp = "8.7.3"
+kotlin = "2.1.10"
+coroutines = "1.10.1"
+lifecycle = "2.9.0"
+tflite = "2.16.1"
+core-ktx = "1.16.0"
+appcompat = "1.7.0"
+activity = "1.10.1"
+junit = "4.13.2"
+mockk = "1.13.16"
+
+[libraries]
+# AndroidX (AOSP-compatible — no Google Play Services)
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
+
+# Lifecycle
+lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycle" }
+
+# Coroutines
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+
+# TFLite (INT8 quantized, GPU delegate + NNAPI fallback)
+tflite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tflite" }
+tflite-gpu = { group = "org.tensorflow", name = "tensorflow-lite-gpu", version.ref = "tflite" }
+tflite-support = { group = "org.tensorflow", name = "tensorflow-lite-support", version.ref = "tflite" }
+
+# Camera2 (bundled in AOSP — no extra dep needed, but we declare for clarity)
+# camera2 is part of android.hardware.camera2 — no Maven artifact required
+
+# Testing
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

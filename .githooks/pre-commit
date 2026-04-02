@@ -94,6 +94,8 @@ for pattern in "${SECRET_PATTERNS[@]}"; do
   while IFS= read -r file; do
     # Never flag local.properties — it's the intended secrets location
     [[ "$file" == "local.properties" ]] && continue
+    # Never flag .memory/ docs — they are context/handoff documents
+    [[ "$file" == .memory/* ]] && continue
     if [[ "$file" =~ \.($PII_EXTENSIONS|txt|md|sh)$ ]]; then
       # Strip placeholder/example lines before checking for real secrets
       if git show ":$file" 2>/dev/null \

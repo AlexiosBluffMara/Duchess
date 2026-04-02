@@ -1,0 +1,4 @@
+# Create local.properties (gitignored) with your real values.
+# GitHub PAT needs read:packages scope for Meta DAT SDK.
+github_user=your-github-username
+github_token=ghp_your_token_here
