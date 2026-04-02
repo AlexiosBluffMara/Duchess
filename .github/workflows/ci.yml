@@ -305,16 +305,43 @@ jobs:
           fi
 
   # ─────────────────────────────────────────────────────────────────────────
-  # Job 4: Android Build (phone + glasses debug APKs)
+  # Job 4a: Token gate — outputs whether GH_PACKAGES_TOKEN is set.
+  # TAYLOR: secrets.* is NOT available in job-level `if:` conditions (only in
+  # steps). We use a gate job that reads the secret inside a step (where it IS
+  # allowed) and writes a boolean output that the android-build job can read
+  # via the `needs` context (which IS allowed in job-level `if:`).
+  # ─────────────────────────────────────────────────────────────────────────
+  check-token:
+    name: Check GH_PACKAGES_TOKEN
+    runs-on: ubuntu-latest
+    outputs:
+      available: ${{ steps.check.outputs.available }}
+    steps:
+      - name: Check token availability
+        id: check
+        env:
+          TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+        run: |
+          if [[ -n "$TOKEN" ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "✓ GH_PACKAGES_TOKEN is set — Android build will run"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "⚠ GH_PACKAGES_TOKEN not set — Android build will be skipped"
+          fi
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 4b: Android Build (phone + glasses debug APKs)
   # Requires GH_PACKAGES_TOKEN secret — skipped for external forks.
   # ─────────────────────────────────────────────────────────────────────────
   android-build:
     name: Android Debug Build
     runs-on: ubuntu-latest
-    # TAYLOR: Only run when the secret is present. For PRs from forks the secret
-    # is not exposed, so we skip rather than fail. Internal PRs and main branch
-    # always have access to the secret.
-    if: ${{ secrets.GH_PACKAGES_TOKEN != '' }}
+    needs: check-token
+    # TAYLOR: Use needs.check-token.outputs.available instead of
+    # secrets.* directly — secrets context is not valid in job-level if:.
+    # The `needs` context IS in the allowed list for job-level if conditions.
+    if: needs.check-token.outputs.available == 'true'
 
     steps:
       - name: Checkout code

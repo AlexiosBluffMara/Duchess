@@ -4,6 +4,30 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 20:18 UTC — Commit a3c7ec4
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: fix(infra): resolve secrets context not allowed in job-level if condition
+
+### Modules touched
+- **infra**: 1 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 1744 | Active (1744 files) |
+| app-glasses/ | 29 | Active (29 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+.github/workflows/ci.yml
+```
+
+---
+
 ## 2026-04-02 20:12 UTC — Commit 6c7bc8a
 
 **Branch**: `main`  
@@ -71,30 +95,6 @@ docs/index.md
 ### Changed files
 ```
 .claude/worktrees/adoring-jackson
-```
-
----
-
-## 2026-04-02 19:55 UTC — Commit 3c2ef09
-
-**Branch**: `claude/adoring-jackson`  
-**Author**: AlexiosBluffMara  
-**Message**: ci(infra): rename secret GITHUB_PACKAGES_TOKEN → GH_PACKAGES_TOKEN
-
-### Modules touched
-- **infra**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 75 | Active (75 files) |
-| app-glasses/ | 29 | Active (29 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 12 | Active (12 files) |
-
-### Changed files
-```
-.github/workflows/ci.yml
 ```
 
 ---
