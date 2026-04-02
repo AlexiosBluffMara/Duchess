@@ -225,3 +225,86 @@ class GemmaInferenceServiceTest {
         }
     }
 }
+
+/**
+ * PII structural tests for GemmaAnalysisResult.
+ *
+ * ALEX: THIS TEST CLASS IS A HIPAA COMPLIANCE GUARDRAIL.
+ *
+ * GemmaAnalysisResult is the output of Tier 2 on-device inference. It flows to:
+ *   - The alert escalation pipeline (→ cloud)
+ *   - BLE GATT notifications (→ glasses)
+ *   - Mesh broadcast (→ all phones on site)
+ *   - DynamoDB logs (→ retained for 1 year)
+ *
+ * If someone adds a field like "workerName" or "faceId" to this data class,
+ * that PII would propagate to ALL of those destinations, violating:
+ *   - HIPAA (biometric data leaving the device without consent)
+ *   - Our data privacy policy (video/identity never leaves jobsite)
+ *   - Union contractual requirements (no worker tracking)
+ *
+ * This test catches PII fields AT COMPILE/TEST TIME, before they ever reach a PR.
+ * It uses Kotlin reflection to scan field names for PII-related keywords.
+ * Same pattern as SafetyAlertTest — defense in depth across all data classes.
+ */
+class GemmaAnalysisResultPiiTest {
+
+    @Test
+    fun `GemmaAnalysisResult fields do not contain PII keywords`() {
+        // ALEX: These keywords cover the most common PII field patterns we've seen
+        // in safety/construction software. The list is intentionally broad — a false
+        // positive (flagging a safe field name) is infinitely better than a false
+        // negative (missing an actual PII field that ships to production).
+        //
+        // If this test flags a field you're adding and it's NOT actually PII,
+        // rename the field to avoid the keyword. Clear naming > clever naming.
+        val piiKeywords = listOf(
+            "worker", "name", "face", "gps", "location",
+            "latitude", "longitude", "ssn", "phone", "email",
+            "address", "identity", "badge", "photo", "image"
+        )
+
+        val fieldNames = GemmaAnalysisResult::class.java.declaredFields
+            .filter { !it.isSynthetic }
+            .map { it.name.lowercase() }
+
+        for (keyword in piiKeywords) {
+            val matchingFields = fieldNames.filter { it.contains(keyword) }
+            assertTrue(
+                "GemmaAnalysisResult contains PII-suspicious field(s): $matchingFields " +
+                "(matched keyword: '$keyword'). This violates HIPAA compliance requirements. " +
+                "GemmaAnalysisResult flows to cloud, BLE, and mesh — NO PII allowed.",
+                matchingFields.isEmpty()
+            )
+        }
+    }
+
+    @Test
+    fun `GemmaAnalysisResult only has expected fields`() {
+        // ALEX: Belt-and-suspenders. Beyond keyword scanning, we also verify the exact
+        // set of fields. Any new field forces the developer to update this test,
+        // which is the review checkpoint where we ask "does this field contain PII?"
+        val expectedFieldNames = setOf(
+            "violationDetected",
+            "violationType",
+            "severity",
+            "descriptionEn",
+            "descriptionEs",
+            "confidence"
+        )
+
+        val actualFieldNames = GemmaAnalysisResult::class.java.declaredFields
+            .filter { !it.isSynthetic }
+            .map { it.name }
+            .toSet()
+
+        assertEquals(
+            "GemmaAnalysisResult has unexpected fields! " +
+            "If you added a new field, verify it contains NO PII " +
+            "(no worker identity, face data, GPS, or biometric information). " +
+            "Expected: $expectedFieldNames, Actual: $actualFieldNames",
+            expectedFieldNames,
+            actualFieldNames
+        )
+    }
+}

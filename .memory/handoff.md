@@ -4,6 +4,40 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-02 15:25 UTC — Commit 9c093db
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: feat(shared): Phase 2 production hardening — temporal voting, BLE serialization, mesh wiring, CI/CD
+
+### Modules touched
+- **app-phone/**: 5 file(s) changed
+- **app-glasses/**: 3 file(s) changed
+- **infra**: 1 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 30 | Active (30 files) |
+| app-glasses/ | 29 | Active (29 files) |
+| ml/ | 22 | Active (22 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+.github/workflows/ci.yml
+app-glasses/app/src/main/kotlin/com/duchess/glasses/ble/AlertDeserializer.kt
+app-glasses/app/src/main/kotlin/com/duchess/glasses/ppe/TemporalVoter.kt
+app-glasses/app/src/test/kotlin/com/duchess/glasses/ppe/TemporalVoterTest.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/ble/AlertSerializer.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/mesh/MeshManager.kt
+app-phone/app/src/test/kotlin/com/duchess/companion/ble/AlertSerializerTest.kt
+app-phone/app/src/test/kotlin/com/duchess/companion/gemma/GemmaInferenceServiceTest.kt
+app-phone/app/src/test/kotlin/com/duchess/companion/mesh/MeshManagerTest.kt
+```
+
+---
+
 ## 2026-04-02 14:43 UTC — Commit 872feab
 
 **Branch**: `main`  
@@ -102,63 +136,6 @@ cloud/tests/__pycache__/conftest.cpython-314-pytest-8.4.2.pyc
 cloud/tests/__pycache__/test_duchess_stack.cpython-314-pytest-8.4.2.pyc
 cloud/tests/__pycache__/test_handler.cpython-314-pytest-8.4.2.pyc
 cloud/tests/__pycache__/test_integration.cpython-314-pytest-8.4.2.pyc
-```
-
----
-
-## 2026-04-02 11:38 UTC — Commit 6261100
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: feat(infra): wire real code + tests, post-commit handoff hook, Python 3.14
-
-### Modules touched
-- **app-phone/**: 18 file(s) changed
-- **app-glasses/**: 17 file(s) changed
-- **ml/**: 11 file(s) changed
-- **cloud/**: 19 file(s) changed
-- **infra**: 2 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 28 | Active (28 files) |
-| app-glasses/ | 26 | Active (26 files) |
-| ml/ | 22 | Active (22 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.githooks/post-commit
-.githooks/pre-commit
-.memory/handoff.md
-app-glasses/app/src/main/kotlin/com/duchess/glasses/GlassesApplication.kt
-app-glasses/app/src/main/kotlin/com/duchess/glasses/MainActivity.kt
-app-glasses/app/src/main/kotlin/com/duchess/glasses/battery/BatteryAwareScheduler.kt
-app-glasses/app/src/main/kotlin/com/duchess/glasses/ble/BleGattClient.kt
-app-glasses/app/src/main/kotlin/com/duchess/glasses/camera/CameraSession.kt
-app-glasses/app/src/main/kotlin/com/duchess/glasses/display/HudRenderer.kt
-app-glasses/app/src/main/kotlin/com/duchess/glasses/model/InferenceMode.kt
-app-glasses/app/src/main/kotlin/com/duchess/glasses/model/SafetyAlert.kt
-app-glasses/app/src/main/kotlin/com/duchess/glasses/ppe/PpeDetector.kt
-app-glasses/app/src/main/res/values-es/strings.xml
-app-glasses/app/src/main/res/values/strings.xml
-app-glasses/app/src/test/kotlin/com/duchess/glasses/battery/BatteryAwareSchedulerTest.kt
-app-glasses/app/src/test/kotlin/com/duchess/glasses/ble/BleGattClientTest.kt
-app-glasses/app/src/test/kotlin/com/duchess/glasses/camera/CameraSessionTest.kt
-app-glasses/app/src/test/kotlin/com/duchess/glasses/display/HudRendererTest.kt
-app-glasses/app/src/test/kotlin/com/duchess/glasses/model/DetectionTest.kt
-app-glasses/app/src/test/kotlin/com/duchess/glasses/ppe/PpeDetectorTest.kt
-app-phone/app/src/androidTest/kotlin/com/duchess/companion/MockDeviceKitTestBase.kt
-app-phone/app/src/androidTest/kotlin/com/duchess/companion/StreamIntegrationTest.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/DuchessApplication.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/ble/BleGattServer.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/di/AppModule.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaInferenceService.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/mesh/MeshManager.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/model/SafetyAlert.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/stream/StreamScreen.kt
 ```
 
 ---
