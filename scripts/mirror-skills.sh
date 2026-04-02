@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
-# mirror-skills.sh — Keeps .github/skills/ and .claude/skills/ in sync.
+# mirror-skills.sh — Keeps .github/skills/, .claude/skills/, .github/agents/, and .claude/agents/ in sync.
 #
 # Usage:
 #   ./scripts/mirror-skills.sh              # Sync both directions (auto-detect newer)
-#   ./scripts/mirror-skills.sh github       # Push .github/skills/ → .claude/skills/
-#   ./scripts/mirror-skills.sh claude       # Push .claude/skills/  → .github/skills/
+#   ./scripts/mirror-skills.sh github       # Push .github/{skills,agents}/ → .claude/{skills,agents}/
+#   ./scripts/mirror-skills.sh claude       # Push .claude/skills/ → .github/skills/
 #   ./scripts/mirror-skills.sh check        # Dry-run: report drift without writing
 #
-# Duchess skill layout:
-#   .github/skills/<name>/SKILL.md          ← Copilot / Duchess canonical format
-#   .claude/skills/<name>.md                ← Claude Code flat format
+# Duchess layout:
+#   .github/skills/<name>/SKILL.md          ← Copilot / Duchess canonical skill format
+#   .claude/skills/<name>.md                ← Claude Code flat skill format
+#   .github/agents/<name>.agent.md          ← Copilot agent format
+#   .claude/agents/<name>.md                ← Claude Code sub-agent format
 #
-# The two formats contain the same prose but different frontmatter.
-# Mirroring copies content WITHOUT the frontmatter header block.
-# The claude variant always has a minimal "# <Name>" heading as its first line.
-#
-# settings.json in .claude/ is updated automatically when new skills appear.
+# settings.json in .claude/ is rebuilt automatically on every sync.
 
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GITHUB_SKILLS="$REPO_ROOT/.github/skills"
 CLAUDE_SKILLS="$REPO_ROOT/.claude/skills"
+GITHUB_AGENTS="$REPO_ROOT/.github/agents"
+CLAUDE_AGENTS="$REPO_ROOT/.claude/agents"
 CLAUDE_SETTINGS="$REPO_ROOT/.claude/settings.json"
 
 GREEN='\033[0;32m'
@@ -105,38 +105,117 @@ claude_to_github() {
   touch -r "$src" "$dst"  # preserve source mtime to prevent false drift on next check
 }
 
-# Rebuild .claude/settings.json from all files currently in .claude/skills/.
+# Rebuild .claude/settings.json from all files currently in .claude/skills/ and .claude/agents/.
 rebuild_settings() {
   local skills_dir="$CLAUDE_SKILLS"
+  local agents_dir="$CLAUDE_AGENTS"
   local settings="$CLAUDE_SETTINGS"
 
-  # Gather existing non-Duchess entries (DAT SDK built-ins) that reference
-  # files that still exist — preserve them.
-  local tmp; tmp=$(mktemp)
+  python3 - "$skills_dir" "$agents_dir" "$settings" << 'PYEOF'
+import sys, os, re, json
 
-  echo '{' > "$tmp"
-  echo '  "skills": {' >> "$tmp"
+skills_dir, agents_dir, settings_path = sys.argv[1], sys.argv[2], sys.argv[3]
 
-  local first=true
-  while IFS= read -r -d '' skill_file; do
-    local rel_path; rel_path="skills/$(basename "$skill_file")"
-    local desc; desc=$(frontmatter_field "$skill_file" "description")
-    [[ -z "$desc" ]] && desc="$(basename "$skill_file" .md) skill"
+def frontmatter_desc(filepath):
+    with open(filepath) as f:
+        text = f.read()
+    parts = text.split('---', 2)
+    if len(parts) < 2:
+        return ''
+    for line in parts[1].strip().splitlines():
+        m = re.match(r'^description:\s*(.*)', line)
+        if m:
+            val = m.group(1).strip()
+            # strip surrounding quotes
+            val = re.sub(r'^["\']|["\']$', '', val)
+            return val
+    return ''
 
-    if [[ "$first" == true ]]; then
-      first=false
-    else
-      echo ',' >> "$tmp"
+skills = {}
+if os.path.isdir(skills_dir):
+    for fname in sorted(os.listdir(skills_dir)):
+        if fname.endswith('.md'):
+            fpath = os.path.join(skills_dir, fname)
+            desc = frontmatter_desc(fpath) or f"{fname[:-3]} skill"
+            skills[f"skills/{fname}"] = desc
+
+agents = {}
+if os.path.isdir(agents_dir):
+    for fname in sorted(os.listdir(agents_dir)):
+        if fname.endswith('.md'):
+            fpath = os.path.join(agents_dir, fname)
+            desc = frontmatter_desc(fpath) or f"{fname[:-3]} agent"
+            agents[f"agents/{fname}"] = desc
+
+with open(settings_path, 'w') as fh:
+    json.dump({"skills": skills, "agents": agents}, fh, indent=2)
+    fh.write('\n')
+PYEOF
+
+  local n_skills; n_skills=$(find "$skills_dir" -name "*.md" | wc -l | tr -d ' ')
+  local n_agents; n_agents=$(find "$agents_dir" -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+  info "Updated settings.json with ${n_skills} skills and ${n_agents} agents."
+}
+
+# ---------------------------------------------------------------------------
+# Agent sync — .github/agents/<name>.agent.md ↔ .claude/agents/<name>.md
+# ---------------------------------------------------------------------------
+
+# Mirror a .github/agents/<name>.agent.md into .claude/agents/<name>.md
+github_agent_to_claude() {
+  local src="$1" dst="$2"
+  local src_name; src_name=$(basename "$src" .agent.md)
+
+  python3 - "$src" "$src_name" "$dst" << 'PYEOF'
+import sys, re
+
+src, name, dst = sys.argv[1], sys.argv[2], sys.argv[3]
+with open(src) as fh:
+    text = fh.read()
+parts = text.split('---', 2)
+fm_raw = parts[1]
+body = parts[2].lstrip('\n') if len(parts) > 2 else ''
+fields = {}
+for line in fm_raw.strip().splitlines():
+    m = re.match(r'^(\w+):\s*(.*)', line)
+    if m:
+        key, val = m.group(1), m.group(2).strip()
+        val = re.sub(r'^["\']|["\']$', '', val)
+        fields[key] = val
+out = ['---', f'name: {name}', f'description: "{fields.get("description", "")}"',
+       f'tools: {fields.get("tools", "[]")}']
+if 'agents' in fields:
+    out.append(f'agents: {fields["agents"]}')
+out += ['---', '', body]
+with open(dst, 'w') as fh:
+    fh.write('\n'.join(out))
+PYEOF
+  touch -r "$src" "$dst"
+}
+
+sync_agents() {
+  local dry_run="${1:-false}"
+  local changed=0
+  mkdir -p "$CLAUDE_AGENTS"
+
+  while IFS= read -r -d '' src; do
+    local name; name=$(basename "$src" .agent.md)
+    local dst="$CLAUDE_AGENTS/${name}.md"
+    local needs_update=false
+    [[ ! -f "$dst" ]] && needs_update=true
+    [[ -f "$dst" ]] && [[ "$src" -nt "$dst" ]] && needs_update=true
+    if [[ "$needs_update" == true ]]; then
+      if [[ "$dry_run" == true ]]; then
+        warn "DRIFT: .github/agents/${name}.agent.md → .claude/agents/${name}.md"
+      else
+        github_agent_to_claude "$src" "$dst"
+        info "Mirrored agent: ${name}"
+      fi
+      ((changed++)) || true
     fi
-    printf '    "%s": "%s"' "$rel_path" "$desc" >> "$tmp"
-  done < <(find "$skills_dir" -name "*.md" -print0 | sort -z)
+  done < <(find "$GITHUB_AGENTS" -name "*.agent.md" -print0 | sort -z)
 
-  echo '' >> "$tmp"
-  echo '  }' >> "$tmp"
-  echo '}' >> "$tmp"
-
-  mv "$tmp" "$settings"
-  info "Updated settings.json with $(find "$skills_dir" -name "*.md" | wc -l | tr -d ' ') skills."
+  echo "$changed"
 }
 
 # ---------------------------------------------------------------------------
@@ -212,6 +291,8 @@ case "$MODE" in
   github)
     info "Pushing .github/skills/ → .claude/skills/"
     sync_github_to_claude false > /dev/null
+    info "Pushing .github/agents/ → .claude/agents/"
+    sync_agents false > /dev/null
     rebuild_settings
     ;;
   claude)
@@ -222,19 +303,21 @@ case "$MODE" in
     info "Checking for drift (dry-run)..."
     drift_g=$(sync_github_to_claude true)
     drift_c=$(sync_claude_to_github true)
-    total=$((drift_g + drift_c))
+    drift_a=$(sync_agents true)
+    total=$((drift_g + drift_c + drift_a))
     if [[ "$total" -eq 0 ]]; then
-      info "No drift detected. Skills are in sync."
+      info "No drift detected. Skills and agents are in sync."
     else
-      warn "${total} skill file(s) out of sync. Run without 'check' to fix."
+      warn "${total} file(s) out of sync. Run without 'check' to fix."
       exit 1
     fi
     ;;
   auto|*)
-    info "Auto-syncing skills (bidirectional, newer file wins)..."
+    info "Auto-syncing skills and agents (bidirectional, newer file wins)..."
     changed_g=$(sync_github_to_claude false)
     changed_c=$(sync_claude_to_github false)
-    total=$((changed_g + changed_c))
+    changed_a=$(sync_agents false)
+    total=$((changed_g + changed_c + changed_a))
     if [[ "$total" -gt 0 ]]; then
       rebuild_settings
       info "Sync complete. ${total} file(s) updated."
