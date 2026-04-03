@@ -1,5 +1,6 @@
 package com.duchess.companion.settings
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -70,6 +72,8 @@ fun SettingsScreen(
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val detectionSensitivity by viewModel.detectionSensitivity.collectAsState()
     val connectionStatus by viewModel.connectionStatus.collectAsState()
+    val demoMode by viewModel.demoMode.collectAsState()
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -148,6 +152,24 @@ fun SettingsScreen(
             subtitle = null,
             checked = alertSoundEnabled,
             onCheckedChange = { viewModel.toggleAlertSound() },
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // --- App Mode Section ---
+        SectionHeader(title = stringResource(R.string.settings_mode))
+
+        SwitchSettingsRow(
+            icon = Icons.Filled.Tune,
+            title = stringResource(R.string.demo_mode_label),
+            subtitle = if (demoMode) stringResource(R.string.demo_mode_desc) else stringResource(R.string.live_mode_desc),
+            checked = demoMode,
+            onCheckedChange = { enabled ->
+                viewModel.setDemoMode(enabled)
+                // Recreate the Activity so MainActivity re-reads the pref and
+                // switches between demo and live composable trees.
+                (context as? Activity)?.recreate()
+            },
         )
 
         Spacer(modifier = Modifier.height(16.dp))

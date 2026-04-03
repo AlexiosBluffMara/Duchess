@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-Duchess is a four-tier AI construction safety platform built on AR glasses, companion smartphones, optional local servers, and cloud inference. It uses Gemma 4 models to detect PPE violations, analyze construction hazards, and deliver bilingual (EN/ES) safety alerts in real-time.
+Duchess is a **three-tier** AI construction safety platform built on AR glasses, companion smartphones, and Google Cloud (Vertex AI). It uses Gemma 4 models to detect PPE violations, analyze construction hazards, and deliver bilingual (EN/ES) safety alerts in real-time. No local server — phone goes straight to cloud.
 
 **Our thesis**: Construction kills more workers than any other industry. Duchess puts frontier AI on every worker's phone — running 100% on-device, privacy-preserving, bilingual — to save lives. That's the story.
 
@@ -131,15 +131,20 @@ Duchess is a four-tier AI construction safety platform built on AR glasses, comp
 
 ---
 
-## Gemma 4 Model Deployment Map
+## Gemma 4 Model Deployment Map (3-Tier — No Local Server)
 
-| Tier | Device | Model | Size | Capabilities Used | Latency |
-|------|--------|-------|------|-------------------|---------|
-| 1 | Ray-Ban Meta glasses | YOLOv8-nano + MobileNet | 6MB | Object detection, PPE pre-screen | <50ms |
-| 2 | Pixel 9 Fold | **Gemma 4 E2B** | ~1.4GB loaded | Vision, function calling, audio, bilingual NLU | <2s |
-| 2+ | Pixel 9 Fold (high-end) | **Gemma 4 E4B** (optional) | ~3GB loaded | Enhanced vision, complex scene analysis | <3s |
-| 3 | M4 Max MacBook | **Gemma 4 26B MoE** (via Ollama/MLX) | ~16GB | Multi-worker fusion, complex scene reasoning | <5s |
-| 4 | AWS Cloud | **Gemma 4 31B Dense** (via SageMaker) | Full | Nightly batch, escalated assessment, multi-site | 100-500ms |
+| Tier | Device | Model | Size | Capabilities Used | Latency | Cost |
+|------|--------|-------|------|-------------------|---------|------|
+| 1 | AR Glasses (Vuzix M400 / Oakley / Ray-Ban) | YOLOv8-nano + MobileNet | 6MB | Object detection, PPE pre-screen | <50ms | $0 |
+| 2 | Pixel 9 Fold (ON-DEVICE INFERENCE STATION) | **Gemma 4 E2B** | ~1.4GB loaded | Vision, function calling, audio, bilingual NLU, tool use | <2s | **$0** |
+| 2+ | Pixel 9 Fold (enhanced) | **Gemma 4 E4B** (optional) | ~3GB loaded | Enhanced vision, complex scene analysis | <3s | $0 |
+| 3 | Google Cloud (Vertex AI) | **Gemma 4 31B Dense** | Full | Batch analysis, escalated assessment, supervisor dashboard | 100-500ms | ~$0.02/query |
+
+**Decision**: Tier 3 (local M4 Max / RTX 5090 server) has been removed. It doesn't scale to full jobsite deployment. Phone handles 95% of inference at $0. The remaining 5% goes directly to Vertex AI.
+
+### Hardware: Two Glass Paths
+- **Path A — Vuzix M400**: Industrial AR glasses, on-device YOLOv8-nano, Camera2 API. TO BE ACQUIRED (faculty meeting 2026-04-03).
+- **Path B — Oakley/Ray-Ban**: Consumer smart glasses, camera stream via BLE to phone. PROTOTYPING with Meta Ray-Ban Wayfarers IN HAND.
 
 ---
 
@@ -233,12 +238,13 @@ Duchess is a four-tier AI construction safety platform built on AR glasses, comp
 ## What We're NOT Doing
 
 To stay focused on winning:
-- ❌ Tier 3 (Mac server) is nice-to-have, not required
+- ❌ **Tier 3 local server** — REMOVED. Doesn't scale. Phone → Cloud directly.
 - ❌ Digital twin / IoT TwinMaker — too complex for 46 days
 - ❌ iPhone companion app — Android only
 - ❌ Multi-site orchestration — single site demo is enough
-- ❌ SageMaker endpoint deployment — use Bedrock for cloud inference
+- ❌ **AWS anything** — Full Google Cloud. Vertex AI, Cloud Run, Firestore, Firebase.
 - ❌ Health & Sciences prize — not our narrative
+- ❌ **llama.cpp / Ollama prizes** — conflicts with Google-centric hackathon narrative
 
 ---
 

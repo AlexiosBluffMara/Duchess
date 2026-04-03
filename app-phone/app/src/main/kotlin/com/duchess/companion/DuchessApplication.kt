@@ -1,8 +1,11 @@
 package com.duchess.companion
 
 import android.app.Application
+import com.duchess.companion.ble.BleGattServer
+import com.duchess.companion.upload.BatchUploadScheduler
 import com.meta.wearable.dat.core.Wearables
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 /**
  * Application class for the Duchess companion phone app.
@@ -23,11 +26,21 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class DuchessApplication : Application() {
 
+    @Inject lateinit var bleGattServer: BleGattServer
+
     override fun onCreate() {
         super.onCreate()
         // Alex: This MUST be the first SDK call. Initializes internal state,
         // registers BLE receivers, and sets up the device discovery pipeline.
         // After this, Wearables.registrationState and startStreamSession() work.
         Wearables.initialize(this)
+        // Start the BLE GATT server so glasses can connect immediately on launch.
+        // BleGattServer.start() handles cases where BT is not yet available or
+        // permissions haven't been granted — it transitions to Error state silently.
+        bleGattServer.start()
+        // Register the nightly batch upload WorkManager task. WorkManager deduplicates
+        // via WORK_NAME so calling this on every launch is safe — it won't create
+        // duplicate jobs.
+        BatchUploadScheduler.schedule(this)
     }
 }

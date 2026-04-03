@@ -58,9 +58,9 @@ import com.duchess.companion.stream.StreamScreen
 import com.duchess.companion.ui.theme.DuchessTheme
 import javax.inject.Inject
 import com.meta.wearable.dat.core.Wearables
-import com.meta.wearable.dat.core.registration.RegistrationState
-import com.meta.wearable.dat.core.permissions.Permission
-import com.meta.wearable.dat.core.permissions.PermissionStatus
+import com.meta.wearable.dat.core.types.RegistrationState
+import com.meta.wearable.dat.core.types.Permission
+import com.meta.wearable.dat.core.types.PermissionStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -77,10 +77,13 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         /**
-         * Set to true to bypass DAT SDK registration and show the full app with demo data.
-         * Flip to false when testing with real Meta glasses hardware.
+         * Runtime flag: true = demo data, false = live Meta glasses.
+         * Persisted in SharedPreferences (key "demo_mode") so the user's choice
+         * survives restarts. Toggle via Settings → App Mode.
+         * Initialized from prefs in onCreate() before setContent so composables
+         * see the correct value on first composition.
          */
-        const val DEMO_MODE = true
+        var DEMO_MODE = true
     }
 
     @Inject lateinit var modelManager: GemmaModelManager
@@ -93,12 +96,19 @@ class MainActivity : ComponentActivity() {
 
     private val permissionsLauncher =
         registerForActivityResult(Wearables.RequestPermissionContract()) { result ->
-            permissionContinuation?.resume(result)
+            val status = result.fold(
+                onSuccess = { it },
+                onFailure = { _, _ -> PermissionStatus.Denied }
+            )
+            permissionContinuation?.resume(status)
             permissionContinuation = null
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Read persisted mode before setContent so composables see correct value.
+        DEMO_MODE = getSharedPreferences("duchess_prefs", MODE_PRIVATE)
+            .getBoolean("demo_mode", true)
         enableEdgeToEdge()
 
         if (!DEMO_MODE) {
@@ -330,10 +340,12 @@ private fun MainContent(
 ) {
     when (registrationState) {
         is RegistrationState.Registered -> DuchessMainApp()
-        is RegistrationState.Unregistered -> {
+        is RegistrationState.Available,
+        is RegistrationState.Unavailable,
+        is RegistrationState.Unregistering -> {
             RegistrationPrompt(onRegisterClick = onRegisterClick, modifier = modifier)
         }
-        null -> {
+        is RegistrationState.Registering -> {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     text = stringResource(R.string.loading),
@@ -341,12 +353,11 @@ private fun MainContent(
                 )
             }
         }
-        else -> {
+        null -> {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    text = stringResource(R.string.registration_error),
+                    text = stringResource(R.string.loading),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error,
                 )
             }
         }

@@ -4,101 +4,86 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
-## 2026-04-02 22:40 UTC — Commit c1f1739
+## 2026-04-03 02:58 UTC — Commit 31d4662
 
-**Branch**: `main`  
+**Branch**: `claude/serene-shtern`  
 **Author**: AlexiosBluffMara  
-**Message**: ci(infra): opt into Node.js 24 and add fetch-depth 0 to Pages workflow
+**Message**: Merge branch 'main' into claude/serene-shtern
 
 ### Modules touched
-- **infra**: 1 file(s) changed
 
 ### Project snapshot
 | Module | Files | Status |
 |--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
+| app-phone/ | 63 | Active (63 files) |
 | app-glasses/ | 33 | Active (33 files) |
 | ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
+| cloud/ | 12 | Active (12 files) |
 
 ### Changed files
 ```
-.github/workflows/pages.yml
+
 ```
 
 ---
 
-## 2026-04-02 22:37 UTC — Commit d1dde36
+## 2026-04-03 02:53 UTC — Commit 88aef8f
 
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: ci(infra): pass GITHUB_TOKEN to Jekyll build for github-metadata plugin
+**Branch**: `claude/serene-shtern`
+**Author**: AlexiosBluffMara
+**Message**: docs(shared): expand ML research with PhD-level quantization depth + training datasets
 
 ### Modules touched
-- **infra**: 1 file(s) changed
+- **README.md**: PhD-level ML research section — Unsloth Dynamic QLoRA, TurboQuant (GPTQ/AWQ/SqueezeLLM), BitNet b1.58, PrismQuant, 8 construction PPE datasets with licenses
+- **docs/index.html**: Same ML content adapted to visual website with Spanish alt-text
 
 ### Project snapshot
 | Module | Files | Status |
 |--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 33 | Active (33 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
+| app-phone/ | 77 | Active |
+| app-glasses/ | 33 | Active |
+| ml/ | 17 | Active |
+| cloud/ | 12 | Active |
 
 ### Changed files
 ```
-.github/workflows/pages.yml
+README.md
+docs/index.html
 ```
 
 ---
 
-## 2026-04-02 21:55 UTC — Commit a5b04ca
+## 2026-04-03 02:47 UTC — Commit d53cc85 (from main — Copilot)
 
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: fix(glasses): correct LiteRT import packages and remove duplicate init code in PpeDetector
+**Branch**: `main`
+**Author**: AlexiosBluffMara
+**Message**: feat(phone): wire BLE startup, persist settings, live dashboard, demo/live toggle
 
 ### Modules touched
+- **app-phone/**: 8 file(s) changed — DashboardViewModel, SettingsViewModel/Screen, MainActivity, AppModule, strings
+
+---
+
+## 2026-04-03 02:34 UTC — Commit 152b102
+
+**Branch**: `claude/serene-shtern`
+**Author**: AlexiosBluffMara
+**Message**: docs(shared): hackathon pivot — 3-tier arch, Vertex AI, dual-glass, review TODOs
+
+### Modules touched
+- **app-phone/**: 4 file(s) changed
 - **app-glasses/**: 1 file(s) changed
+- **ml/**: 3 file(s) changed
+- **cloud/**: 1 file(s) changed
 
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 33 | Active (33 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-app-glasses/app/src/main/kotlin/com/duchess/glasses/ppe/PpeDetector.kt
-```
-
----
-
-## 2026-04-02 21:20 UTC — Commit a519f26
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: ci(glasses): bump compileSdk 33→35 and add missing specs for alerts+ppe
-
-### Modules touched
-- **app-glasses/**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 33 | Active (33 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-app-glasses/app/build.gradle.kts
-specs/alerts.spec.md
-specs/ppe.spec.md
-```
+### What was done — Hackathon Pivot
+1. **Architecture pivot**: 4-tier → 3-tier. Removed Tier 3 local server (M4 Max). Phone goes straight to Google Cloud.
+2. **`.memory/hackathon-pivot-plan.md`**: Created comprehensive dev change plan (7 phases) for Copilot handoff.
+3. **`docs/index.html`**: Major update — 3-tier architecture, Google Cloud section, On-Device Gemma 4 section, ML Research/Quantization section, Spanish alt-text throughout.
+4. **`README.md`**: Complete rewrite for hackathon framing — 3-tier diagram, dual-glass paths, Gemma 4 capabilities, Google Cloud services.
+5. **`HACKATHON_STRATEGY.md`**: Updated executive summary, model deployment map, "What We're NOT Doing" section.
+6. **`docs/technical/meta-google-stack.md`**: Removed all Tribe v2 references.
+7. **TODO-PRINCIPAL + TODO-ML-PROF comments** added to 9 key files.
 
 ---
 

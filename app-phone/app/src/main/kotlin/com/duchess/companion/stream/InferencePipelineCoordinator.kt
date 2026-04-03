@@ -15,6 +15,38 @@ import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO-PRINCIPAL: Pipeline coordinator review — critical issues:
+//   1. No backpressure mechanism. If BLE sendAlert() blocks or slows down (Bluetooth
+//      congestion on a crowded jobsite with 20+ devices), the processMutex holds while
+//      BLE writes, blocking the NEXT inference. Decouple BLE delivery into its own
+//      coroutine channel with a bounded buffer and drop-oldest policy.
+//   2. System.currentTimeMillis() is not monotonic — NTP jumps can cause the throttle
+//      to skip frames or double-fire. Use SystemClock.elapsedRealtime() on Android.
+//   3. No circuit breaker on GemmaInferenceEngine failures. If the model enters an
+//      error state (OOM, corrupted weights), every frame still attempts analyze() →
+//      gets an error result → silently drops it. Need a cooldown after N consecutive
+//      failures before retrying, with metric emission for dashboards.
+//   4. MIN_CONFIDENCE = 0.5 is hardcoded. This should be a remote config value so we
+//      can tune it in production without a new APK release. Same for BLE_SEVERITY_THRESHOLD.
+//   5. No alert deduplication. If the same worker is missing a hardhat for 30 seconds,
+//      we emit 30 identical alerts. Need temporal dedup: same (violationType, zoneId)
+//      within a window → suppress duplicates, update existing alert's lastSeen timestamp.
+//   6. alertFlow has extraBufferCapacity=32 but no overflow strategy. If 33 alerts
+//      queue before the subscriber processes them, emit() suspends and blocks inference.
+//      Use BufferOverflow.DROP_OLDEST.
+//
+// TODO-ML-PROF: The 1-second throttle interval is a design choice that deserves ablation:
+//   - At 1fps, we miss transient violations (worker briefly removes hardhat). What's
+//     the violation duration distribution in real construction footage? If median
+//     violation lasts <2s, 1fps catches <50% of events.
+//   - For the Unsloth fine-tuned model: measure if the confidence distribution shifts
+//     after QLoRA. If the fine-tuned model is more confident overall, MIN_CONFIDENCE=0.5
+//     may be too low (letting through false positives the base model would suppress).
+//   - The toSafetyAlert() extension maps GemmaAnalysisResult to SafetyAlert 1:1. But
+//     Gemma 4's function calling could return MULTIPLE violations per frame (worker
+//     missing BOTH hardhat AND vest). The current pipeline only handles single-violation
+//     results. Need to support multi-violation output from the structured function call.
+
 /**
  * Coordinates the real-time inference pipeline: VideoFrame → Gemma 4 E2B → SafetyAlert → BLE.
  *

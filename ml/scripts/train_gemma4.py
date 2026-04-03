@@ -1,6 +1,42 @@
 """
 Gemma 4 E2B fine-tuning with Unsloth Dynamic QLoRA.
 
+TODO-PRINCIPAL: This script is a hackathon prototype, not production ML infra.
+Issues that would block a real deployment:
+  1. No experiment tracking beyond wandb. Need MLflow or Vertex AI Experiments
+     for reproducible comparison across adapter variants.
+  2. Dataset loading is hardcoded to HuggingFace hub. For production, dataset
+     versioning (DVC or GCS with checksums) is non-negotiable.
+  3. No data validation pipeline. What if someone pushes a corrupted dataset?
+     We'd train on garbage and not know until eval. Add Great Expectations or
+     TFX data validation BEFORE training starts.
+  4. The checkpoint resume logic doesn't verify that the checkpoint was made
+     with the same hyperparameters. Resuming a r=16 run from a r=32 checkpoint
+     will silently produce garbage weights.
+  5. No model registry. After training, where does the adapter go? It's written
+     to a local path. Need automated push to HuggingFace Hub AND GCS artifact store.
+  6. No CI gate. A training run that regresses accuracy should NOT be deployable.
+     Add a post-training eval gate that blocks artifact publication if accuracy
+     drops below the baseline.
+
+TODO-ML-PROF: Critical research questions for the Unsloth prize:
+  1. Dynamic QLoRA vs standard QLoRA vs full LoRA ablation on Gemma 4 E2B vision.
+     Unsloth claims 0% accuracy loss — VERIFY on our PPE detection task, not just
+     text benchmarks. Vision pathway quantization sensitivity is poorly studied.
+  2. The r=16 sweet spot was determined on text-only safety classification. Does it
+     hold for vision-language tasks where the visual encoder needs higher-rank
+     adaptations? Test r=32 and r=64 specifically on the vision PPE eval.
+  3. For BitNet b1.58 (1-bit ternary): Gemma 4 E2B is MoE with gating. The gating
+     network is the most sensitive to quantization because small weight perturbations
+     change expert routing. Consider keeping the gating network at FP16 while
+     quantizing expert FFNs to 1.58-bit. This is the "PrismQuant" approach.
+  4. TurboQuant comparison: GPTQ vs AWQ vs Unsloth QLoRA vs vanilla bitsandbytes.
+     Measure on BOTH accuracy AND latency. AWQ is faster at inference but slower
+     to quantize. For on-device deployment, inference latency is what matters.
+  5. Adapter stacking: can we merge safety + spanish_jargon adapters without
+     accuracy degradation? Test both sequential merge (SVD-based) and
+     multi-adapter inference (adapter switching at runtime via Cactus SDK).
+
 Priya: This is the heart of Duchess ML. We fine-tune Gemma 4 E2B (2.3B effective params)
 using Dynamic QLoRA via Unsloth — the ONLY framework that supports Gemma 4
 quantization with 0% accuracy loss vs full LoRA. We've benchmarked this against

@@ -151,4 +151,10 @@
     <string name="alert_acknowledged">Alerta reconocida</string>
     <string name="alert_escalated">Alerta escalada a revisión en la nube</string>
     <string name="alert_dismissed">Alerta descartada</string>
+
+    <!-- App Mode toggle (Settings → App Mode) -->
+    <string name="settings_mode">Modo de aplicación</string>
+    <string name="demo_mode_label">Modo demostración</string>
+    <string name="demo_mode_desc">Datos simulados — sin hardware necesario</string>
+    <string name="live_mode_desc">Hardware real — se requieren lentes Meta</string>
 </resources>
