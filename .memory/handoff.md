@@ -4,6 +4,31 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-03 03:37 UTC — Commit bf81a2c
+
+**Branch**: `claude/serene-shtern`  
+**Author**: AlexiosBluffMara  
+**Message**: fix(ml): remove stray triple-quote causing SyntaxError in export_model and prepare_dataset
+
+### Modules touched
+- **ml/**: 2 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 64 | Active (64 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 12 | Active (12 files) |
+
+### Changed files
+```
+ml/scripts/export_model.py
+ml/scripts/prepare_dataset.py
+```
+
+---
+
 ## 2026-04-03 03:31 UTC — Commit 9db3846
 
 **Branch**: `claude/serene-shtern`  
@@ -76,17 +101,6 @@ docs/project/team.md
 README.md
 docs/index.html
 ```
-
----
-
-## 2026-04-03 02:47 UTC — Commit d53cc85 (from main — Copilot)
-
-**Branch**: `main`
-**Author**: AlexiosBluffMara
-**Message**: feat(phone): wire BLE startup, persist settings, live dashboard, demo/live toggle
-
-### Modules touched
-- **app-phone/**: 8 file(s) changed — DashboardViewModel, SettingsViewModel/Screen, MainActivity, AppModule, strings
 
 ---
 
