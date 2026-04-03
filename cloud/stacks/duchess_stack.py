@@ -1,4 +1,36 @@
 """
+LEGACY — AWS CDK Stack. Scheduled for replacement by cloud-gcp/ (Google Cloud).
+
+The hackathon pivot (April 2026) moves Duchess from AWS to Google Cloud (Vertex AI,
+Cloud Run, Firestore, Cloud Storage, Pub/Sub). This stack remains as reference
+architecture but will NOT be deployed for the Gemma 4 Good Hackathon.
+
+Migration plan: see .memory/hackathon-pivot-plan.md → Phase 4 (cloud-gcp/).
+Equivalent GCP resources:
+  - S3 → Cloud Storage (same encryption, lifecycle policies)
+  - DynamoDB → Firestore (real-time sync to all devices, better for mobile)
+  - SQS → Pub/Sub (exactly-once delivery, better scaling model)
+  - Lambda → Cloud Run (serverless, but with container flexibility)
+  - Bedrock Claude → Vertex AI Gemma 4 31B (open-weight, Apache 2.0)
+  - SNS → Firebase Cloud Messaging (FCM) for push notifications
+  - CloudWatch → Cloud Monitoring + Error Reporting
+
+TODO-PRINCIPAL: Before deleting this stack:
+  1. Extract the IAM least-privilege patterns — they're well-done and should be
+     replicated in GCP IAM (service accounts with minimal roles).
+  2. Extract the CloudWatch alarm patterns — same alarm philosophy applies to
+     Cloud Monitoring (zero-tolerance on safety pipeline failures).
+  3. The DLQ + max_receive_count=3 pattern → Pub/Sub dead-letter topic equivalent.
+  4. Tag strategy → GCP labels (same cost allocation purpose).
+  5. Keep this file as-is until cloud-gcp/ is fully operational and tested.
+
+TODO-ML-PROF: The Bedrock Claude 3.5 model ID should be replaced by Gemma 4 31B on
+  Vertex AI for the hackathon. Key differences:
+  - Bedrock pricing ($3/$15 per 1K tokens) vs Vertex AI Gemma 4 (~$0.02/query on T4)
+  - Gemma 4 supports native function calling — no need for JSON parsing workarounds
+  - Gemma 4 31B Dense runs on g2-standard-48 (L4 x4) or n1-standard-8 + T4 for demo
+  - Apache 2.0 license = no usage restrictions, can fine-tune and publish weights
+
 Duchess CDK Stack — PPE escalation pipeline and batch infrastructure.
 
 # Jordan: This is THE stack. Every resource here costs money, every resource here
