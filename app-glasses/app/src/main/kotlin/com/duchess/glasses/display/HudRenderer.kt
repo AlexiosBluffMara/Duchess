@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.view.View
 import com.duchess.glasses.model.Detection
+import com.duchess.glasses.model.HudLanguageMode
 import com.duchess.glasses.model.InferenceMode
 import com.duchess.glasses.model.SafetyAlert
 import com.duchess.glasses.ppe.PpeDetector

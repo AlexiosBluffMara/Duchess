@@ -4,6 +4,31 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-03 04:11 UTC — Commit 14a7d30
+
+**Branch**: `claude/confident-franklin`  
+**Author**: AlexiosBluffMara  
+**Message**: feat(glasses): add HudLanguageMode enum and import for bilingual HUD preference
+
+### Modules touched
+- **app-glasses/**: 2 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 63 | Active (63 files) |
+| app-glasses/ | 34 | Active (34 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 12 | Active (12 files) |
+
+### Changed files
+```
+app-glasses/app/src/main/kotlin/com/duchess/glasses/display/HudRenderer.kt
+app-glasses/app/src/main/kotlin/com/duchess/glasses/model/HudLanguageMode.kt
+```
+
+---
+
 ## 2026-04-03 04:01 UTC — Commit de7392d
 
 **Branch**: `claude/confident-franklin`  
@@ -105,30 +130,6 @@ app-phone/app/src/main/kotlin/com/meta/wearable/dat/core/registration/Registrati
 app-phone/app/src/main/kotlin/com/meta/wearable/dat/core/selectors/AutoDeviceSelector.kt
 app-phone/app/src/main/kotlin/com/meta/wearable/dat/mockdevice/MockDeviceKit.kt
 app-phone/app/src/main/kotlin/com/meta/wearable/dat/mockdevice/api/MockRaybanMeta.kt
-```
-
----
-
-## 2026-04-02 22:40 UTC — Commit c1f1739
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: ci(infra): opt into Node.js 24 and add fetch-depth 0 to Pages workflow
-
-### Modules touched
-- **infra**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 33 | Active (33 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.github/workflows/pages.yml
 ```
 
 ---
