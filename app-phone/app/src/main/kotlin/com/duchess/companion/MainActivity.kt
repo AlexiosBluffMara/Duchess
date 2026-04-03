@@ -57,6 +57,11 @@ import com.duchess.companion.splash.SplashScreen
 import com.duchess.companion.stream.StreamScreen
 import com.duchess.companion.ui.theme.DuchessTheme
 import javax.inject.Inject
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import com.meta.wearable.dat.core.Wearables
 import com.meta.wearable.dat.core.types.RegistrationState
 import com.meta.wearable.dat.core.types.Permission
@@ -94,6 +99,23 @@ class MainActivity : ComponentActivity() {
     private var permissionContinuation: CancellableContinuation<PermissionStatus>? = null
     private val permissionMutex = Mutex()
 
+    /**
+     * Launcher for Android runtime permissions (BLE, notifications).
+     * After Bluetooth permission is granted, we initialize the DAT SDK + BLE GATT server.
+     */
+    private val bluetoothPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
+            if (grants.values.all { it }) {
+                // All permissions granted — initialize BLE services that were deferred
+                val app = application as DuchessApplication
+                app.initializeBluetoothServices()
+                // If in live mode, start observing registration now that SDK is ready
+                if (!DEMO_MODE && app.isBluetoothInitialized) {
+                    observeRegistrationState()
+                }
+            }
+        }
+
     private val permissionsLauncher =
         registerForActivityResult(Wearables.RequestPermissionContract()) { result ->
             val status = result.fold(
@@ -111,7 +133,10 @@ class MainActivity : ComponentActivity() {
             .getBoolean("demo_mode", true)
         enableEdgeToEdge()
 
-        if (!DEMO_MODE) {
+        // Request BLE permissions if needed, then initialize BLE services.
+        requestBluetoothPermissionsIfNeeded()
+
+        if (!DEMO_MODE && (application as DuchessApplication).isBluetoothInitialized) {
             observeRegistrationState()
         }
 
@@ -135,6 +160,36 @@ class MainActivity : ComponentActivity() {
             Wearables.registrationState.collect { state ->
                 _registrationState.value = state
             }
+        }
+    }
+
+    /**
+     * Requests BLUETOOTH_CONNECT and BLUETOOTH_SCAN if not already granted.
+     * On grant, initializes deferred BLE services (DAT SDK + GATT server).
+     * On Android < 12 (API < 31), these permissions are granted at install time.
+     */
+    private fun requestBluetoothPermissionsIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val needed = mutableListOf<String>()
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                needed.add(Manifest.permission.BLUETOOTH_CONNECT)
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                needed.add(Manifest.permission.BLUETOOTH_SCAN)
+            }
+            if (needed.isNotEmpty()) {
+                bluetoothPermissionLauncher.launch(needed.toTypedArray())
+            } else {
+                // Already granted — make sure BLE services are initialized
+                (application as DuchessApplication).initializeBluetoothServices()
+            }
+        } else {
+            // Pre-Android 12: BLE permissions are granted at install time
+            (application as DuchessApplication).initializeBluetoothServices()
         }
     }
 

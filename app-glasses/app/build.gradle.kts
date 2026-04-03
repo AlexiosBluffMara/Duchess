@@ -37,6 +37,11 @@ android {
     }
 
     // No Compose — AOSP View-based UI only (640x360 Vuzix display)
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -64,4 +69,5 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.coroutines.test)
+    testImplementation(libs.robolectric)
 }

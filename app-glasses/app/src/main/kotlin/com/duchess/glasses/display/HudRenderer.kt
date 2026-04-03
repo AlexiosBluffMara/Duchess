@@ -209,8 +209,8 @@ class HudRenderer(context: Context) : View(context) {
 
         // Alex: BLE connection indicator — small dot in top-right corner
         val bleColor = if (isConnectedToBle) COLOR_OK else COLOR_DISCONNECTED
-        val bleDotPaint = Paint().apply { color = bleColor; style = Paint.Style.FILL }
-        canvas.drawCircle(width - BLE_DOT_MARGIN, BLE_DOT_MARGIN, BLE_DOT_RADIUS, bleDotPaint)
+        batteryPaint.color = bleColor
+        canvas.drawCircle(width - BLE_DOT_MARGIN, BLE_DOT_MARGIN, BLE_DOT_RADIUS, batteryPaint)
     }
 
     /**

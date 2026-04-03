@@ -272,7 +272,7 @@ class GemmaInferenceEngineTest {
             "address", "identity", "badge", "photo"
         )
         val fieldNames = GemmaAnalysisResult::class.java.declaredFields
-            .filter { !it.isSynthetic }
+            .filter { !it.isSynthetic && !it.name.startsWith("\$") }
             .map { it.name.lowercase() }
 
         for (keyword in piiKeywords) {
@@ -292,7 +292,7 @@ class GemmaInferenceEngineTest {
             "descriptionEn", "descriptionEs", "confidence"
         )
         val actual = GemmaAnalysisResult::class.java.declaredFields
-            .filter { !it.isSynthetic }
+            .filter { !it.isSynthetic && !it.name.startsWith("\$") }
             .map { it.name }
             .toSet()
 

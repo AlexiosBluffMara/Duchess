@@ -95,7 +95,7 @@ class SafetyAlertTest {
         // constructor parameter. We use reflection to get the actual field names
         // and verify they match our expected set exactly.
         val actualFieldNames = SafetyAlert::class.java.declaredFields
-            .filter { !it.isSynthetic }  // Exclude Kotlin metadata fields
+            .filter { !it.isSynthetic && !it.name.startsWith("\$") }
             .map { it.name }
             .toSet()
 
@@ -120,7 +120,7 @@ class SafetyAlertTest {
         )
 
         val fieldNames = SafetyAlert::class.java.declaredFields
-            .filter { !it.isSynthetic }
+            .filter { !it.isSynthetic && !it.name.startsWith("\$") }
             .map { it.name.lowercase() }
 
         for (keyword in piiKeywords) {

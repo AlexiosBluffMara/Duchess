@@ -1,9 +1,11 @@
 package com.duchess.companion.ble
 
+import android.Manifest
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattServer
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.pm.PackageManager
 import app.cash.turbine.test
 import io.mockk.every
 import io.mockk.mockk
@@ -49,6 +51,11 @@ class BleGattServerTest {
         every {
             mockContext.getSystemService(Context.BLUETOOTH_SERVICE)
         } returns mockBluetoothManager
+
+        // Stub BLUETOOTH_CONNECT permission as granted for test
+        every {
+            mockContext.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)
+        } returns PackageManager.PERMISSION_GRANTED
 
         every {
             mockBluetoothManager.openGattServer(any(), any())

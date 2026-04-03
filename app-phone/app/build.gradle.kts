@@ -74,6 +74,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -133,4 +137,5 @@ dependencies {
     testImplementation(libs.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.work.testing)
+    testImplementation("org.json:json:20231013")
 }

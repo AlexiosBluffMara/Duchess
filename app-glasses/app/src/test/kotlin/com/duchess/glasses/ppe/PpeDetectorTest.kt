@@ -6,6 +6,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
 /**
  * Unit tests for PpeDetector — the YOLOv8-nano inference engine.
@@ -27,6 +29,7 @@ import org.junit.Test
  *
  * These tests are fast (<100ms total) and run on every CI build.
  */
+@RunWith(RobolectricTestRunner::class)
 class PpeDetectorTest {
 
     // ===== LABEL TESTS =====

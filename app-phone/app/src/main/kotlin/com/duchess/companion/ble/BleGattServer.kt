@@ -179,13 +179,29 @@ class BleGattServer @Inject constructor(
         if (_state.value is ServerState.Running) return
         _state.value = ServerState.Starting
 
+        // Guard: BLUETOOTH_CONNECT is required on Android 12+ to open a GATT server.
+        // If the permission hasn't been granted yet, defer — don't crash the app.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            if (context.checkSelfPermission(android.Manifest.permission.BLUETOOTH_CONNECT)
+                != android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
+                _state.value = ServerState.Error("BLUETOOTH_CONNECT permission not granted")
+                return
+            }
+        }
+
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
         if (bluetoothManager == null) {
             _state.value = ServerState.Error("BluetoothManager not available")
             return
         }
 
-        gattServer = bluetoothManager.openGattServer(context, gattCallback)
+        try {
+            gattServer = bluetoothManager.openGattServer(context, gattCallback)
+        } catch (e: SecurityException) {
+            _state.value = ServerState.Error("BLE permission denied: ${e.message}")
+            return
+        }
         if (gattServer == null) {
             _state.value = ServerState.Error("Failed to open GATT server")
             return

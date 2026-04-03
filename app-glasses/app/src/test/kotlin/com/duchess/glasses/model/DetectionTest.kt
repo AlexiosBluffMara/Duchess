@@ -5,6 +5,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
 /**
  * Unit tests for the Detection data class.
@@ -18,6 +20,7 @@ import org.junit.Test
  *
  * These are boring validation tests, but they've caught field renames twice already.
  */
+@RunWith(RobolectricTestRunner::class)
 class DetectionTest {
 
     @Test

@@ -6,8 +6,6 @@ import com.duchess.companion.gemma.GemmaAnalysisResult
 import com.duchess.companion.gemma.GemmaInferenceEngine
 import com.duchess.companion.model.SafetyAlert
 import com.meta.wearable.dat.camera.types.VideoFrame
-import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -35,18 +33,40 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class InferencePipelineCoordinatorTest {
 
-    private lateinit var engine: GemmaInferenceEngine
+    /**
+     * Fake GemmaInferenceEngine that bypasses the real inference pipeline.
+     * This avoids MockK proxy issues with the Mutex.withLock inline suspend
+     * function inside the real analyze() method.
+     */
+    private class FakeInferenceEngine : GemmaInferenceEngine(mockk(relaxed = true)) {
+        var nextResult: GemmaAnalysisResult = GemmaAnalysisResult(
+            violationDetected = false,
+            violationType = null,
+            severity = 0,
+            descriptionEn = "",
+            descriptionEs = "",
+            confidence = 0.0
+        )
+        var analyzeCalls = 0
+
+        override suspend fun analyze(frame: VideoFrame): GemmaAnalysisResult {
+            analyzeCalls++
+            return nextResult
+        }
+    }
+
+    private lateinit var fakeEngine: FakeInferenceEngine
     private lateinit var bleServer: BleGattServer
     private lateinit var coordinator: InferencePipelineCoordinator
     private lateinit var mockFrame: VideoFrame
 
     @Before
     fun setup() {
-        engine = mockk(relaxed = true)
+        fakeEngine = FakeInferenceEngine()
         bleServer = mockk(relaxed = true) {
             every { sendAlert(any()) } returns true
         }
-        coordinator = InferencePipelineCoordinator(engine, bleServer)
+        coordinator = InferencePipelineCoordinator(fakeEngine, bleServer)
         mockFrame = mockk(relaxed = true)
     }
 
@@ -54,8 +74,7 @@ class InferencePipelineCoordinatorTest {
 
     @Test
     fun `processFrame skips second call within throttle window`() = runTest {
-        val violation = violationResult(severity = 3, confidence = 0.9)
-        coEvery { engine.analyze(any()) } returns violation
+        fakeEngine.nextResult = violationResult(severity = 3, confidence = 0.9)
 
         // First call — should analyze
         coordinator.processFrame(mockFrame, "zone-A")
@@ -64,13 +83,12 @@ class InferencePipelineCoordinatorTest {
 
         // Alex: analyze() should only be called once despite two processFrame() calls.
         // The throttle window is 1000ms. Both calls happen in the same test tick (0ms apart).
-        coVerify(exactly = 1) { engine.analyze(any()) }
+        assertEquals(1, fakeEngine.analyzeCalls)
     }
 
     @Test
     fun `processFrame processes frame after throttle window`() = runTest {
-        val violation = violationResult(severity = 3, confidence = 0.9)
-        coEvery { engine.analyze(any()) } returns violation
+        fakeEngine.nextResult = violationResult(severity = 3, confidence = 0.9)
 
         coordinator.processFrame(mockFrame, "zone-A")
 
@@ -81,15 +99,14 @@ class InferencePipelineCoordinatorTest {
 
         coordinator.processFrame(mockFrame, "zone-A")
 
-        coVerify(exactly = 2) { engine.analyze(any()) }
+        assertEquals(2, fakeEngine.analyzeCalls)
     }
 
     // --- Confidence filter tests ---
 
     @Test
     fun `processFrame drops result below confidence threshold`() = runTest {
-        val lowConfidence = violationResult(severity = 5, confidence = 0.3) // below 0.5
-        coEvery { engine.analyze(any()) } returns lowConfidence
+        fakeEngine.nextResult = violationResult(severity = 5, confidence = 0.3) // below 0.5
 
         coordinator.alertFlow.test {
             coordinator.processFrame(mockFrame, "zone-A")
@@ -101,8 +118,7 @@ class InferencePipelineCoordinatorTest {
 
     @Test
     fun `processFrame drops result with violation_detected = false`() = runTest {
-        val noViolation = noViolationResult()
-        coEvery { engine.analyze(any()) } returns noViolation
+        fakeEngine.nextResult = noViolationResult()
 
         coordinator.alertFlow.test {
             coordinator.processFrame(mockFrame, "zone-A")
@@ -122,7 +138,7 @@ class InferencePipelineCoordinatorTest {
             descriptionEn = "Hard hat missing",
             descriptionEs = "Falta casco"
         )
-        coEvery { engine.analyze(any()) } returns violation
+        fakeEngine.nextResult = violation
 
         coordinator.alertFlow.test {
             coordinator.processFrame(mockFrame, "zone-B-excavation")
@@ -142,8 +158,7 @@ class InferencePipelineCoordinatorTest {
 
     @Test
     fun `processFrame sets zoneId correctly on emitted alert`() = runTest {
-        val violation = violationResult(severity = 3, confidence = 0.8)
-        coEvery { engine.analyze(any()) } returns violation
+        fakeEngine.nextResult = violationResult(severity = 3, confidence = 0.8)
 
         coordinator.alertFlow.test {
             coordinator.processFrame(mockFrame, "zone-D-roofing")
@@ -157,8 +172,7 @@ class InferencePipelineCoordinatorTest {
 
     @Test
     fun `processFrame generates unique IDs for successive alerts`() = runTest {
-        val violation = violationResult(severity = 3, confidence = 0.85)
-        coEvery { engine.analyze(any()) } returns violation
+        fakeEngine.nextResult = violationResult(severity = 3, confidence = 0.85)
 
         val ids = mutableListOf<String>()
         coordinator.alertFlow.test {
@@ -185,8 +199,7 @@ class InferencePipelineCoordinatorTest {
 
     @Test
     fun `processFrame calls sendAlert for severity at threshold`() = runTest {
-        val violation = violationResult(severity = InferencePipelineCoordinator.BLE_SEVERITY_THRESHOLD, confidence = 0.9)
-        coEvery { engine.analyze(any()) } returns violation
+        fakeEngine.nextResult = violationResult(severity = InferencePipelineCoordinator.BLE_SEVERITY_THRESHOLD, confidence = 0.9)
 
         coordinator.processFrame(mockFrame, "zone-A")
 
@@ -195,8 +208,7 @@ class InferencePipelineCoordinatorTest {
 
     @Test
     fun `processFrame calls sendAlert for severity above threshold`() = runTest {
-        val violation = violationResult(severity = 5, confidence = 0.95) // critical
-        coEvery { engine.analyze(any()) } returns violation
+        fakeEngine.nextResult = violationResult(severity = 5, confidence = 0.95) // critical
 
         coordinator.processFrame(mockFrame, "zone-A")
 
@@ -207,11 +219,10 @@ class InferencePipelineCoordinatorTest {
     fun `processFrame does NOT call sendAlert for severity below threshold`() = runTest {
         // Alex: Minor violations (severity 1-2) go to the app notification only.
         // We don't want minor housekeeping issues buzzing workers' glasses HUD constantly.
-        val minor = violationResult(
+        fakeEngine.nextResult = violationResult(
             severity = InferencePipelineCoordinator.BLE_SEVERITY_THRESHOLD - 1,
             confidence = 0.8
         )
-        coEvery { engine.analyze(any()) } returns minor
 
         coordinator.processFrame(mockFrame, "zone-A")
 
@@ -220,7 +231,7 @@ class InferencePipelineCoordinatorTest {
 
     @Test
     fun `processFrame does NOT call sendAlert when no violation detected`() = runTest {
-        coEvery { engine.analyze(any()) } returns noViolationResult()
+        fakeEngine.nextResult = noViolationResult()
 
         coordinator.processFrame(mockFrame, "zone-A")
 

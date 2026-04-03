@@ -69,7 +69,7 @@ import javax.inject.Singleton
  * GemmaAnalysisResult (violation metadata, bilingual text, no image data) exits.
  */
 @Singleton
-class GemmaInferenceEngine @Inject constructor(
+open class GemmaInferenceEngine @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     companion object {
@@ -176,7 +176,7 @@ class GemmaInferenceEngine @Inject constructor(
      * PRIVACY: The bitmap is passed to the LOCAL model only. It is not serialized,
      * logged, or transmitted anywhere. Only the parsed result leaves this method.
      */
-    suspend fun analyze(frame: VideoFrame): GemmaAnalysisResult {
+    open suspend fun analyze(frame: VideoFrame): GemmaAnalysisResult {
         return inferenceMutex.withLock {
             if (_state.value != GemmaState.Ready) {
                 loadModel()

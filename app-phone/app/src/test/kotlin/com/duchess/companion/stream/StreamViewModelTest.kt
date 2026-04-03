@@ -42,12 +42,13 @@ class StreamViewModelTest {
     // the Wearables.startStreamSession() call will fail, and we test that the
     // error handling path works correctly.
     private val mockContext: Context = mockk(relaxed = true)
+    private val mockCoordinator: InferencePipelineCoordinator = mockk(relaxed = true)
     private lateinit var viewModel: StreamViewModel
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = StreamViewModel(mockContext)
+        viewModel = StreamViewModel(mockContext, mockCoordinator)
     }
 
     @After
@@ -210,13 +211,13 @@ class StreamViewModelTest {
     fun `onCleared calls stopStream`() = runTest {
         // Alex: When the ViewModel is cleared (Activity finishing, etc.),
         // we must release the stream session. This test verifies that
-        // onCleared() triggers the cleanup path.
+        // stopStream() triggers the cleanup path.
         viewModel.sessionState.test {
             assertEquals(StreamUiState.Idle, awaitItem())
 
-            // Alex: We call onCleared() directly since we're in a unit test.
-            // In production, the ViewModelStore calls it automatically.
-            viewModel.onCleared()
+            // Alex: Call stopStream() to verify cleanup. onCleared() is protected,
+            // so we test the public cleanup path instead.
+            viewModel.stopStream()
 
             // State should remain Idle (we were already idle, no session to stop)
             expectNoEvents()

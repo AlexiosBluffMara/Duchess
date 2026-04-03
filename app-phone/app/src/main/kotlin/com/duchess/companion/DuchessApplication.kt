@@ -1,6 +1,9 @@
 package com.duchess.companion
 
+import android.Manifest
 import android.app.Application
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import com.duchess.companion.ble.BleGattServer
 import com.duchess.companion.upload.BatchUploadScheduler
 import com.meta.wearable.dat.core.Wearables
@@ -14,33 +17,57 @@ import javax.inject.Inject
  * that sets up the DI container. Without this annotation, @AndroidEntryPoint
  * on Activities/Services will crash with "Hilt component not available."
  *
- * We initialize the DAT SDK here because:
- *   1. Application.onCreate() runs before ANY Activity or Service
- *   2. The SDK needs to register its internal BroadcastReceivers early
- *   3. Calling Wearables APIs before initialize() throws NOT_INITIALIZED
+ * DAT SDK and BLE initialization are DEFERRED until BLUETOOTH_CONNECT
+ * permission is granted. On Android 12+ (API 31+), BLUETOOTH_CONNECT is a
+ * runtime permission — calling Bluetooth APIs without it throws SecurityException
+ * in Application.onCreate(), which is fatal (crashes before any Activity starts).
  *
- * Do NOT add heavy work here. Application.onCreate() blocks the main thread
- * and delays app startup. The DAT SDK init is lightweight (~50ms) so it's fine.
- * Gemma 4 model loading happens lazily on first inference — NOT here.
+ * Call [initializeBluetoothServices] from MainActivity after permission is granted.
  */
 @HiltAndroidApp
 class DuchessApplication : Application() {
 
     @Inject lateinit var bleGattServer: BleGattServer
 
+    @Volatile
+    var isBluetoothInitialized = false
+        private set
+
     override fun onCreate() {
         super.onCreate()
-        // Alex: This MUST be the first SDK call. Initializes internal state,
-        // registers BLE receivers, and sets up the device discovery pipeline.
-        // After this, Wearables.registrationState and startStreamSession() work.
-        Wearables.initialize(this)
-        // Start the BLE GATT server so glasses can connect immediately on launch.
-        // BleGattServer.start() handles cases where BT is not yet available or
-        // permissions haven't been granted — it transitions to Error state silently.
-        bleGattServer.start()
+
         // Register the nightly batch upload WorkManager task. WorkManager deduplicates
         // via WORK_NAME so calling this on every launch is safe — it won't create
-        // duplicate jobs.
+        // duplicate jobs. This does NOT require Bluetooth permission.
         BatchUploadScheduler.schedule(this)
+
+        // Attempt BLE init if permission is already granted (e.g., returning user).
+        // If not granted, MainActivity will call initializeBluetoothServices() after
+        // the user grants permission.
+        if (hasBluetoothPermission()) {
+            initializeBluetoothServices()
+        }
+    }
+
+    /**
+     * Initialize DAT SDK and BLE GATT server. Safe to call multiple times — idempotent.
+     * MUST only be called after BLUETOOTH_CONNECT permission is granted.
+     */
+    fun initializeBluetoothServices() {
+        if (isBluetoothInitialized) return
+        try {
+            Wearables.initialize(this)
+            bleGattServer.start()
+            isBluetoothInitialized = true
+        } catch (e: SecurityException) {
+            // Permission not actually granted or revoked — stay uninitialized.
+            // MainActivity will retry after permission grant.
+        }
+    }
+
+    private fun hasBluetoothPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this, Manifest.permission.BLUETOOTH_CONNECT
+        ) == PackageManager.PERMISSION_GRANTED
     }
 }

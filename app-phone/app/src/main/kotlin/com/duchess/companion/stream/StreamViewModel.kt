@@ -107,9 +107,9 @@ class StreamViewModel @Inject constructor(
             _sessionState.value is StreamUiState.Connecting
         ) return
 
-        viewModelScope.launch {
-            _sessionState.value = StreamUiState.Connecting
+        _sessionState.value = StreamUiState.Connecting
 
+        viewModelScope.launch {
             val config = StreamConfiguration(
                 videoQuality = VideoQuality.MEDIUM,
                 frameRate = 24
@@ -123,7 +123,7 @@ class StreamViewModel @Inject constructor(
                 )
                 _sessionState.value = StreamUiState.Active(session)
                 collectFrames(session)
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 _sessionState.value = StreamUiState.Error(e.message ?: "Failed to start stream")
             }
         }

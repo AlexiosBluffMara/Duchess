@@ -2,6 +2,7 @@ package com.duchess.glasses.battery
 
 import com.duchess.glasses.model.InferenceMode
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
