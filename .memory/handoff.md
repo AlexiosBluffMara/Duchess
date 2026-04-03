@@ -4,6 +4,37 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-03 02:47 UTC — Commit 1a89713
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: feat(phone): wire BLE startup, persist settings, live dashboard, demo/live toggle
+
+### Modules touched
+- **app-phone/**: 8 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 2392 | Active (2392 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+app-phone/app/src/main/kotlin/com/duchess/companion/DuchessApplication.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/dashboard/DashboardViewModel.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/di/AppModule.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/settings/SettingsScreen.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/settings/SettingsViewModel.kt
+app-phone/app/src/main/res/values-es/strings.xml
+app-phone/app/src/main/res/values/strings.xml
+```
+
+---
+
 ## 2026-04-03 02:36 UTC — Commit d1c14cf
 
 **Branch**: `main`  
@@ -91,30 +122,6 @@ app-phone/app/src/main/kotlin/com/meta/wearable/dat/mockdevice/api/MockRaybanMet
 ### Changed files
 ```
 .github/workflows/pages.yml
-```
-
----
-
-## 2026-04-02 21:55 UTC — Commit a5b04ca
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: fix(glasses): correct LiteRT import packages and remove duplicate init code in PpeDetector
-
-### Modules touched
-- **app-glasses/**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 33 | Active (33 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-app-glasses/app/src/main/kotlin/com/duchess/glasses/ppe/PpeDetector.kt
 ```
 
 ---

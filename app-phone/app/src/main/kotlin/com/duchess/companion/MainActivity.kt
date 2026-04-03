@@ -77,10 +77,13 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         /**
-         * Set to true to bypass DAT SDK registration and show the full app with demo data.
-         * Flip to false when testing with real Meta glasses hardware.
+         * Runtime flag: true = demo data, false = live Meta glasses.
+         * Persisted in SharedPreferences (key "demo_mode") so the user's choice
+         * survives restarts. Toggle via Settings → App Mode.
+         * Initialized from prefs in onCreate() before setContent so composables
+         * see the correct value on first composition.
          */
-        const val DEMO_MODE = true
+        var DEMO_MODE = true
     }
 
     @Inject lateinit var modelManager: GemmaModelManager
@@ -103,6 +106,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Read persisted mode before setContent so composables see correct value.
+        DEMO_MODE = getSharedPreferences("duchess_prefs", MODE_PRIVATE)
+            .getBoolean("demo_mode", true)
         enableEdgeToEdge()
 
         if (!DEMO_MODE) {

@@ -3,6 +3,7 @@ package com.duchess.companion.di
 import android.app.NotificationManager
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,5 +64,20 @@ object AppModule {
         // on devices where BT hardware is present but the service failed to start.
         // Rare, but I've seen it on cheap Chinese tablets running AOSP forks.
         return context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
+    }
+
+    /**
+     * Provide app-scoped SharedPreferences for persisting user settings and mode flags.
+     *
+     * Alex: Named "duchess_prefs" — single file for the whole app. Keys:
+     *   "demo_mode" (Boolean), "notifications" (Boolean), "nightly_upload" (Boolean),
+     *   "alert_sound" (Boolean), "language" (String), "sensitivity" (Float).
+     */
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(
+        @ApplicationContext context: Context
+    ): SharedPreferences {
+        return context.getSharedPreferences("duchess_prefs", Context.MODE_PRIVATE)
     }
 }
