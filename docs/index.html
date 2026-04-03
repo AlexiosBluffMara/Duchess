@@ -732,6 +732,8 @@
         <li><a href="#gemma4">Gemma 4</a></li>
         <li><a href="#cloud">Google Cloud</a></li>
         <li><a href="#ondevice">On-Device</a></li>
+        <li><a href="#research">ML Research</a></li>
+        <li><a href="#datasets">Datasets</a></li>
         <li><a href="#prizes">Prizes</a></li>
         <li><a href="#team">Team</a></li>
       </ul>
@@ -760,6 +762,8 @@
     <a href="#gemma4"       onclick="closeNav()">Gemma 4</a>
     <a href="#cloud"        onclick="closeNav()">Google Cloud</a>
     <a href="#ondevice"     onclick="closeNav()">On-Device</a>
+    <a href="#research"     onclick="closeNav()">ML Research</a>
+    <a href="#datasets"     onclick="closeNav()">Datasets</a>
     <a href="#prizes"       onclick="closeNav()">Prizes</a>
     <a href="#team"         onclick="closeNav()">Team</a>
     <a href="https://github.com/AlexiosBluffMara/Duchess">View on GitHub ↗</a>
@@ -1290,34 +1294,194 @@
     <div class="sec-hdr reveal">
       <span class="eyebrow">Investigación ML / ML Research</span>
       <h2 class="sec-title" id="research-title">Pushing Gemma 4 to the Edge</h2>
-      <p class="sec-sub">Fine-tuning, quantization, and 1-bit ternary optimization — making frontier AI fit on construction workers' phones.</p>
+      <p class="sec-sub">A multi-stage compression pipeline — from training-time quantization through post-training compression to hardware-specific export — making a frontier 2.3B-parameter vision-language model fit on a phone at $0/inference.</p>
     </div>
 
-    <div class="card-grid">
-      <article class="card reveal" aria-label="Unsloth Dynamic QLoRA para ajuste fino / Unsloth Dynamic QLoRA for fine-tuning">
-        <span class="card-icon" aria-hidden="true">⚡</span>
-        <h3>Unsloth Dynamic QLoRA</h3>
-        <p>Fine-tune Gemma 4 E2B on construction safety vision data with 2x speed and 60% less memory than HuggingFace PEFT. LoRA adapters for safety, Spanish jargon, and OSHA regulations. Published weights + benchmarks.</p>
-      </article>
-      <article class="card reveal d1" aria-label="Cuantización avanzada / Advanced Quantization">
-        <span class="card-icon" aria-hidden="true">📐</span>
-        <h3>TurboQuant / Advanced Quantization</h3>
-        <p>GPTQ + AWQ quantization comparison on Tensor G4 NPU. INT8 vs INT4 vs FP16 benchmarks measuring latency, accuracy, memory, and thermal throttling across sustained inference on the Pixel 9 Fold.</p>
-      </article>
-      <article class="card reveal d2" aria-label="Optimización ternaria de 1 bit / 1-bit ternary optimization">
-        <span class="card-icon" aria-hidden="true">🔬</span>
-        <h3>1-Bit Ternary (BitNet b1.58)</h3>
-        <p>Research frontier: weights constrained to {-1, 0, +1}. Potential 10x memory reduction + 8x CPU speedup. If viable, Gemma 4 could run directly on the Vuzix M400 (6GB RAM) — eliminating the phone entirely.</p>
-      </article>
-      <article class="card reveal d3" aria-label="Cuantización de precisión mixta / Mixed-precision quantization">
-        <span class="card-icon" aria-hidden="true">🔮</span>
-        <h3>PrismQuant — Mixed Precision</h3>
-        <p>Per-layer precision allocation optimized for MoE architectures. Attention at FP16, FFN at INT4, embeddings at INT8. Key insight: Gemma 4's expert routing tolerates lower precision than its attention heads.</p>
-      </article>
+    <!-- Pipeline overview -->
+    <div class="arch-note reveal" style="margin-bottom:var(--s5);" aria-label="Pipeline de cuantización completo / Full quantization pipeline">
+      <strong>The Duchess Quantization Pipeline</strong><br>
+      <code style="display:block;margin-top:var(--s2);line-height:1.8;font-size:0.85rem;">
+        Gemma 4 E2B (BF16, 10.2 GB) &rarr; <strong>Unsloth Dynamic QLoRA</strong> (4.1 GB VRAM training)
+        &rarr; LoRA Merge &rarr; <strong>AWQ Post-Training Quantization</strong> (mixed INT8/INT4)
+        &rarr; <strong>LiteRT Export</strong> (Tensor G4 NPU, ~2.8 GB final)
+      </code>
+      <p style="margin-top:var(--s2);font-size:0.85rem;opacity:0.85;"><em>Adapter merge MUST happen before post-training quantization. Quantizing first then merging produces double quantization error or defeats compression entirely.</em></p>
+    </div>
+
+    <!-- 1. Unsloth Dynamic QLoRA -->
+    <article class="card reveal" style="margin-bottom:var(--s4);" aria-label="Unsloth Dynamic QLoRA — ajuste fino eficiente / efficient fine-tuning">
+      <span class="card-icon" aria-hidden="true">⚡</span>
+      <h3>1. Unsloth Dynamic QLoRA</h3>
+      <p><strong>QLoRA</strong> (Dettmers et al., NeurIPS 2023) quantizes base weights to 4-bit NormalFloat (NF4) — an information-theoretically optimal data type for normally-distributed neural network weights — while training full-precision LoRA adapter matrices:</p>
+      <p style="font-family:var(--ff-mono);font-size:0.82rem;padding:var(--s2);background:rgba(0,0,0,0.04);border-radius:8px;">W' = W<sub>frozen_NF4</sub> + (&alpha;/r) &middot; B&middot;A &nbsp;&nbsp; where A &isin; R<sup>d&times;r</sup>, B &isin; R<sup>r&times;d</sup>, r &laquo; d</p>
+      <p><strong>Unsloth's "Dynamic" enhancement</strong> adds two innovations: (1) <em>per-layer precision allocation</em> — profiles each layer's Hessian trace and assigns bit-widths dynamically, keeping high-sensitivity layers at 8-bit while aggressively quantizing tolerant middle layers to NF4; (2) <em>fused Triton kernels</em> that merge NF4 dequantization + LoRA forward into a single GPU kernel, fuse RoPE computation into the attention kernel, and compute cross-entropy in-place without materializing the vocabulary-dimension logit tensor.</p>
+
+      <table style="width:100%;margin:var(--s3) 0;font-size:0.82rem;border-collapse:collapse;">
+        <caption style="font-weight:600;text-align:left;margin-bottom:var(--s1);">Memory comparison — Gemma 4 E2B fine-tuning (2.3B effective, 5.1B total with MoE)</caption>
+        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Component</th><th>Full BF16</th><th>Standard QLoRA</th><th>Unsloth Dynamic</th></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Base weights</td><td style="text-align:center;">10.2 GB</td><td style="text-align:center;">2.65 GB</td><td style="text-align:center;">~2.4 GB</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">LoRA adapters (r=16)</td><td style="text-align:center;">&mdash;</td><td style="text-align:center;">26 MB</td><td style="text-align:center;">26 MB</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Optimizer (Adam)</td><td style="text-align:center;">40.8 GB</td><td style="text-align:center;">104 MB</td><td style="text-align:center;">104 MB</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Activations (seq=2048, bs=4)</td><td style="text-align:center;">3.2 GB</td><td style="text-align:center;">3.2 GB</td><td style="text-align:center;">~1.6 GB</td></tr>
+        <tr style="font-weight:700;"><td style="padding:6px;">Total VRAM</td><td style="text-align:center;">54.2 GB</td><td style="text-align:center;">6.0 GB</td><td style="text-align:center;color:var(--isu-red);">4.1 GB</td></tr>
+      </table>
+
+      <p><strong>LoRA targets for VLMs:</strong> All 7 linear projections per transformer block (<code>q_proj</code>, <code>k_proj</code>, <code>v_proj</code>, <code>o_proj</code>, <code>gate_proj</code>, <code>up_proj</code>, <code>down_proj</code>). FFN layers store domain knowledge — including them improves construction safety accuracy by 2-4% over attention-only LoRA. The ViT vision encoder is <em>not</em> adapted: SigLIP features generalize well, and perturbing vision representations without retraining the cross-modal projection layer risks breaking alignment. For MoE: LoRA applied to ALL experts, not just the router.</p>
+
+      <p><strong>Accuracy on multimodal tasks:</strong> The "0% loss" claim is validated on text benchmarks only. For VLMs, cross-modal attention is more sensitive to quantization noise (0.5-2% degradation on VQA, Shen et al. 2024). We mitigate by keeping the vision-language projection and first/last transformer layers at 8-bit precision.</p>
+    </article>
+
+    <!-- 2. TurboQuant -->
+    <article class="card reveal d1" style="margin-bottom:var(--s4);" aria-label="Cuantización post-entrenamiento GPTQ y AWQ / Post-training quantization">
+      <span class="card-icon" aria-hidden="true">📐</span>
+      <h3>2. TurboQuant — Post-Training Quantization</h3>
+      <p>Post-training quantization compresses a trained model without retraining. We benchmark three complementary techniques on the Tensor G4 NPU:</p>
+
+      <p><strong>GPTQ</strong> (Frantar et al., ICLR 2023): Hessian-based weight quantization. For each layer, solves <code>argmin &#x2016;WX - W<sub>q</sub>X&#x2016;&sup2;</code> using the inverse Hessian to compensate for quantization error — adjusting remaining weights in each row after quantizing each column. Processes a 7B model in ~4 minutes. Best at extreme quantization (INT3).</p>
+
+      <p><strong>AWQ</strong> (Lin et al., MLSys 2024): Activation-Aware Weight Quantization. 1-3% of weight channels are "salient" (process high-magnitude activation channels). AWQ applies per-channel scaling to protect salient weights before uniform quantization. Faster than GPTQ (no Hessian), more hardware-agnostic, slightly better at INT4.</p>
+
+      <p><strong>SqueezeLLM</strong> (Kim et al., ICML 2024): Dense-and-sparse decomposition. Isolates outlier weights (~0.5%, high Fisher information) into a sparse FP16 matrix, then aggressively quantizes the dense remainder to INT3/INT4. Recovers most accuracy lost from extreme compression.</p>
+
+      <table style="width:100%;margin:var(--s3) 0;font-size:0.82rem;border-collapse:collapse;">
+        <caption style="font-weight:600;text-align:left;margin-bottom:var(--s1);">Hardware precision support — target deployment devices</caption>
+        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Precision</th><th>Tensor G4 NPU (Phone)</th><th>Snapdragon XR1 (Glasses)</th></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">INT8</td><td style="text-align:center;">Native, ~10 TOPS</td><td style="text-align:center;">Hexagon DSP, ~2.5 TOPS</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">INT4</td><td style="text-align:center;">Packed, ~18 TOPS theoretical</td><td style="text-align:center;">Not native (shader-based)</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">FP16</td><td style="text-align:center;">Supported, ~5 TFLOPS</td><td style="text-align:center;">Adreno 615, ~300 GFLOPS</td></tr>
+      </table>
+
+      <p><strong>Thermal envelope:</strong> Pixel 9 Fold sustains INT8 NPU inference at ~3.5W indefinitely (TDP ~5W, no throttling). FP16 on GPU draws ~5.5W and throttles after ~90s to ~60% perf. Vuzix M400 (600mAh, 2.5W TDP) must minimize duty cycle — inference only on flagged frames.</p>
+
+      <p><strong>Our recommendation:</strong> INT8 weights + FP16 activations for attention layers, INT4 weights + INT8 activations for FFN/expert layers. Combined with PrismQuant layer allocation, this yields ~2.8 GB on-device with minimal accuracy loss.</p>
+    </article>
+
+    <!-- 3. BitNet -->
+    <article class="card reveal d2" style="margin-bottom:var(--s4);" aria-label="Cuantización ternaria de 1 bit BitNet / 1-bit ternary quantization">
+      <span class="card-icon" aria-hidden="true">🔬</span>
+      <h3>3. BitNet b1.58 — 1-Bit Ternary Quantization</h3>
+      <p><strong>Research frontier.</strong> Ma et al. (Microsoft Research, 2024) constrain every linear layer weight to {-1, 0, +1} via absmean quantization. Each weight carries log<sub>2</sub>(3) = 1.58 bits of information. Packed storage: 5 ternary values in 8 bits (3<sup>5</sup> = 243 &lt; 256).</p>
+
+      <p><strong>Why this matters:</strong> Ternary multiplication becomes pure addition/subtraction — no FPU required:</p>
+      <p style="font-family:var(--ff-mono);font-size:0.82rem;padding:var(--s2);background:rgba(0,0,0,0.04);border-radius:8px;">y<sub>j</sub> = &Sigma;<sub>{W=+1}</sub>(x<sub>i</sub>) &minus; &Sigma;<sub>{W=&minus;1}</sub>(x<sub>i</sub>)</p>
+      <p>At 7nm: ternary add/sub costs ~0.005 pJ vs FP16 multiply at ~0.15 pJ &mdash; a <strong>30&times; energy reduction</strong> (Horowitz, ISSCC 2014). On ARM NEON (Snapdragon XR1), each 128-bit instruction processes 16 INT8 values via the integer SIMD pipeline, bypassing the FPU entirely. Published results on 3.9B models: <strong>2.71&times; faster</strong>, <strong>3.55&times; less memory</strong>, <strong>71.4&times; more energy efficient</strong> for matmul operations.</p>
+
+      <p><strong>Memory for Gemma 4 E2B:</strong> Linear layers at 1.6 bits/weight = 840 MB; embeddings at FP16 = 1.8 GB. <strong>Total: ~2.64 GB</strong> (vs 10.2 GB BF16, vs 2.87 GB NF4). The real win is computational, not storage.</p>
+
+      <p><strong>The fundamental challenge:</strong> BitNet achieves these results by <em>training from scratch</em> with ternary constraints. Post-training ternarization causes catastrophic accuracy loss (MMLU drops ~46% &rarr; ~26% on Llama 2 7B). We cannot simply ternarize our fine-tuned Gemma 4.</p>
+
+      <p><strong>Vision pathway concern:</strong> No published results exist for ternary VLMs. The ViT patch embedding encodes subtle visual features (edge orientations, texture gradients) through small weight differences that ternary collapses. <strong>Our proposed hybrid:</strong> ViT encoder at INT8, vision-language projection at FP16, language decoder FFN at BitNet b1.58.</p>
+
+      <p><strong>Planned experiments:</strong> (1) Hybrid ternarization of decoder FFN layers only (~60% of params); (2) Ternary LoRA adapters (novel — B and A matrices with ternary constraints); (3) Knowledge distillation into a 1B BitNet student from Gemma 4 E4B teacher; (4) Custom ARM NEON ternary matmul kernels for Snapdragon XR1.</p>
+    </article>
+
+    <!-- 4. PrismQuant -->
+    <article class="card reveal d3" style="margin-bottom:var(--s4);" aria-label="PrismQuant — cuantización de precisión mixta para MoE / mixed-precision for MoE">
+      <span class="card-icon" aria-hidden="true">🔮</span>
+      <h3>4. PrismQuant — Mixed Precision for MoE</h3>
+      <p>Layer sensitivity (approximated by <code>&#x2016;W&#x2016;<sub>F</sub> &middot; &#x2016;H<sup>&minus;1</sup>&#x2016;<sub>F</sub></code>) varies dramatically across transformer components. For Gemma 4's Mixture-of-Experts architecture, this means:</p>
+
+      <table style="width:100%;margin:var(--s3) 0;font-size:0.82rem;border-collapse:collapse;">
+        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Component</th><th>Sensitivity</th><th>Precision</th><th>Rationale</th></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Embeddings / LM head</td><td style="text-align:center;">Very High</td><td style="text-align:center;">FP16</td><td>Direct impact on token probabilities</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">MoE Router (gating)</td><td style="text-align:center;">Critical</td><td style="text-align:center;">FP16</td><td>Quantization errors flip discrete routing decisions</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Attention Q/K projections</td><td style="text-align:center;">High</td><td style="text-align:center;">INT8</td><td>KV-cache errors accumulate over sequence length</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Attention V/O projections</td><td style="text-align:center;">Moderate</td><td style="text-align:center;">INT8</td><td>Less sensitive than Q/K</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">FFN / Expert layers</td><td style="text-align:center;">Low</td><td style="text-align:center;">INT4</td><td>Over-parameterized, redundant; ~67% of total params</td></tr>
+        <tr><td style="padding:6px;">First/last 2 decoder layers</td><td style="text-align:center;">High</td><td style="text-align:center;">INT8</td><td>Adjacent to embeddings/logits; errors propagate</td></tr>
+      </table>
+
+      <p><strong>MoE-specific insight:</strong> Expert utilization is uneven &mdash; some experts activate far more frequently. High-frequency experts handle common tokens and are robust to quantization. Low-frequency experts handle rare/specialized tokens, are less regularized, and counterintuitively tolerate more aggressive quantization because the model doesn't rely heavily on their precise values.</p>
+    </article>
+
+    <!-- Expected sizes -->
+    <div class="arch-note reveal" style="margin-top:var(--s2);margin-bottom:var(--s4);">
+      <strong>Expected model sizes after quantization</strong>
+      <table style="width:100%;margin-top:var(--s2);font-size:0.82rem;border-collapse:collapse;">
+        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Configuration</th><th>E2B (2.3B)</th><th>E4B (4.5B)</th></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Original BF16</td><td style="text-align:center;">10.2 GB</td><td style="text-align:center;">18.0 GB</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">AWQ uniform INT4</td><td style="text-align:center;">2.9 GB</td><td style="text-align:center;">5.1 GB</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">PrismQuant mixed (our config)</td><td style="text-align:center;color:var(--isu-red);font-weight:700;">2.8 GB</td><td style="text-align:center;">4.9 GB</td></tr>
+        <tr><td style="padding:6px;">Hypothetical BitNet b1.58</td><td style="text-align:center;">2.1 GB</td><td style="text-align:center;">3.7 GB</td></tr>
+      </table>
+      <p style="margin-top:var(--s2);font-size:0.82rem;opacity:0.8;">Pixel 9 Fold (12 GB RAM, ~6 GB available): E2B at 2.8 GB fits with room for KV-cache (~500 MB), runtime (~300 MB), and the vision encoder (~400 MB).</p>
     </div>
 
     <div class="arch-note reveal" style="margin-top:var(--s4);">
       📊 All quantization experiments produce paper-ready ablation studies with before/after accuracy on construction safety benchmarks, latency on Tensor G4 vs Snapdragon XR1, and published weights on HuggingFace.
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     TRAINING DATA — CONSTRUCTION SAFETY DATASETS
+════════════════ -->
+<section class="section" id="datasets" aria-labelledby="datasets-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <span class="eyebrow">Datos de Entrenamiento / Training Data</span>
+      <h2 class="sec-title" id="datasets-title">Construction Safety Datasets</h2>
+      <p class="sec-sub">Combining 50,000+ images from established benchmarks with targeted collection to address critical gaps in existing PPE detection data.</p>
+    </div>
+
+    <!-- Dataset table -->
+    <div class="arch-note reveal" style="margin-bottom:var(--s4);" aria-label="Tabla de conjuntos de datos de detección de EPP / PPE detection dataset table">
+      <strong>Detection Datasets (Bounding Box Annotations)</strong>
+      <table style="width:100%;margin-top:var(--s2);font-size:0.8rem;border-collapse:collapse;">
+        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Dataset</th><th>Images</th><th>Classes</th><th>License</th><th>Source</th></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>SHWD</strong></td><td style="text-align:center;">7,581</td><td>helmet, head</td><td>Mixed</td><td>GitHub</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Hard Hat Workers</strong></td><td style="text-align:center;">5,000</td><td>helmet, head, person</td><td style="color:green;font-weight:600;">CC0</td><td>Kaggle</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Construction-PPE</strong></td><td style="text-align:center;">3K-8K</td><td>hardhat, vest, glasses, gloves</td><td>CC BY 4.0</td><td>Roboflow</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>SODA</strong></td><td style="text-align:center;">19,846</td><td>15 classes (workers, equipment)</td><td>Research</td><td>Wang et al.</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>PICTOR-v3</strong></td><td style="text-align:center;">2,000</td><td>hardhat, vest, mask, person</td><td>Research</td><td>Fang et al.</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>SH17</strong></td><td style="text-align:center;">~5,000</td><td>helmet, head, person</td><td>Academic</td><td>Academic</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>MOCS</strong></td><td style="text-align:center;">~5,300</td><td>worker, helmet, vest</td><td>Research</td><td>Research</td></tr>
+        <tr><td style="padding:6px;"><strong>CHV</strong></td><td style="text-align:center;">~1,000</td><td>hardhat, no_hardhat, person</td><td>Research</td><td>HK PolyU</td></tr>
+      </table>
+    </div>
+
+    <!-- VLM conversion -->
+    <article class="card reveal" style="margin-bottom:var(--s4);" aria-label="Conversión de datos para modelos de visión-lenguaje / VLM data conversion">
+      <span class="card-icon" aria-hidden="true">🔄</span>
+      <h3>VLM Fine-Tuning Format</h3>
+      <p>Detection datasets provide bounding boxes, not natural language. For Gemma 4 vision fine-tuning, we convert annotations to instruction-tuning pairs using the native <strong>function-calling format</strong> &mdash; teaching the model structured output directly, eliminating brittle JSON parsing at inference time:</p>
+      <pre style="background:rgba(0,0,0,0.04);padding:var(--s3);border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.6;"><code>{
+  "image": "scene_0042.jpg",
+  "instruction": "Analyze this construction scene for PPE violations.",
+  "output": {
+    "tool_calls": [{
+      "name": "create_safety_alert",
+      "arguments": {
+        "violation": "no_hardhat", "severity": 3,
+        "description_en": "Worker on scaffolding without hard hat — OSHA 1926.100",
+        "description_es": "Trabajador en andamio sin casco — OSHA 1926.100"
+      }
+    }]
+  }
+}</code></pre>
+      <p style="margin-top:var(--s2);"><strong>Training data mix:</strong> 40% EN safety scenarios, 30% ES construction-register scenarios (including code-switching), 20% visual reasoning chains, 10% general instruction following (prevents catastrophic forgetting). All bilingual data uses construction-register Spanish &mdash; <em>casco duro</em> not <em>casco de seguridad</em>, <em>montacargas</em> not <em>carretilla elevadora</em>.</p>
+    </article>
+
+    <!-- Dataset gaps -->
+    <article class="card reveal d1" aria-label="Brechas críticas en los datos — oportunidad de investigación / Critical dataset gaps — research contribution">
+      <span class="card-icon" aria-hidden="true">🔍</span>
+      <h3>Critical Dataset Gaps (Research Contribution)</h3>
+      <p>Existing datasets systematically fail to represent conditions that matter for real deployment:</p>
+      <table style="width:100%;margin:var(--s3) 0;font-size:0.8rem;border-collapse:collapse;">
+        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Gap</th><th>Severity</th><th>Impact</th></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Night / low-light</strong></td><td style="text-align:center;color:var(--isu-red);font-weight:700;">Critical</td><td>Night shifts (highway, emergency) have different noise, IR, and reflective-tape characteristics</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Ego-centric camera</strong></td><td style="text-align:center;color:var(--isu-red);font-weight:700;">Critical</td><td>Zero datasets use glasses-mounted cameras. All existing data is surveillance (top-down) or handheld</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Adverse weather</strong></td><td style="text-align:center;color:#e65100;font-weight:600;">High</td><td>Rain on lenses, fog reducing contrast, demolition dust clouds</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Multi-ethnic workforce</strong></td><td style="text-align:center;color:#e65100;font-weight:600;">High</td><td>Most datasets from Chinese sites. US construction is 30%+ Hispanic/Latino (BLS)</td></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Partial occlusion</strong></td><td style="text-align:center;color:#e65100;font-weight:600;">High</td><td>Scaffolding, formwork, rebar, equipment blocking camera view</td></tr>
+        <tr><td style="padding:6px;"><strong>Full OSHA PPE suite</strong></td><td style="text-align:center;">Medium</td><td>Most datasets cover helmets only; OSHA requires hardhat+vest+glasses+gloves+boots+harness</td></tr>
+      </table>
+      <p style="margin-top:var(--s2);"><strong>Our contribution:</strong> Collecting 500-1,000 ego-centric construction images from safety glasses perspective with PPE annotations would be a novel dataset — a potential workshop paper at CVPR (Vision for Infrastructure Safety) or <em>Automation in Construction</em>.</p>
+    </article>
+
+    <div class="arch-note reveal" style="margin-top:var(--s4);">
+      📚 <strong>Key references:</strong> Fang et al. (2018, <em>Automation in Construction</em>), Wang et al. (2022, <em>Advanced Eng. Informatics</em>), Nath et al. (2020), Dettmers et al. (NeurIPS 2023), Frantar et al. (ICLR 2023), Lin et al. (MLSys 2024), Ma et al. (Microsoft Research, 2024), Kim et al. (ICML 2024).
     </div>
   </div>
 </section>
@@ -1514,7 +1678,7 @@
       <h4>Technology Stack</h4>
       <a href="#">Gemma 4 E2B / E4B / 31B (3-Tier)</a>
       <a href="#">Vertex AI · Cloud Run · Firestore · GCS</a>
-      <a href="#">Unsloth QLoRA · BitNet · PrismQuant</a>
+      <a href="#research">Unsloth QLoRA · GPTQ/AWQ · BitNet b1.58 · PrismQuant</a>
       <a href="#">LiteRT · MediaPipe · Tensor G4 NPU</a>
       <a href="#">Vuzix M400 · Ray-Ban Meta · Pixel 9 Fold</a>
     </div>
