@@ -21,7 +21,7 @@ nav_sort: case_insensitive
 nav_enabled: true
 
 # Footer
-footer_content: "Duchess &copy; 2026 Alexios Bluff Mara LLC &mdash; Bhattacharya, Baksi, Lahiri &mdash; Illinois State University"
+footer_content: "Duchess &copy; 2026 Alexios Bluff Mara LLC &mdash; Bhattacharya, Lahiri &mdash; Illinois State University"
 
 # Color scheme
 color_scheme: dark

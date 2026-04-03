@@ -4,6 +4,57 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-03 03:37 UTC — Commit bf81a2c
+
+**Branch**: `claude/serene-shtern`  
+**Author**: AlexiosBluffMara  
+**Message**: fix(ml): remove stray triple-quote causing SyntaxError in export_model and prepare_dataset
+
+### Modules touched
+- **ml/**: 2 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 64 | Active (64 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 12 | Active (12 files) |
+
+### Changed files
+```
+ml/scripts/export_model.py
+ml/scripts/prepare_dataset.py
+```
+
+---
+
+## 2026-04-03 03:31 UTC — Commit 9db3846
+
+**Branch**: `claude/serene-shtern`  
+**Author**: AlexiosBluffMara  
+**Message**: chore(shared): remove Baksi from all project references
+
+### Modules touched
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 64 | Active (64 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 12 | Active (12 files) |
+
+### Changed files
+```
+README.md
+docs/_config.yml
+docs/index.html
+docs/project/team.md
+```
+
+---
+
 ## 2026-04-03 02:58 UTC — Commit 31d4662
 
 **Branch**: `claude/serene-shtern`  
@@ -50,40 +101,6 @@ _Read this first at the start of every session. Updated automatically by post-co
 README.md
 docs/index.html
 ```
-
----
-
-## 2026-04-03 02:47 UTC — Commit d53cc85 (from main — Copilot)
-
-**Branch**: `main`
-**Author**: AlexiosBluffMara
-**Message**: feat(phone): wire BLE startup, persist settings, live dashboard, demo/live toggle
-
-### Modules touched
-- **app-phone/**: 8 file(s) changed — DashboardViewModel, SettingsViewModel/Screen, MainActivity, AppModule, strings
-
----
-
-## 2026-04-03 02:34 UTC — Commit 152b102
-
-**Branch**: `claude/serene-shtern`
-**Author**: AlexiosBluffMara
-**Message**: docs(shared): hackathon pivot — 3-tier arch, Vertex AI, dual-glass, review TODOs
-
-### Modules touched
-- **app-phone/**: 4 file(s) changed
-- **app-glasses/**: 1 file(s) changed
-- **ml/**: 3 file(s) changed
-- **cloud/**: 1 file(s) changed
-
-### What was done — Hackathon Pivot
-1. **Architecture pivot**: 4-tier → 3-tier. Removed Tier 3 local server (M4 Max). Phone goes straight to Google Cloud.
-2. **`.memory/hackathon-pivot-plan.md`**: Created comprehensive dev change plan (7 phases) for Copilot handoff.
-3. **`docs/index.html`**: Major update — 3-tier architecture, Google Cloud section, On-Device Gemma 4 section, ML Research/Quantization section, Spanish alt-text throughout.
-4. **`README.md`**: Complete rewrite for hackathon framing — 3-tier diagram, dual-glass paths, Gemma 4 capabilities, Google Cloud services.
-5. **`HACKATHON_STRATEGY.md`**: Updated executive summary, model deployment map, "What We're NOT Doing" section.
-6. **`docs/technical/meta-google-stack.md`**: Removed all Tribe v2 references.
-7. **TODO-PRINCIPAL + TODO-ML-PROF comments** added to 9 key files.
 
 ---
 

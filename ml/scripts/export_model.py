@@ -54,7 +54,6 @@ TODO-ML-PROF: Export optimization for hackathon benchmarks:
 #     python scripts/export_model.py --adapter safety
 #     python scripts/export_model.py --adapter spanish_jargon --output exports/
 #     python scripts/export_model.py --adapter safety --benchmark --num-benchmark-runs 5
-"""
 
 from __future__ import annotations
 
