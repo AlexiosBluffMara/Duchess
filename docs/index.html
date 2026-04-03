@@ -7,7 +7,6 @@
   <meta property="og:title" content="Duchess × Gemma 4 — AI Construction Safety | Illinois State University">
   <meta property="og:description" content="Real-time PPE detection, bilingual EN/ES alerts, on-device inference. Built for the Gemma 4 Good Hackathon.">
   <meta property="og:type" content="website">
-  <meta name="theme-color" content="#CC0000">
   <title>Duchess × Gemma 4 — AI-Powered Construction Safety | Illinois State University</title>
 
   <!-- Google Fonts: Roboto (Google Material) + Roboto Slab (ISU official feel) -->
@@ -66,7 +65,7 @@
 
     /* ── Reset ── */
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+    html { scroll-behavior:smooth; }
 
     body {
       font-family:'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -100,8 +99,8 @@
     .topnav {
       position:sticky; top:0; z-index:200;
       background:rgba(255,251,250,.93);
-      backdrop-filter:blur(20px);
       -webkit-backdrop-filter:blur(20px);
+      backdrop-filter:blur(20px);
       border-bottom:1px solid var(--outline-var);
       transition:box-shadow .25s;
     }
@@ -173,6 +172,7 @@
       padding:8px var(--s3) 16px;
       border-bottom:1px solid var(--outline-var);
       background:rgba(255,251,250,.97);
+      -webkit-backdrop-filter:blur(20px);
       backdrop-filter:blur(20px);
     }
     .mobile-nav a {
@@ -230,6 +230,7 @@
     .hero-eyebrow {
       display:inline-flex; align-items:center; gap:8px;
       background:rgba(255,255,255,.12);
+      -webkit-backdrop-filter:blur(8px);
       backdrop-filter:blur(8px);
       border:1px solid rgba(255,255,255,.22);
       color:rgba(255,255,255,.92);
@@ -276,6 +277,7 @@
     .chip {
       display:inline-flex; align-items:center; gap:6px;
       background:rgba(255,255,255,.11);
+      -webkit-backdrop-filter:blur(8px);
       backdrop-filter:blur(8px);
       border:1px solid rgba(255,255,255,.2);
       color:#fff; padding:7px 15px; border-radius:var(--r-pill);
@@ -752,6 +754,89 @@
       .screenshot-card { flex-basis:140px; }
       .screenshot-frame img { width:140px; }
     }
+
+    /* ══ GENERATED: inline-style extractions (si-*) ══ */
+    .si-grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);margin-top:var(--s3);}
+    .si-grid-200{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--s3);}
+    .si-grid-260{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--s3);}
+    .si-grid-260-mb3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--s3);margin-bottom:var(--s3);}
+    .si-grid-280{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--s3);}
+    .si-grid-300{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--s3);}
+    .si-grid-cost-summary{margin-top:var(--s3);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--s2);}
+    .si-flex-advisor{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+    .si-m0{margin:0;}
+    .si-mt2{margin-top:var(--s2);}
+    .si-mt4{margin-top:var(--s4);}
+    .si-mt5-sub{margin-top:var(--s5);font-size:.9rem;}
+    .si-mb4{margin-bottom:var(--s4);}
+    .si-mb5{margin-bottom:var(--s5);}
+    .si-mt2-mb4{margin-top:var(--s2);margin-bottom:var(--s4);}
+    .si-panel-lg{background:var(--surface-2);border-radius:var(--r-lg);padding:var(--s4);margin-bottom:var(--s6);box-shadow:var(--elev-2);}
+    .si-info-card{background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);}
+    .si-bg-red-cont{background:var(--isu-red-container);}
+    .si-cost-badge{background:var(--isu-red-container);border-radius:var(--r-sm);padding:var(--s2);text-align:center;}
+    .si-bg-green-light{background:#E8F5E9;}
+    .si-bg-blue-light{background:#E3F2FD;}
+    .si-bg-yellow-light{background:#FFF8E1;}
+    .si-bg-red-white{background:var(--isu-red);color:white;}
+    .si-c-red{color:var(--isu-red);}
+    .si-c-red-cont{color:var(--isu-red-on-cont);}
+    .si-c-green{color:#2E7D32;}
+    .si-c-green-dark{color:#1B5E20;}
+    .si-c-blue{color:#1565C0;}
+    .si-c-blue-dark{color:#0D47A1;}
+    .si-c-amber{color:#F57F17;}
+    .si-c-orange{color:#E65100;}
+    .si-c-green-bold{color:green;font-weight:600;}
+    .si-body-text{color:var(--on-surface-var);line-height:1.7;margin-top:var(--s2);}
+    .si-body-mb3{color:var(--on-surface-var);margin-bottom:var(--s3);}
+    .si-text-sm-muted{font-size:.88rem;color:var(--on-surface-var);}
+    .si-cost-label{font-size:.78rem;color:var(--isu-red-on-cont);}
+    .si-m0-blue{margin:0;background:#E3F2FD;color:#0D47A1;}
+    .si-text-left{text-align:left;}
+    .si-tc{text-align:center;}
+    .si-tc-red{text-align:center;color:var(--isu-red);}
+    .si-tc-red-bold{text-align:center;color:var(--isu-red);font-weight:700;}
+    .si-tc-orange-semi{text-align:center;color:#e65100;font-weight:600;}
+    .si-tc-p2{text-align:center;padding:var(--s2);}
+    .si-h3-slab-red{font-family:'Roboto Slab',serif;font-size:1.2rem;margin-bottom:var(--s2);color:var(--isu-red);}
+    .si-h3-slab-1{font-family:'Roboto Slab',serif;font-size:1.3rem;margin-bottom:var(--s1);}
+    .si-h3-slab-2{font-family:'Roboto Slab',serif;font-size:1.3rem;margin-bottom:var(--s2);}
+    .si-card-h4-red{color:var(--isu-red);font-size:.95rem;margin-bottom:8px;}
+    .si-card-h4-red-sm{color:var(--isu-red);font-size:.9rem;margin-bottom:8px;}
+    .si-card-h4-blue{color:var(--g-blue);font-size:.9rem;margin-bottom:8px;}
+    .si-card-h4-green{color:var(--g-green);font-size:.9rem;margin-bottom:8px;}
+    .si-card-h4-yellow{color:var(--g-yellow);font-size:.9rem;margin-bottom:8px;}
+    .si-card-h4-neutral{font-size:.9rem;margin-bottom:8px;}
+    .si-cost-val{font-size:1.4rem;font-weight:800;color:var(--isu-red);}
+    .si-icon-lg{font-size:2rem;}
+    .si-ul-sm{font-size:.84rem;color:var(--on-surface-var);padding-left:18px;}
+    .si-ul-md{font-size:.88rem;color:var(--on-surface-var);padding-left:18px;}
+    .si-tbl{width:100%;margin:var(--s3) 0;font-size:.82rem;border-collapse:collapse;}
+    .si-tbl-sm{width:100%;margin:var(--s3) 0;font-size:.8rem;border-collapse:collapse;}
+    .si-tbl-mt2{width:100%;margin-top:var(--s2);font-size:.82rem;border-collapse:collapse;}
+    .si-tbl-mt2-sm{width:100%;margin-top:var(--s2);font-size:.8rem;border-collapse:collapse;}
+    .si-tbl-card{width:100%;border-collapse:collapse;font-size:.84rem;background:var(--surface-2);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--elev-1);}
+    .si-tbl-inline{font-size:.82rem;width:100%;border-collapse:collapse;}
+    .si-tr-header{border-bottom:2px solid var(--isu-red);}
+    .si-tr-row{border-bottom:1px solid #eee;}
+    .si-tr-row-outline{border-bottom:1px solid var(--outline-var);}
+    .si-fw7{font-weight:700;}
+    .si-th-left{text-align:left;padding:6px;}
+    .si-td-p6{padding:6px;}
+    .si-td-p5{padding:5px 0;}
+    .si-td-right{padding:5px 0;text-align:right;}
+    .si-td-p8{padding:8px 0;}
+    .si-td-total-red{padding:8px 0;text-align:right;color:var(--isu-red);}
+    .si-td-p8-12{padding:8px 12px;}
+    .si-th-grant{padding:10px 12px;text-align:left;}
+    .si-caption{font-weight:600;text-align:left;margin-bottom:var(--s1);}
+    .si-code-block{display:block;margin-top:var(--s2);line-height:1.8;font-size:.85rem;}
+    .si-formula{font-family:var(--ff-mono);font-size:.82rem;padding:var(--s2);background:rgba(0,0,0,.04);border-radius:8px;}
+    .si-pre-code{background:rgba(0,0,0,.04);padding:var(--s3);border-radius:8px;font-size:.78rem;overflow-x:auto;line-height:1.6;}
+    .si-note-sm{margin-top:var(--s2);font-size:.82rem;opacity:.8;}
+    .si-note-md{margin-top:var(--s2);font-size:.85rem;opacity:.85;}
+    .si-overflow-x{overflow-x:auto;}
   </style>
 </head>
 <body>
@@ -773,6 +858,8 @@
         <li><a href="#problem">Problem</a></li>
         <li><a href="#architecture">Architecture</a></li>
         <li><a href="#screenshots">App</a></li>
+        <li><a href="#glasses-hud">Glasses</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
         <li><a href="#gemma4">Gemma 4</a></li>
         <li><a href="#cloud">Google Cloud</a></li>
         <li><a href="#ondevice">On-Device</a></li>
@@ -806,6 +893,9 @@
     <a href="#problem"      onclick="closeNav()">Problem</a>
     <a href="#architecture" onclick="closeNav()">Architecture</a>
     <a href="#screenshots"  onclick="closeNav()">App Screenshots</a>
+    <a href="#glasses-hud"  onclick="closeNav()">Glasses HUD</a>
+    <a href="#roadmap"      onclick="closeNav()">Roadmap</a>
+    <a href="#m400-ask"     onclick="closeNav()">M400 Hardware</a>
     <a href="#gemma4"       onclick="closeNav()">Gemma 4</a>
     <a href="#cloud"        onclick="closeNav()">Google Cloud</a>
     <a href="#ondevice"     onclick="closeNav()">On-Device</a>
@@ -974,11 +1064,11 @@
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);margin-top:var(--s3);">
-      <div class="arch-note reveal" style="margin:0;">
+    <div class="si-grid-2col">
+      <div class="arch-note reveal si-m0">
         🔒 El video nunca sale del sitio de construcción / Video never leaves the jobsite unless escalated through the PPE pipeline. No local server needed — phone goes straight to cloud.
       </div>
-      <div class="arch-note reveal d1" style="margin:0;background:#E3F2FD;color:#0D47A1;">
+      <div class="arch-note reveal d1 si-m0-blue">
         🕶️ Two glass paths: <strong>Vuzix M400</strong> (on-device YOLOv8-nano) + <strong>Oakley/Ray-Ban</strong> (camera stream to phone). Prototyping with Meta Ray-Ban Wayfarers we have in hand.
       </div>
     </div>
@@ -1034,9 +1124,277 @@
       </div>
     </div>
 
-    <p class="sec-sub reveal" style="margin-top:var(--s5); font-size:.9rem;">
+    <p class="sec-sub reveal si-mt5-sub">
       All PPE inference runs <strong>on-device via Gemma 4 E2B</strong> — no camera data leaves the phone without explicit escalation. Detection overlays shown in Stream are from the YOLOv8-nano model running on the companion Vuzix M400.
     </p>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     GLASSES HUD
+════════════════ -->
+<section class="section" id="glasses-hud" aria-labelledby="glasses-hud-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <div class="sec-eyebrow">Vuzix M400 · 640×360 OLED</div>
+      <h2 class="sec-title" id="glasses-hud-title">What Workers See Through the Glasses</h2>
+      <p class="sec-sub">
+        The HUD Simulator renders a pixel-perfect preview of the M400's monocular display.<br>
+        The actual <code>app-glasses/</code> APK (2,334 lines Kotlin, 46 tests) also runs directly on the Pixel.<br>
+        Lo que ven los trabajadores a través de las gafas — simulación exacta de la pantalla M400.
+      </p>
+    </div>
+
+    <div class="screenshots-grid">
+      <div class="screenshot-card reveal">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-hud-allclear.png" alt="HUD Simulator showing All Clear state — green status bar with bilingual text, green PPE detection bounding boxes for HARDHAT, VEST, GLASSES" loading="lazy" />
+        </div>
+        <div class="screenshot-label">All Clear / Sin alertas</div>
+        <div class="screenshot-sublabel">Green PPE boxes · 10 FPS · GPU · 18ms</div>
+      </div>
+
+      <div class="screenshot-card reveal d1">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-hud-violation.png" alt="HUD Simulator showing PPE Alert state — pulsing red status bar, red NO GLASSES DETECTED violation box, bilingual ALERTA EPP" loading="lazy" />
+        </div>
+        <div class="screenshot-label">PPE Alert / Alerta EPP</div>
+        <div class="screenshot-sublabel">Pulsing red violation · bilingual alert</div>
+      </div>
+
+      <div class="screenshot-card reveal d2">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/glasses-app-hud-detail.png" alt="Actual glasses app running on Pixel — PPE ALERT, NO HARDHAT 83%, green and red bounding boxes, FPS: 60, Inf: 18ms, Bat: 100%" loading="lazy" />
+        </div>
+        <div class="screenshot-label">Actual Glasses APK on Pixel</div>
+        <div class="screenshot-sublabel">Real app-glasses/ code · FPS: 60 · Inf: 18ms</div>
+      </div>
+
+      <div class="screenshot-card reveal d3">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-hud-controls.png" alt="HUD Simulator interactive controls — violation toggle, FPS slider, BLE connection toggle, battery percentage slider" loading="lazy" />
+        </div>
+        <div class="screenshot-label">HUD Controls</div>
+        <div class="screenshot-sublabel">FPS · BLE · Battery · Violation toggle</div>
+      </div>
+    </div>
+
+    <div class="reveal si-mt5-sub" style="max-width:800px; margin:32px auto 0; text-align:left;">
+      <h3 class="si-h3-slab-2" style="margin-bottom:16px;">Demo vs. Production</h3>
+      <table class="si-tbl" style="width:100%;">
+        <thead><tr>
+          <th class="si-th" style="text-align:left;">Component</th>
+          <th class="si-th" style="text-align:left;">Demo (Current)</th>
+          <th class="si-th" style="text-align:left;">Production (With M400)</th>
+        </tr></thead>
+        <tbody>
+          <tr class="si-tr-row"><td><strong>Camera</strong></td><td>Pixel rear camera / synthetic frames</td><td>M400 onboard 8MP via Camera2</td></tr>
+          <tr><td><strong>ML Model</strong></td><td>256-byte stub, synthetic detections</td><td>YOLOv8-nano INT8 (~4MB), 9 PPE classes</td></tr>
+          <tr class="si-tr-row"><td><strong>Display</strong></td><td>Phone screen (2076×2152)</td><td>640×360 monocular OLED</td></tr>
+          <tr><td><strong>Processor</strong></td><td>Tensor G4 (overpowered)</td><td>Snapdragon XR1 (target constrained hardware)</td></tr>
+          <tr class="si-tr-row"><td><strong>BLE</strong></td><td>Code complete, not paired</td><td>Live GATT client ↔ server</td></tr>
+          <tr><td><strong>Battery</strong></td><td>Reads Pixel battery (100%)</td><td>750mAh with 4-mode throttling</td></tr>
+          <tr class="si-tr-row"><td><strong>Latency</strong></td><td>Theoretical &lt;50ms</td><td>Profiled on real XR1 + Adreno 615</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:16px; font-size:14px; color:var(--on-surface-var);">
+        <strong>The software is code-complete.</strong> We need one M400 development unit ($1,799) to validate on real hardware. See our
+        <a href="https://github.com/AlexiosBluffMara/Duchess/blob/main/docs/M400_PRODUCT_NARRATIVE.md" style="color:var(--isu-red);">full business case</a> and
+        <a href="https://github.com/AlexiosBluffMara/Duchess/blob/main/docs/VUZIX_OUTREACH_EMAIL.md" style="color:var(--isu-red);">Vuzix outreach letter</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     ROADMAP
+════════════════ -->
+<section class="section bg-s2" id="roadmap" aria-labelledby="roadmap-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <div class="sec-eyebrow">From Demo to Enterprise</div>
+      <h2 class="sec-title" id="roadmap-title">Development Roadmap</h2>
+      <p class="sec-sub">
+        What it takes to go from working demo to enterprise-grade platform — and what a fully funded team could build in 12 months.
+      </p>
+    </div>
+
+    <div class="reveal" style="max-width:900px; margin:0 auto;">
+      <!-- Phase 1 -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-1); border-left:4px solid var(--isu-red);">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:var(--isu-red); margin-bottom:8px;">Phase 1: Hardware Validation (Month 1-2) — <em>We are here</em></h3>
+        <ul style="list-style:none; padding:0;">
+          <li style="padding:4px 0;">🔴 <strong>Acquire Vuzix M400</strong> — dev program application or purchase ($1,799)</li>
+          <li style="padding:4px 0;">✅ <strong>Glasses APK compiles + runs</strong> — sideloaded on Pixel, 2,334 lines, 46 tests</li>
+          <li style="padding:4px 0;">✅ <strong>Phone companion app</strong> — dashboard, stream, alerts, settings, HUD simulator</li>
+          <li style="padding:4px 0;">✅ <strong>BLE communication</strong> — GATT server + client, alert serialization</li>
+          <li style="padding:4px 0;">✅ <strong>Gemma 4 integration</strong> — MediaPipe LlmInference, multimodal session API</li>
+          <li style="padding:4px 0;">⏳ <strong>Train real YOLOv8-nano</strong> — ML pipeline exists, 50K+ training images available</li>
+        </ul>
+      </div>
+
+      <!-- Phase 2 -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-1); border-left:4px solid var(--g-yellow);">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:#B8860B; margin-bottom:8px;">Phase 2: Field Testing (Month 2-4)</h3>
+        <ul style="list-style:none; padding:0;">
+          <li style="padding:4px 0;">⬜ Profile inference latency on real Snapdragon XR1 (target: &lt;50ms)</li>
+          <li style="padding:4px 0;">⬜ Measure battery drain across 4 power modes on 750mAh</li>
+          <li style="padding:4px 0;">⬜ Controlled PPE test — hard hat on/off, vest on/off scenarios</li>
+          <li style="padding:4px 0;">⬜ Calibrate TemporalVoter thresholds on real detection noise</li>
+          <li style="padding:4px 0;">⬜ Record 3-minute demo video with real AR glasses POV footage</li>
+          <li style="padding:4px 0;">⬜ Test bilingual voice reporting with construction Spanish</li>
+        </ul>
+      </div>
+
+      <!-- Phase 3 -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-1); border-left:4px solid var(--g-blue);">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:var(--g-blue); margin-bottom:8px;">Phase 3: Multi-Site Pilot (Month 4-8)</h3>
+        <ul style="list-style:none; padding:0;">
+          <li style="padding:4px 0;">⬜ Deploy cloud backend — Vertex AI, Cloud Run, Firestore, Pub/Sub</li>
+          <li style="padding:4px 0;">⬜ Build supervisor web dashboard (React + Firestore real-time)</li>
+          <li style="padding:4px 0;">⬜ Scale Tailscale mesh to 10-50 devices per site</li>
+          <li style="padding:4px 0;">⬜ Automated OSHA compliance reporting (PDF generation)</li>
+          <li style="padding:4px 0;">⬜ Insurance integration API for EMR score calculation</li>
+          <li style="padding:4px 0;">⬜ iOS companion app (SwiftUI port)</li>
+        </ul>
+      </div>
+
+      <!-- Phase 4 -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-1); border-left:4px solid var(--g-green);">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:var(--g-green); margin-bottom:8px;">Phase 4: Enterprise Platform (Month 8-12)</h3>
+        <ul style="list-style:none; padding:0;">
+          <li style="padding:4px 0;">⬜ Fleet management console — provision 100+ glasses from web UI</li>
+          <li style="padding:4px 0;">⬜ OTA model updates — push new YOLOv8 weights without manual APK install</li>
+          <li style="padding:4px 0;">⬜ Advanced hazard detection — fall hazard, confined space, electrical proximity</li>
+          <li style="padding:4px 0;">⬜ Digital twin integration — feed detections into BIM models</li>
+          <li style="padding:4px 0;">⬜ Multi-language expansion — Portuguese, Mandarin, Hindi, Arabic</li>
+          <li style="padding:4px 0;">⬜ SOC 2 / FedRAMP compliance for enterprise + government deployment</li>
+          <li style="padding:4px 0;">⬜ Defense adaptation — military equipment compliance, DDIL inference, ITAR review</li>
+        </ul>
+      </div>
+
+      <!-- Fully Funded Vision -->
+      <div style="background:linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius:var(--r-lg); padding:var(--s4); margin-bottom:var(--s3); box-shadow:var(--elev-3); color:white;">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:22px; color:#FBBC04; margin-bottom:12px;">The Fully-Funded Vision: What 300K Developer-Hours Builds</h3>
+        <p style="margin-bottom:16px; color:#ccc; font-size:15px;">With a dedicated engineering team and one year of development, Duchess becomes:</p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:16px;">
+          <div>
+            <h4 style="color:#4CAF50; font-size:14px; text-transform:uppercase; margin-bottom:6px;">Core Safety</h4>
+            <ul style="list-style:none; padding:0; font-size:14px; color:#ddd;">
+              <li>• All 7 OSHA PPE categories detected</li>
+              <li>• Posture analysis + unsafe lifting detection</li>
+              <li>• Equipment proximity alerts (crane, excavator)</li>
+              <li>• Environmental monitoring (dust, noise, heat)</li>
+              <li>• 30-second pre-incident video buffer</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:#4285F4; font-size:14px; text-transform:uppercase; margin-bottom:6px;">Enterprise</h4>
+            <ul style="list-style:none; padding:0; font-size:14px; color:#ddd;">
+              <li>• 100+ site command center</li>
+              <li>• Predictive analytics (violation probability)</li>
+              <li>• Automated OSHA 300-log generation</li>
+              <li>• SAP, Procore, Autodesk connectors</li>
+              <li>• Subcontractor safety scorecards</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:#E53935; font-size:14px; text-transform:uppercase; margin-bottom:6px;">Advanced AI</h4>
+            <ul style="list-style:none; padding:0; font-size:14px; color:#ddd;">
+              <li>• Full scene understanding + context</li>
+              <li>• OSHA regulation citation in alerts</li>
+              <li>• Conversational voice interface</li>
+              <li>• Autonomous alert routing per role</li>
+              <li>• Multi-frame temporal reasoning</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:#FF6F00; font-size:14px; text-transform:uppercase; margin-bottom:6px;">Defense Ready</h4>
+            <ul style="list-style:none; padding:0; font-size:14px; color:#ddd;">
+              <li>• FedRAMP + ITAR compliance</li>
+              <li>• Tactical mesh networking</li>
+              <li>• 140+ language support</li>
+              <li>• DDIL (offline-first) certified</li>
+              <li>• Thermal/IR camera modules</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     M400 HARDWARE ASK
+════════════════ -->
+<section class="section" id="m400-ask" aria-labelledby="m400-ask-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <div class="sec-eyebrow">The Missing Piece</div>
+      <h2 class="sec-title" id="m400-ask-title">We Need One M400</h2>
+      <p class="sec-sub">
+        2,334 lines of M400-specific Kotlin. 46 tests. A working companion app.<br>
+        The software is ready — we just need the glass.
+      </p>
+    </div>
+
+    <div class="reveal" style="max-width:800px; margin:0 auto;">
+      <!-- ROI Box -->
+      <div style="background:linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%); border-radius:var(--r-lg); padding:var(--s4); margin-bottom:var(--s3); color:white; text-align:center;">
+        <div style="font-size:48px; font-weight:900; font-family:'Roboto Slab',serif;">258×</div>
+        <div style="font-size:18px; margin-bottom:16px;">Return on $1,799 hardware investment</div>
+        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; text-align:left; font-size:14px;">
+          <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:8px;">
+            <div style="font-size:24px; font-weight:700;">$120K+</div>
+            <div>OSHA penalty avoidance / year</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:8px;">
+            <div style="font-size:24px; font-weight:700;">$95K+</div>
+            <div>Insurance premium reduction / year</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:8px;">
+            <div style="font-size:24px; font-weight:700;">$200K+</div>
+            <div>Lawsuit risk mitigation / year</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:8px;">
+            <div style="font-size:24px; font-weight:700;">$50K+</div>
+            <div>Productivity gains / year</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; font-size:13px; opacity:0.8;">Per construction site. Average OSHA serious violation: $15,625. Wrongful death lawsuit: $1M-$10M+.</div>
+      </div>
+
+      <!-- Defense Value -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-2); border-left:4px solid #1565C0;">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:#1565C0; margin-bottom:12px;">Defense & Military OEM Testing</h3>
+        <p style="margin-bottom:12px; font-size:15px;">
+          We want to validate Duchess with a defense contractor or military unit. The M400 is already in DoD inventory — Vuzix holds contracts with the US Army, Air Force, and NATO. Our architecture maps directly to military requirements:
+        </p>
+        <ul style="list-style:none; padding:0; font-size:14px;">
+          <li style="padding:4px 0;">🔒 <strong>Zero cloud dependency</strong> — works in SCIF, field, submarine. No data exfiltration risk.</li>
+          <li style="padding:4px 0;">🌐 <strong>140+ languages</strong> — single Gemma 4 model. Deploy to any coalition partner.</li>
+          <li style="padding:4px 0;">📡 <strong>Tactical mesh</strong> — WireGuard-encrypted peer-to-peer, works without internet.</li>
+          <li style="padding:4px 0;">💰 <strong>$0/query</strong> — on-device inference. No per-seat SaaS fees. Buy glasses, load APK, done.</li>
+          <li style="padding:4px 0;">📖 <strong>Open architecture</strong> — Apache 2.0. Government can fork, classify, deploy independently.</li>
+        </ul>
+        <p style="margin-top:12px; font-size:14px; color:var(--on-surface-var);">
+          Target partners: <strong>BAE Systems</strong> · <strong>L3Harris</strong> · <strong>Anduril</strong> · <strong>Palantir</strong> · <strong>DIU</strong> · <strong>AFWERX</strong> · <strong>NavalX</strong>
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <div style="text-align:center; padding:var(--s3);">
+        <p style="font-size:18px; font-weight:500; margin-bottom:16px;">Ready to help?</p>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <a href="https://github.com/AlexiosBluffMara/Duchess/blob/main/docs/VUZIX_OUTREACH_EMAIL.md" style="display:inline-block; background:var(--isu-red); color:white; padding:12px 24px; border-radius:var(--r-pill); text-decoration:none; font-weight:500; box-shadow:var(--elev-2);">Vuzix Outreach Letter</a>
+          <a href="https://github.com/AlexiosBluffMara/Duchess/blob/main/docs/M400_PRODUCT_NARRATIVE.md" style="display:inline-block; background:#1565C0; color:white; padding:12px 24px; border-radius:var(--r-pill); text-decoration:none; font-weight:500; box-shadow:var(--elev-2);">Full Business Case</a>
+          <a href="https://github.com/AlexiosBluffMara/Duchess" style="display:inline-block; background:#333; color:white; padding:12px 24px; border-radius:var(--r-pill); text-decoration:none; font-weight:500; box-shadow:var(--elev-2);">View Source Code</a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1151,8 +1509,8 @@
     <div class="two-col">
       <div class="reveal">
         <span class="eyebrow">Digital Equity</span>
-        <h2 class="sec-title mt2" id="bilingual-title" style="text-align:left;">Every Worker. Every Language.</h2>
-        <p style="color:var(--on-surface-var); line-height:1.7; margin-top:var(--s2);">
+        <h2 class="sec-title mt2 si-text-left" id="bilingual-title">Every Worker. Every Language.</h2>
+        <p class="si-body-text">
           Construction workforces are multilingual. Safety cannot be English-only. Duchess delivers every alert, warning, and instruction in the worker's language — simultaneously, with zero translation delay.
         </p>
         <ul class="feat-list" aria-label="Bilingual features">
@@ -1247,7 +1605,7 @@
       </article>
     </div>
 
-    <div class="arch-note reveal" style="margin-top:var(--s4);">
+    <div class="arch-note reveal si-mt4">
       💰 Hackathon demo budget: ~$50–100 total. Vertex AI on T4 GPU at $0.35/hr on-demand. Cloud Run + Firestore + GCS stay within free tier for demo traffic. Production scales linearly.
     </div>
   </div>
@@ -1337,8 +1695,8 @@
     <div class="two-col rev">
       <div class="reveal">
         <span class="eyebrow">Privacy &amp; Economics</span>
-        <h2 class="sec-title mt2" id="econ-title" style="text-align:left;">Privacy by Design. Economics That Scale.</h2>
-        <p style="color:var(--on-surface-var); line-height:1.7; margin-top:var(--s2);">
+        <h2 class="sec-title mt2 si-text-left" id="econ-title">Privacy by Design. Economics That Scale.</h2>
+        <p class="si-body-text">
           Video never leaves the jobsite. On-device Gemma 4 eliminates per-inference cloud costs entirely. The math works for both worker safety and commercial viability.
         </p>
         <ul class="feat-list" aria-label="Privacy and economics features">
@@ -1367,21 +1725,21 @@
 
       <div class="reveal d2">
         <div class="metric-grid">
-          <div class="metric-tile" style="background:var(--isu-red-container);">
-            <div class="metric-val" style="color:var(--isu-red);">$0</div>
-            <div class="metric-lbl" style="color:var(--isu-red-on-cont);">Per-Inference Cost</div>
+          <div class="metric-tile si-bg-red-cont">
+            <div class="metric-val si-c-red">$0</div>
+            <div class="metric-lbl si-c-red-cont">Per-Inference Cost</div>
           </div>
-          <div class="metric-tile" style="background:#E8F5E9;">
-            <div class="metric-val" style="color:#2E7D32;">$50</div>
-            <div class="metric-lbl" style="color:#1B5E20;">Fine-Tune (QLoRA)</div>
+          <div class="metric-tile si-bg-green-light">
+            <div class="metric-val si-c-green">$50</div>
+            <div class="metric-lbl si-c-green-dark">Fine-Tune (QLoRA)</div>
           </div>
-          <div class="metric-tile" style="background:#E3F2FD;">
-            <div class="metric-val" style="color:#1565C0;">$1.7T</div>
-            <div class="metric-lbl" style="color:#0D47A1;">US Construction TAM</div>
+          <div class="metric-tile si-bg-blue-light">
+            <div class="metric-val si-c-blue">$1.7T</div>
+            <div class="metric-lbl si-c-blue-dark">US Construction TAM</div>
           </div>
-          <div class="metric-tile" style="background:#FFF8E1;">
-            <div class="metric-val" style="color:#F57F17;">12%</div>
-            <div class="metric-lbl" style="color:#E65100;">Safety Tech CAGR</div>
+          <div class="metric-tile si-bg-yellow-light">
+            <div class="metric-val si-c-amber">12%</div>
+            <div class="metric-lbl si-c-orange">Safety Tech CAGR</div>
           </div>
         </div>
       </div>
@@ -1402,32 +1760,32 @@
     </div>
 
     <!-- Pipeline overview -->
-    <div class="arch-note reveal" style="margin-bottom:var(--s5);" aria-label="Pipeline de cuantización completo / Full quantization pipeline">
+    <div class="arch-note reveal si-mb5" aria-label="Pipeline de cuantización completo / Full quantization pipeline">
       <strong>The Duchess Quantization Pipeline</strong><br>
-      <code style="display:block;margin-top:var(--s2);line-height:1.8;font-size:0.85rem;">
+      <code class="si-code-block">
         Gemma 4 E2B (BF16, 10.2 GB) &rarr; <strong>Unsloth Dynamic QLoRA</strong> (4.1 GB VRAM training)
         &rarr; LoRA Merge &rarr; <strong>AWQ Post-Training Quantization</strong> (mixed INT8/INT4)
         &rarr; <strong>LiteRT Export</strong> (Tensor G4 NPU, ~2.8 GB final)
       </code>
-      <p style="margin-top:var(--s2);font-size:0.85rem;opacity:0.85;"><em>Adapter merge MUST happen before post-training quantization. Quantizing first then merging produces double quantization error or defeats compression entirely.</em></p>
+      <p class="si-note-md"><em>Adapter merge MUST happen before post-training quantization. Quantizing first then merging produces double quantization error or defeats compression entirely.</em></p>
     </div>
 
     <!-- 1. Unsloth Dynamic QLoRA -->
-    <article class="card reveal" style="margin-bottom:var(--s4);" aria-label="Unsloth Dynamic QLoRA — ajuste fino eficiente / efficient fine-tuning">
+    <article class="card reveal si-mb4" aria-label="Unsloth Dynamic QLoRA — ajuste fino eficiente / efficient fine-tuning">
       <span class="card-icon" aria-hidden="true">⚡</span>
       <h3>1. Unsloth Dynamic QLoRA</h3>
       <p><strong>QLoRA</strong> (Dettmers et al., NeurIPS 2023) quantizes base weights to 4-bit NormalFloat (NF4) — an information-theoretically optimal data type for normally-distributed neural network weights — while training full-precision LoRA adapter matrices:</p>
-      <p style="font-family:var(--ff-mono);font-size:0.82rem;padding:var(--s2);background:rgba(0,0,0,0.04);border-radius:8px;">W' = W<sub>frozen_NF4</sub> + (&alpha;/r) &middot; B&middot;A &nbsp;&nbsp; where A &isin; R<sup>d&times;r</sup>, B &isin; R<sup>r&times;d</sup>, r &laquo; d</p>
+      <p class="si-formula">W' = W<sub>frozen_NF4</sub> + (&alpha;/r) &middot; B&middot;A &nbsp;&nbsp; where A &isin; R<sup>d&times;r</sup>, B &isin; R<sup>r&times;d</sup>, r &laquo; d</p>
       <p><strong>Unsloth's "Dynamic" enhancement</strong> adds two innovations: (1) <em>per-layer precision allocation</em> — profiles each layer's Hessian trace and assigns bit-widths dynamically, keeping high-sensitivity layers at 8-bit while aggressively quantizing tolerant middle layers to NF4; (2) <em>fused Triton kernels</em> that merge NF4 dequantization + LoRA forward into a single GPU kernel, fuse RoPE computation into the attention kernel, and compute cross-entropy in-place without materializing the vocabulary-dimension logit tensor.</p>
 
-      <table style="width:100%;margin:var(--s3) 0;font-size:0.82rem;border-collapse:collapse;">
-        <caption style="font-weight:600;text-align:left;margin-bottom:var(--s1);">Memory comparison — Gemma 4 E2B fine-tuning (2.3B effective, 5.1B total with MoE)</caption>
-        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Component</th><th>Full BF16</th><th>Standard QLoRA</th><th>Unsloth Dynamic</th></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Base weights</td><td style="text-align:center;">10.2 GB</td><td style="text-align:center;">2.65 GB</td><td style="text-align:center;">~2.4 GB</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">LoRA adapters (r=16)</td><td style="text-align:center;">&mdash;</td><td style="text-align:center;">26 MB</td><td style="text-align:center;">26 MB</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Optimizer (Adam)</td><td style="text-align:center;">40.8 GB</td><td style="text-align:center;">104 MB</td><td style="text-align:center;">104 MB</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Activations (seq=2048, bs=4)</td><td style="text-align:center;">3.2 GB</td><td style="text-align:center;">3.2 GB</td><td style="text-align:center;">~1.6 GB</td></tr>
-        <tr style="font-weight:700;"><td style="padding:6px;">Total VRAM</td><td style="text-align:center;">54.2 GB</td><td style="text-align:center;">6.0 GB</td><td style="text-align:center;color:var(--isu-red);">4.1 GB</td></tr>
+      <table class="si-tbl">
+        <caption class="si-caption">Memory comparison — Gemma 4 E2B fine-tuning (2.3B effective, 5.1B total with MoE)</caption>
+        <tr class="si-tr-header"><th class="si-th-left">Component</th><th>Full BF16</th><th>Standard QLoRA</th><th>Unsloth Dynamic</th></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">Base weights</td><td class="si-tc">10.2 GB</td><td class="si-tc">2.65 GB</td><td class="si-tc">~2.4 GB</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">LoRA adapters (r=16)</td><td class="si-tc">&mdash;</td><td class="si-tc">26 MB</td><td class="si-tc">26 MB</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">Optimizer (Adam)</td><td class="si-tc">40.8 GB</td><td class="si-tc">104 MB</td><td class="si-tc">104 MB</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">Activations (seq=2048, bs=4)</td><td class="si-tc">3.2 GB</td><td class="si-tc">3.2 GB</td><td class="si-tc">~1.6 GB</td></tr>
+        <tr class="si-fw7"><td class="si-td-p6">Total VRAM</td><td class="si-tc">54.2 GB</td><td class="si-tc">6.0 GB</td><td class="si-tc-red">4.1 GB</td></tr>
       </table>
 
       <p><strong>LoRA targets for VLMs:</strong> All 7 linear projections per transformer block (<code>q_proj</code>, <code>k_proj</code>, <code>v_proj</code>, <code>o_proj</code>, <code>gate_proj</code>, <code>up_proj</code>, <code>down_proj</code>). FFN layers store domain knowledge — including them improves construction safety accuracy by 2-4% over attention-only LoRA. The ViT vision encoder is <em>not</em> adapted: SigLIP features generalize well, and perturbing vision representations without retraining the cross-modal projection layer risks breaking alignment. For MoE: LoRA applied to ALL experts, not just the router.</p>
@@ -1436,7 +1794,7 @@
     </article>
 
     <!-- 2. TurboQuant -->
-    <article class="card reveal d1" style="margin-bottom:var(--s4);" aria-label="Cuantización post-entrenamiento GPTQ y AWQ / Post-training quantization">
+    <article class="card reveal d1 si-mb4" aria-label="Cuantización post-entrenamiento GPTQ y AWQ / Post-training quantization">
       <span class="card-icon" aria-hidden="true">📐</span>
       <h3>2. TurboQuant — Post-Training Quantization</h3>
       <p>Post-training quantization compresses a trained model without retraining. We benchmark three complementary techniques on the Tensor G4 NPU:</p>
@@ -1447,12 +1805,12 @@
 
       <p><strong>SqueezeLLM</strong> (Kim et al., ICML 2024): Dense-and-sparse decomposition. Isolates outlier weights (~0.5%, high Fisher information) into a sparse FP16 matrix, then aggressively quantizes the dense remainder to INT3/INT4. Recovers most accuracy lost from extreme compression.</p>
 
-      <table style="width:100%;margin:var(--s3) 0;font-size:0.82rem;border-collapse:collapse;">
-        <caption style="font-weight:600;text-align:left;margin-bottom:var(--s1);">Hardware precision support — target deployment devices</caption>
-        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Precision</th><th>Tensor G4 NPU (Phone)</th><th>Snapdragon XR1 (Glasses)</th></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">INT8</td><td style="text-align:center;">Native, ~10 TOPS</td><td style="text-align:center;">Hexagon DSP, ~2.5 TOPS</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">INT4</td><td style="text-align:center;">Packed, ~18 TOPS theoretical</td><td style="text-align:center;">Not native (shader-based)</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">FP16</td><td style="text-align:center;">Supported, ~5 TFLOPS</td><td style="text-align:center;">Adreno 615, ~300 GFLOPS</td></tr>
+      <table class="si-tbl">
+        <caption class="si-caption">Hardware precision support — target deployment devices</caption>
+        <tr class="si-tr-header"><th class="si-th-left">Precision</th><th>Tensor G4 NPU (Phone)</th><th>Snapdragon XR1 (Glasses)</th></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">INT8</td><td class="si-tc">Native, ~10 TOPS</td><td class="si-tc">Hexagon DSP, ~2.5 TOPS</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">INT4</td><td class="si-tc">Packed, ~18 TOPS theoretical</td><td class="si-tc">Not native (shader-based)</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">FP16</td><td class="si-tc">Supported, ~5 TFLOPS</td><td class="si-tc">Adreno 615, ~300 GFLOPS</td></tr>
       </table>
 
       <p><strong>Thermal envelope:</strong> Pixel 9 Fold sustains INT8 NPU inference at ~3.5W indefinitely (TDP ~5W, no throttling). FP16 on GPU draws ~5.5W and throttles after ~90s to ~60% perf. Vuzix M400 (600mAh, 2.5W TDP) must minimize duty cycle — inference only on flagged frames.</p>
@@ -1461,13 +1819,13 @@
     </article>
 
     <!-- 3. BitNet -->
-    <article class="card reveal d2" style="margin-bottom:var(--s4);" aria-label="Cuantización ternaria de 1 bit BitNet / 1-bit ternary quantization">
+    <article class="card reveal d2 si-mb4" aria-label="Cuantización ternaria de 1 bit BitNet / 1-bit ternary quantization">
       <span class="card-icon" aria-hidden="true">🔬</span>
       <h3>3. BitNet b1.58 — 1-Bit Ternary Quantization</h3>
       <p><strong>Research frontier.</strong> Ma et al. (Microsoft Research, 2024) constrain every linear layer weight to {-1, 0, +1} via absmean quantization. Each weight carries log<sub>2</sub>(3) = 1.58 bits of information. Packed storage: 5 ternary values in 8 bits (3<sup>5</sup> = 243 &lt; 256).</p>
 
       <p><strong>Why this matters:</strong> Ternary multiplication becomes pure addition/subtraction — no FPU required:</p>
-      <p style="font-family:var(--ff-mono);font-size:0.82rem;padding:var(--s2);background:rgba(0,0,0,0.04);border-radius:8px;">y<sub>j</sub> = &Sigma;<sub>{W=+1}</sub>(x<sub>i</sub>) &minus; &Sigma;<sub>{W=&minus;1}</sub>(x<sub>i</sub>)</p>
+      <p class="si-formula">y<sub>j</sub> = &Sigma;<sub>{W=+1}</sub>(x<sub>i</sub>) &minus; &Sigma;<sub>{W=&minus;1}</sub>(x<sub>i</sub>)</p>
       <p>At 7nm: ternary add/sub costs ~0.005 pJ vs FP16 multiply at ~0.15 pJ &mdash; a <strong>30&times; energy reduction</strong> (Horowitz, ISSCC 2014). On ARM NEON (Snapdragon XR1), each 128-bit instruction processes 16 INT8 values via the integer SIMD pipeline, bypassing the FPU entirely. Published results on 3.9B models: <strong>2.71&times; faster</strong>, <strong>3.55&times; less memory</strong>, <strong>71.4&times; more energy efficient</strong> for matmul operations.</p>
 
       <p><strong>Memory for Gemma 4 E2B:</strong> Linear layers at 1.6 bits/weight = 840 MB; embeddings at FP16 = 1.8 GB. <strong>Total: ~2.64 GB</strong> (vs 10.2 GB BF16, vs 2.87 GB NF4). The real win is computational, not storage.</p>
@@ -1480,38 +1838,38 @@
     </article>
 
     <!-- 4. PrismQuant -->
-    <article class="card reveal d3" style="margin-bottom:var(--s4);" aria-label="PrismQuant — cuantización de precisión mixta para MoE / mixed-precision for MoE">
+    <article class="card reveal d3 si-mb4" aria-label="PrismQuant — cuantización de precisión mixta para MoE / mixed-precision for MoE">
       <span class="card-icon" aria-hidden="true">🔮</span>
       <h3>4. PrismQuant — Mixed Precision for MoE</h3>
       <p>Layer sensitivity (approximated by <code>&#x2016;W&#x2016;<sub>F</sub> &middot; &#x2016;H<sup>&minus;1</sup>&#x2016;<sub>F</sub></code>) varies dramatically across transformer components. For Gemma 4's Mixture-of-Experts architecture, this means:</p>
 
-      <table style="width:100%;margin:var(--s3) 0;font-size:0.82rem;border-collapse:collapse;">
-        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Component</th><th>Sensitivity</th><th>Precision</th><th>Rationale</th></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Embeddings / LM head</td><td style="text-align:center;">Very High</td><td style="text-align:center;">FP16</td><td>Direct impact on token probabilities</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">MoE Router (gating)</td><td style="text-align:center;">Critical</td><td style="text-align:center;">FP16</td><td>Quantization errors flip discrete routing decisions</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Attention Q/K projections</td><td style="text-align:center;">High</td><td style="text-align:center;">INT8</td><td>KV-cache errors accumulate over sequence length</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Attention V/O projections</td><td style="text-align:center;">Moderate</td><td style="text-align:center;">INT8</td><td>Less sensitive than Q/K</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">FFN / Expert layers</td><td style="text-align:center;">Low</td><td style="text-align:center;">INT4</td><td>Over-parameterized, redundant; ~67% of total params</td></tr>
-        <tr><td style="padding:6px;">First/last 2 decoder layers</td><td style="text-align:center;">High</td><td style="text-align:center;">INT8</td><td>Adjacent to embeddings/logits; errors propagate</td></tr>
+      <table class="si-tbl">
+        <tr class="si-tr-header"><th class="si-th-left">Component</th><th>Sensitivity</th><th>Precision</th><th>Rationale</th></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">Embeddings / LM head</td><td class="si-tc">Very High</td><td class="si-tc">FP16</td><td>Direct impact on token probabilities</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">MoE Router (gating)</td><td class="si-tc">Critical</td><td class="si-tc">FP16</td><td>Quantization errors flip discrete routing decisions</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">Attention Q/K projections</td><td class="si-tc">High</td><td class="si-tc">INT8</td><td>KV-cache errors accumulate over sequence length</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">Attention V/O projections</td><td class="si-tc">Moderate</td><td class="si-tc">INT8</td><td>Less sensitive than Q/K</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">FFN / Expert layers</td><td class="si-tc">Low</td><td class="si-tc">INT4</td><td>Over-parameterized, redundant; ~67% of total params</td></tr>
+        <tr><td class="si-td-p6">First/last 2 decoder layers</td><td class="si-tc">High</td><td class="si-tc">INT8</td><td>Adjacent to embeddings/logits; errors propagate</td></tr>
       </table>
 
       <p><strong>MoE-specific insight:</strong> Expert utilization is uneven &mdash; some experts activate far more frequently. High-frequency experts handle common tokens and are robust to quantization. Low-frequency experts handle rare/specialized tokens, are less regularized, and counterintuitively tolerate more aggressive quantization because the model doesn't rely heavily on their precise values.</p>
     </article>
 
     <!-- Expected sizes -->
-    <div class="arch-note reveal" style="margin-top:var(--s2);margin-bottom:var(--s4);">
+    <div class="arch-note reveal si-mt2-mb4">
       <strong>Expected model sizes after quantization</strong>
-      <table style="width:100%;margin-top:var(--s2);font-size:0.82rem;border-collapse:collapse;">
-        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Configuration</th><th>E2B (2.3B)</th><th>E4B (4.5B)</th></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">Original BF16</td><td style="text-align:center;">10.2 GB</td><td style="text-align:center;">18.0 GB</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">AWQ uniform INT4</td><td style="text-align:center;">2.9 GB</td><td style="text-align:center;">5.1 GB</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;">PrismQuant mixed (our config)</td><td style="text-align:center;color:var(--isu-red);font-weight:700;">2.8 GB</td><td style="text-align:center;">4.9 GB</td></tr>
-        <tr><td style="padding:6px;">Hypothetical BitNet b1.58</td><td style="text-align:center;">2.1 GB</td><td style="text-align:center;">3.7 GB</td></tr>
+      <table class="si-tbl-mt2">
+        <tr class="si-tr-header"><th class="si-th-left">Configuration</th><th>E2B (2.3B)</th><th>E4B (4.5B)</th></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">Original BF16</td><td class="si-tc">10.2 GB</td><td class="si-tc">18.0 GB</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">AWQ uniform INT4</td><td class="si-tc">2.9 GB</td><td class="si-tc">5.1 GB</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6">PrismQuant mixed (our config)</td><td class="si-tc-red-bold">2.8 GB</td><td class="si-tc">4.9 GB</td></tr>
+        <tr><td class="si-td-p6">Hypothetical BitNet b1.58</td><td class="si-tc">2.1 GB</td><td class="si-tc">3.7 GB</td></tr>
       </table>
-      <p style="margin-top:var(--s2);font-size:0.82rem;opacity:0.8;">Pixel 9 Fold (12 GB RAM, ~6 GB available): E2B at 2.8 GB fits with room for KV-cache (~500 MB), runtime (~300 MB), and the vision encoder (~400 MB).</p>
+      <p class="si-note-sm">Pixel 9 Fold (12 GB RAM, ~6 GB available): E2B at 2.8 GB fits with room for KV-cache (~500 MB), runtime (~300 MB), and the vision encoder (~400 MB).</p>
     </div>
 
-    <div class="arch-note reveal" style="margin-top:var(--s4);">
+    <div class="arch-note reveal si-mt4">
       📊 All quantization experiments produce paper-ready ablation studies with before/after accuracy on construction safety benchmarks, latency on Tensor G4 vs Snapdragon XR1, and published weights on HuggingFace.
     </div>
   </div>
@@ -1530,27 +1888,27 @@
     </div>
 
     <!-- Dataset table -->
-    <div class="arch-note reveal" style="margin-bottom:var(--s4);" aria-label="Tabla de conjuntos de datos de detección de EPP / PPE detection dataset table">
+    <div class="arch-note reveal si-mb4" aria-label="Tabla de conjuntos de datos de detección de EPP / PPE detection dataset table">
       <strong>Detection Datasets (Bounding Box Annotations)</strong>
-      <table style="width:100%;margin-top:var(--s2);font-size:0.8rem;border-collapse:collapse;">
-        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Dataset</th><th>Images</th><th>Classes</th><th>License</th><th>Source</th></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>SHWD</strong></td><td style="text-align:center;">7,581</td><td>helmet, head</td><td>Mixed</td><td>GitHub</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Hard Hat Workers</strong></td><td style="text-align:center;">5,000</td><td>helmet, head, person</td><td style="color:green;font-weight:600;">CC0</td><td>Kaggle</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Construction-PPE</strong></td><td style="text-align:center;">3K-8K</td><td>hardhat, vest, glasses, gloves</td><td>CC BY 4.0</td><td>Roboflow</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>SODA</strong></td><td style="text-align:center;">19,846</td><td>15 classes (workers, equipment)</td><td>Research</td><td>Wang et al.</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>PICTOR-v3</strong></td><td style="text-align:center;">2,000</td><td>hardhat, vest, mask, person</td><td>Research</td><td>Fang et al.</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>SH17</strong></td><td style="text-align:center;">~5,000</td><td>helmet, head, person</td><td>Academic</td><td>Academic</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>MOCS</strong></td><td style="text-align:center;">~5,300</td><td>worker, helmet, vest</td><td>Research</td><td>Research</td></tr>
-        <tr><td style="padding:6px;"><strong>CHV</strong></td><td style="text-align:center;">~1,000</td><td>hardhat, no_hardhat, person</td><td>Research</td><td>HK PolyU</td></tr>
+      <table class="si-tbl-mt2-sm">
+        <tr class="si-tr-header"><th class="si-th-left">Dataset</th><th>Images</th><th>Classes</th><th>License</th><th>Source</th></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>SHWD</strong></td><td class="si-tc">7,581</td><td>helmet, head</td><td>Mixed</td><td>GitHub</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>Hard Hat Workers</strong></td><td class="si-tc">5,000</td><td>helmet, head, person</td><td class="si-c-green-bold">CC0</td><td>Kaggle</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>Construction-PPE</strong></td><td class="si-tc">3K-8K</td><td>hardhat, vest, glasses, gloves</td><td>CC BY 4.0</td><td>Roboflow</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>SODA</strong></td><td class="si-tc">19,846</td><td>15 classes (workers, equipment)</td><td>Research</td><td>Wang et al.</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>PICTOR-v3</strong></td><td class="si-tc">2,000</td><td>hardhat, vest, mask, person</td><td>Research</td><td>Fang et al.</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>SH17</strong></td><td class="si-tc">~5,000</td><td>helmet, head, person</td><td>Academic</td><td>Academic</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>MOCS</strong></td><td class="si-tc">~5,300</td><td>worker, helmet, vest</td><td>Research</td><td>Research</td></tr>
+        <tr><td class="si-td-p6"><strong>CHV</strong></td><td class="si-tc">~1,000</td><td>hardhat, no_hardhat, person</td><td>Research</td><td>HK PolyU</td></tr>
       </table>
     </div>
 
     <!-- VLM conversion -->
-    <article class="card reveal" style="margin-bottom:var(--s4);" aria-label="Conversión de datos para modelos de visión-lenguaje / VLM data conversion">
+    <article class="card reveal si-mb4" aria-label="Conversión de datos para modelos de visión-lenguaje / VLM data conversion">
       <span class="card-icon" aria-hidden="true">🔄</span>
       <h3>VLM Fine-Tuning Format</h3>
       <p>Detection datasets provide bounding boxes, not natural language. For Gemma 4 vision fine-tuning, we convert annotations to instruction-tuning pairs using the native <strong>function-calling format</strong> &mdash; teaching the model structured output directly, eliminating brittle JSON parsing at inference time:</p>
-      <pre style="background:rgba(0,0,0,0.04);padding:var(--s3);border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.6;"><code>{
+      <pre class="si-pre-code"><code>{
   "image": "scene_0042.jpg",
   "instruction": "Analyze this construction scene for PPE violations.",
   "output": {
@@ -1564,7 +1922,7 @@
     }]
   }
 }</code></pre>
-      <p style="margin-top:var(--s2);"><strong>Training data mix:</strong> 40% EN safety scenarios, 30% ES construction-register scenarios (including code-switching), 20% visual reasoning chains, 10% general instruction following (prevents catastrophic forgetting). All bilingual data uses construction-register Spanish &mdash; <em>casco duro</em> not <em>casco de seguridad</em>, <em>montacargas</em> not <em>carretilla elevadora</em>.</p>
+      <p class="si-mt2"><strong>Training data mix:</strong> 40% EN safety scenarios, 30% ES construction-register scenarios (including code-switching), 20% visual reasoning chains, 10% general instruction following (prevents catastrophic forgetting). All bilingual data uses construction-register Spanish &mdash; <em>casco duro</em> not <em>casco de seguridad</em>, <em>montacargas</em> not <em>carretilla elevadora</em>.</p>
     </article>
 
     <!-- Dataset gaps -->
@@ -1572,19 +1930,19 @@
       <span class="card-icon" aria-hidden="true">🔍</span>
       <h3>Critical Dataset Gaps (Research Contribution)</h3>
       <p>Existing datasets systematically fail to represent conditions that matter for real deployment:</p>
-      <table style="width:100%;margin:var(--s3) 0;font-size:0.8rem;border-collapse:collapse;">
-        <tr style="border-bottom:2px solid var(--isu-red);"><th style="text-align:left;padding:6px;">Gap</th><th>Severity</th><th>Impact</th></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Night / low-light</strong></td><td style="text-align:center;color:var(--isu-red);font-weight:700;">Critical</td><td>Night shifts (highway, emergency) have different noise, IR, and reflective-tape characteristics</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Ego-centric camera</strong></td><td style="text-align:center;color:var(--isu-red);font-weight:700;">Critical</td><td>Zero datasets use glasses-mounted cameras. All existing data is surveillance (top-down) or handheld</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Adverse weather</strong></td><td style="text-align:center;color:#e65100;font-weight:600;">High</td><td>Rain on lenses, fog reducing contrast, demolition dust clouds</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Multi-ethnic workforce</strong></td><td style="text-align:center;color:#e65100;font-weight:600;">High</td><td>Most datasets from Chinese sites. US construction is 30%+ Hispanic/Latino (BLS)</td></tr>
-        <tr style="border-bottom:1px solid #eee;"><td style="padding:6px;"><strong>Partial occlusion</strong></td><td style="text-align:center;color:#e65100;font-weight:600;">High</td><td>Scaffolding, formwork, rebar, equipment blocking camera view</td></tr>
-        <tr><td style="padding:6px;"><strong>Full OSHA PPE suite</strong></td><td style="text-align:center;">Medium</td><td>Most datasets cover helmets only; OSHA requires hardhat+vest+glasses+gloves+boots+harness</td></tr>
+      <table class="si-tbl-sm">
+        <tr class="si-tr-header"><th class="si-th-left">Gap</th><th>Severity</th><th>Impact</th></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>Night / low-light</strong></td><td class="si-tc-red-bold">Critical</td><td>Night shifts (highway, emergency) have different noise, IR, and reflective-tape characteristics</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>Ego-centric camera</strong></td><td class="si-tc-red-bold">Critical</td><td>Zero datasets use glasses-mounted cameras. All existing data is surveillance (top-down) or handheld</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>Adverse weather</strong></td><td class="si-tc-orange-semi">High</td><td>Rain on lenses, fog reducing contrast, demolition dust clouds</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>Multi-ethnic workforce</strong></td><td class="si-tc-orange-semi">High</td><td>Most datasets from Chinese sites. US construction is 30%+ Hispanic/Latino (BLS)</td></tr>
+        <tr class="si-tr-row"><td class="si-td-p6"><strong>Partial occlusion</strong></td><td class="si-tc-orange-semi">High</td><td>Scaffolding, formwork, rebar, equipment blocking camera view</td></tr>
+        <tr><td class="si-td-p6"><strong>Full OSHA PPE suite</strong></td><td class="si-tc">Medium</td><td>Most datasets cover helmets only; OSHA requires hardhat+vest+glasses+gloves+boots+harness</td></tr>
       </table>
-      <p style="margin-top:var(--s2);"><strong>Our contribution:</strong> Collecting 500-1,000 ego-centric construction images from safety glasses perspective with PPE annotations would be a novel dataset — a potential workshop paper at CVPR (Vision for Infrastructure Safety) or <em>Automation in Construction</em>.</p>
+      <p class="si-mt2"><strong>Our contribution:</strong> Collecting 500-1,000 ego-centric construction images from safety glasses perspective with PPE annotations would be a novel dataset — a potential workshop paper at CVPR (Vision for Infrastructure Safety) or <em>Automation in Construction</em>.</p>
     </article>
 
-    <div class="arch-note reveal" style="margin-top:var(--s4);">
+    <div class="arch-note reveal si-mt4">
       📚 <strong>Key references:</strong> Fang et al. (2018, <em>Automation in Construction</em>), Wang et al. (2022, <em>Advanced Eng. Informatics</em>), Nath et al. (2020), Dettmers et al. (NeurIPS 2023), Frantar et al. (ICLR 2023), Lin et al. (MLSys 2024), Ma et al. (Microsoft Research, 2024), Kim et al. (ICML 2024).
     </div>
   </div>
@@ -1683,7 +2041,7 @@
 
     <div class="team-grid">
       <div class="team-card reveal">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+        <div class="si-flex-advisor">
           <div class="t-avatar" aria-hidden="true">B</div>
           <div>
             <div class="t-name">Bhattacharya</div>
@@ -1695,7 +2053,7 @@
       </div>
 
       <div class="team-card reveal d1">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+        <div class="si-flex-advisor">
           <div class="t-avatar" aria-hidden="true">L</div>
           <div>
             <div class="t-name">Lahiri</div>
@@ -1736,36 +2094,36 @@
     </div>
 
     <!-- Core Architecture Pattern -->
-    <div class="reveal" style="background:var(--surface-2);border-radius:var(--r-lg);padding:var(--s4);margin-bottom:var(--s6);box-shadow:var(--elev-2);">
-      <h3 style="font-family:'Roboto Slab',serif;font-size:1.2rem;margin-bottom:var(--s2);color:var(--isu-red);">The Core Pattern: See → Think → Act</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--s3);">
-        <div style="text-align:center;padding:var(--s2);">
-          <div style="font-size:2rem;">👓</div>
+    <div class="reveal si-panel-lg">
+      <h3 class="si-h3-slab-red">The Core Pattern: See → Think → Act</h3>
+      <div class="si-grid-200">
+        <div class="si-tc-p2">
+          <div class="si-icon-lg">👓</div>
           <strong>Tier 1 — Glasses</strong><br>
-          <span style="font-size:.88rem;color:var(--on-surface-var);">Camera + display. Edge detection. Scene capture.</span>
+          <span class="si-text-sm-muted">Camera + display. Edge detection. Scene capture.</span>
         </div>
-        <div style="text-align:center;padding:var(--s2);">
-          <div style="font-size:2rem;">📱</div>
+        <div class="si-tc-p2">
+          <div class="si-icon-lg">📱</div>
           <strong>Tier 2 — Phone</strong><br>
-          <span style="font-size:.88rem;color:var(--on-surface-var);">On-device VLM inference. Real-time reasoning. $0/query.</span>
+          <span class="si-text-sm-muted">On-device VLM inference. Real-time reasoning. $0/query.</span>
         </div>
-        <div style="text-align:center;padding:var(--s2);">
-          <div style="font-size:2rem;">☁️</div>
+        <div class="si-tc-p2">
+          <div class="si-icon-lg">☁️</div>
           <strong>Tier 3 — Cloud</strong><br>
-          <span style="font-size:.88rem;color:var(--on-surface-var);">Batch analytics. Escalation. Dashboards.</span>
+          <span class="si-text-sm-muted">Batch analytics. Escalation. Dashboards.</span>
         </div>
       </div>
     </div>
 
     <!-- Consumer: Ray-Ban Meta -->
-    <div class="reveal" style="margin-bottom:var(--s5);">
-      <h3 style="font-family:'Roboto Slab',serif;font-size:1.3rem;margin-bottom:var(--s2);">Consumer Applications — Ray-Ban Meta ($299)</h3>
-      <p style="color:var(--on-surface-var);margin-bottom:var(--s3);">The Ray-Ban Meta Wayfarers are a <strong>$299 consumer product</strong> already on millions of faces. The Duchess architecture turns them into a general-purpose situated intelligence platform.</p>
+    <div class="reveal si-mb5">
+      <h3 class="si-h3-slab-2">Consumer Applications — Ray-Ban Meta ($299)</h3>
+      <p class="si-body-mb3">The Ray-Ban Meta Wayfarers are a <strong>$299 consumer product</strong> already on millions of faces. The Duchess architecture turns them into a general-purpose situated intelligence platform.</p>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--s3);">
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="color:var(--isu-red);font-size:.95rem;margin-bottom:8px;">Science & Education</h4>
-          <ul style="font-size:.88rem;color:var(--on-surface-var);padding-left:18px;">
+      <div class="si-grid-260">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-red">Science & Education</h4>
+          <ul class="si-ul-md">
             <li><strong>Lab Safety Monitor</strong> — Detect unsafe practices (no goggles, improper chemical handling) in real-time</li>
             <li><strong>Field Research</strong> — Geology, ecology, archaeology students get real-time species/mineral identification</li>
             <li><strong>STEM Tutoring</strong> — Point at a circuit, equation, or organism for instant visual explanation</li>
@@ -1773,9 +2131,9 @@
             <li><strong>Museum & Heritage</strong> — Multilingual exhibit interpretation in real-time</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="color:var(--isu-red);font-size:.95rem;margin-bottom:8px;">Healthcare & Accessibility</h4>
-          <ul style="font-size:.88rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-red">Healthcare & Accessibility</h4>
+          <ul class="si-ul-md">
             <li><strong>Clinical Training</strong> — Real-time feedback during medical procedures</li>
             <li><strong>Hospital PPE</strong> — Hand hygiene and PPE compliance monitoring (same architecture)</li>
             <li><strong>Visual Impairment</strong> — Gemma 4 describes scenes, reads text, identifies objects</li>
@@ -1787,25 +2145,25 @@
     </div>
 
     <!-- Military: Vuzix M400 -->
-    <div class="reveal" style="margin-bottom:var(--s5);">
-      <h3 style="font-family:'Roboto Slab',serif;font-size:1.3rem;margin-bottom:var(--s2);">Military & Defense — Vuzix M400</h3>
-      <p style="color:var(--on-surface-var);margin-bottom:var(--s3);">The <strong>Vuzix M400</strong> is already deployed with US military and NATO allies. Ruggedized (IP67, MIL-STD-810G), it supports thermal/IR camera modules. Vuzix holds contracts with the US Department of Defense, and the M400 is used by the US Army, Air Force, and defense contractors including BAE Systems, L3Harris, and Elbit Systems.</p>
+    <div class="reveal si-mb5">
+      <h3 class="si-h3-slab-2">Military & Defense — Vuzix M400</h3>
+      <p class="si-body-mb3">The <strong>Vuzix M400</strong> is already deployed with US military and NATO allies. Ruggedized (IP67, MIL-STD-810G), it supports thermal/IR camera modules. Vuzix holds contracts with the US Department of Defense, and the M400 is used by the US Army, Air Force, and defense contractors including BAE Systems, L3Harris, and Elbit Systems.</p>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--s3);margin-bottom:var(--s3);">
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="color:var(--isu-red);font-size:.95rem;margin-bottom:8px;">Construction → Military Mapping</h4>
-          <table style="font-size:.82rem;width:100%;border-collapse:collapse;">
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;"><strong>PPE detection</strong></td><td style="padding:5px 0;">Equipment compliance verification</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;"><strong>Bilingual alerts (EN/ES)</strong></td><td style="padding:5px 0;">Coalition multilingual comms (EN/AR/Dari)</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;"><strong>OSHA regulation lookup</strong></td><td style="padding:5px 0;">Technical manual & SOP lookup via VLM</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;"><strong>Hazard zone ID</strong></td><td style="padding:5px 0;">IED/UXO visual threat detection</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;"><strong>On-device (no cloud)</strong></td><td style="padding:5px 0;">DDIL environment operations</td></tr>
-            <tr><td style="padding:5px 0;"><strong>Tailscale mesh</strong></td><td style="padding:5px 0;">Tactical mesh for unit coordination</td></tr>
+      <div class="si-grid-260-mb3">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-red">Construction → Military Mapping</h4>
+          <table class="si-tbl-inline">
+            <tr class="si-tr-row-outline"><td class="si-td-p5"><strong>PPE detection</strong></td><td class="si-td-p5">Equipment compliance verification</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5"><strong>Bilingual alerts (EN/ES)</strong></td><td class="si-td-p5">Coalition multilingual comms (EN/AR/Dari)</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5"><strong>OSHA regulation lookup</strong></td><td class="si-td-p5">Technical manual & SOP lookup via VLM</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5"><strong>Hazard zone ID</strong></td><td class="si-td-p5">IED/UXO visual threat detection</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5"><strong>On-device (no cloud)</strong></td><td class="si-td-p5">DDIL environment operations</td></tr>
+            <tr><td class="si-td-p5"><strong>Tailscale mesh</strong></td><td class="si-td-p5">Tactical mesh for unit coordination</td></tr>
           </table>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="color:var(--isu-red);font-size:.95rem;margin-bottom:8px;">Defense Capabilities</h4>
-          <ul style="font-size:.88rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-red">Defense Capabilities</h4>
+          <ul class="si-ul-md">
             <li><strong>DDIL Operations</strong> — On-device Gemma 4 works without any connectivity</li>
             <li><strong>Maintenance & Logistics</strong> — AR-guided repair for vehicles, aircraft, equipment</li>
             <li><strong>Situational Awareness</strong> — Object/vehicle/threat classification in real-time</li>
@@ -1818,38 +2176,38 @@
 
     <!-- Academic Research Papers -->
     <div class="reveal">
-      <h3 style="font-family:'Roboto Slab',serif;font-size:1.3rem;margin-bottom:var(--s1);">Academic Research Papers</h3>
-      <p style="color:var(--on-surface-var);margin-bottom:var(--s3);">Publishable research directions for <strong>Dr. Mangolika Bhattacharya</strong> (IoT/AI) and <strong>Dr. Haiyan Sally Xie</strong> (Construction Digital Twins, 791+ citations).</p>
+      <h3 class="si-h3-slab-1">Academic Research Papers</h3>
+      <p class="si-body-mb3">Publishable research directions for <strong>Dr. Mangolika Bhattacharya</strong> (IoT/AI) and <strong>Dr. Haiyan Sally Xie</strong> (Construction Digital Twins, 791+ citations).</p>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--s3);">
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="color:var(--g-blue);font-size:.9rem;margin-bottom:8px;">Computer Vision — CVPR, ECCV, ICCV</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+      <div class="si-grid-300">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-blue">Computer Vision — CVPR, ECCV, ICCV</h4>
+          <ul class="si-ul-sm">
             <li>Ego-Centric PPE Detection from Wearable Cameras (first glasses-mounted dataset)</li>
             <li>Mixed-Precision MoE Quantization for On-Device VLMs (PrismQuant)</li>
             <li>Hazard Detection Under Adverse Conditions (dust, rain, low-light)</li>
             <li>Hybrid Ternary-INT8 Vision-Language Models for Edge</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="color:var(--g-green);font-size:.9rem;margin-bottom:8px;">NLP / Bilingual — ACL, EMNLP, NAACL</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-green">NLP / Bilingual — ACL, EMNLP, NAACL</h4>
+          <ul class="si-ul-sm">
             <li>Construction-Register Spanish for Safety-Critical NLU</li>
             <li>Bilingual Safety Alert Generation with On-Device VLMs</li>
             <li>Domain-Adapted LoRA for Low-Resource Occupational Terminology</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="color:var(--g-yellow);font-size:.9rem;margin-bottom:8px;">HCI & Wearables — CHI, UbiComp, ISMAR</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-yellow">HCI & Wearables — CHI, UbiComp, ISMAR</h4>
+          <ul class="si-ul-sm">
             <li>Heads-Up Safety: AR Alert Design for Construction Workers</li>
             <li>Voice-First Hazard Reporting in Multilingual Workforces</li>
             <li>Situated AI Assistance Through Consumer Smart Glasses</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="color:var(--isu-red);font-size:.9rem;margin-bottom:8px;">Construction & Edge AI — Automation in Construction, MLSys, NeurIPS</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-red-sm">Construction & Edge AI — Automation in Construction, MLSys, NeurIPS</h4>
+          <ul class="si-ul-sm">
             <li>Digital Twin Integration with Wearable AI for Site Safety (Dr. Xie)</li>
             <li>On-Device VLM Inference for Construction Safety Compliance</li>
             <li>PrismQuant: Expert-Aware Mixed-Precision for MoE Models</li>
@@ -1874,44 +2232,44 @@
     </div>
 
     <!-- NSF Grants -->
-    <div class="reveal" style="margin-bottom:var(--s5);">
-      <h3 style="font-family:'Roboto Slab',serif;font-size:1.2rem;margin-bottom:var(--s2);color:var(--isu-red);">NSF Research Grants</h3>
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;font-size:.84rem;background:var(--surface-2);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--elev-1);">
-          <thead><tr style="background:var(--isu-red);color:white;">
-            <th style="padding:10px 12px;text-align:left;">Program</th>
-            <th style="padding:10px 12px;text-align:left;">Award</th>
-            <th style="padding:10px 12px;text-align:left;">Fit</th>
+    <div class="reveal si-mb5">
+      <h3 class="si-h3-slab-red">NSF Research Grants</h3>
+      <div class="si-overflow-x">
+        <table class="si-tbl-card">
+          <thead><tr class="si-bg-red-white">
+            <th class="si-th-grant">Program</th>
+            <th class="si-th-grant">Award</th>
+            <th class="si-th-grant">Fit</th>
           </tr></thead>
           <tbody>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:8px 12px;"><strong>CRII</strong></td><td style="padding:8px 12px;">$175K / 2 yr</td><td style="padding:8px 12px;">Early-career PI — "On-device VLM inference for safety-critical wearables"</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:8px 12px;"><strong>FW-HTF</strong></td><td style="padding:8px 12px;">$150K–$3M</td><td style="padding:8px 12px;">Wearable AI changing construction work, multilingual workforce equity</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:8px 12px;"><strong>CPS</strong></td><td style="padding:8px 12px;">$500K–$1M</td><td style="padding:8px 12px;">Three-tier glasses→phone→cloud = textbook cyber-physical system</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:8px 12px;"><strong>NRI</strong></td><td style="padding:8px 12px;">$500K–$1.5M</td><td style="padding:8px 12px;">AR glasses as "co-robots" for human-robot construction collaboration</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:8px 12px;"><strong>PFI-TT</strong></td><td style="padding:8px 12px;">$550K / 3 yr</td><td style="padding:8px 12px;">University-to-market pathway with industry partner</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:8px 12px;"><strong>NSF SBIR Phase I/II</strong></td><td style="padding:8px 12px;">$275K / $1M</td><td style="padding:8px 12px;">Commercialize through Alexios Bluff Mara LLC</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:8px 12px;"><strong>S-STEM</strong></td><td style="padding:8px 12px;">$1M–$2.5M</td><td style="padding:8px 12px;">Fund construction tech students at ISU using Duchess as platform</td></tr>
-            <tr><td style="padding:8px 12px;"><strong>CIVIC</strong></td><td style="padding:8px 12px;">$1M</td><td style="padding:8px 12px;">Partner with construction unions for community-driven safety AI</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p8-12"><strong>CRII</strong></td><td class="si-td-p8-12">$175K / 2 yr</td><td class="si-td-p8-12">Early-career PI — "On-device VLM inference for safety-critical wearables"</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p8-12"><strong>FW-HTF</strong></td><td class="si-td-p8-12">$150K–$3M</td><td class="si-td-p8-12">Wearable AI changing construction work, multilingual workforce equity</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p8-12"><strong>CPS</strong></td><td class="si-td-p8-12">$500K–$1M</td><td class="si-td-p8-12">Three-tier glasses→phone→cloud = textbook cyber-physical system</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p8-12"><strong>NRI</strong></td><td class="si-td-p8-12">$500K–$1.5M</td><td class="si-td-p8-12">AR glasses as "co-robots" for human-robot construction collaboration</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p8-12"><strong>PFI-TT</strong></td><td class="si-td-p8-12">$550K / 3 yr</td><td class="si-td-p8-12">University-to-market pathway with industry partner</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p8-12"><strong>NSF SBIR Phase I/II</strong></td><td class="si-td-p8-12">$275K / $1M</td><td class="si-td-p8-12">Commercialize through Alexios Bluff Mara LLC</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p8-12"><strong>S-STEM</strong></td><td class="si-td-p8-12">$1M–$2.5M</td><td class="si-td-p8-12">Fund construction tech students at ISU using Duchess as platform</td></tr>
+            <tr><td class="si-td-p8-12"><strong>CIVIC</strong></td><td class="si-td-p8-12">$1M</td><td class="si-td-p8-12">Partner with construction unions for community-driven safety AI</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
     <!-- Federal Grants -->
-    <div class="reveal" style="margin-bottom:var(--s5);">
-      <h3 style="font-family:'Roboto Slab',serif;font-size:1.2rem;margin-bottom:var(--s2);color:var(--isu-red);">Federal — OSHA, DOD, NIH, DARPA</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--s3);">
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">OSHA & Department of Labor</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+    <div class="reveal si-mb5">
+      <h3 class="si-h3-slab-red">Federal — OSHA, DOD, NIH, DARPA</h3>
+      <div class="si-grid-280">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">OSHA & Department of Labor</h4>
+          <ul class="si-ul-sm">
             <li><strong>Susan Harwood Training Grants</strong> — $100K–$175K — Bilingual safety training</li>
             <li><strong>Susan Harwood Capacity Building</strong> — $75K–$145K — Curriculum development</li>
             <li><strong>DOL Workforce Innovation</strong> — Multilingual AI for immigrant workforce</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">Department of Defense</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">Department of Defense</h4>
+          <ul class="si-ul-sm">
             <li><strong>DOD SBIR Phase I/II</strong> — $250K / $1.7M — Military Duchess adaptation</li>
             <li><strong>DARPA PTG</strong> — Perceptive Team Teaming through AR glasses</li>
             <li><strong>Defense Innovation Unit (DIU)</strong> — Fast-track dual-use tech</li>
@@ -1919,9 +2277,9 @@
             <li><strong>NavalX</strong> — Shipyard worker safety (same PPE use case)</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">NIH & Other Federal</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">NIH & Other Federal</h4>
+          <ul class="si-ul-sm">
             <li><strong>NIOSH Pilot Research</strong> — $400K — Occupational safety with wearable AI</li>
             <li><strong>NIH R21</strong> — $275K — Wearable AI reducing construction injuries</li>
             <li><strong>NIST PSCR</strong> — First responder safety with wearable AI</li>
@@ -1932,12 +2290,12 @@
     </div>
 
     <!-- Venture Capital -->
-    <div class="reveal" style="margin-bottom:var(--s5);">
-      <h3 style="font-family:'Roboto Slab',serif;font-size:1.2rem;margin-bottom:var(--s2);color:var(--isu-red);">Venture Capital & Accelerators</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--s3);">
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">Construction Tech VCs</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+    <div class="reveal si-mb5">
+      <h3 class="si-h3-slab-red">Venture Capital & Accelerators</h3>
+      <div class="si-grid-260">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">Construction Tech VCs</h4>
+          <ul class="si-ul-sm">
             <li><strong>Brick & Mortar Ventures</strong> — Seed–A, $500K–$5M</li>
             <li><strong>Building Ventures</strong> — Seed–A, $1M–$5M</li>
             <li><strong>Suffolk Technologies</strong> — Construction VC arm</li>
@@ -1945,9 +2303,9 @@
             <li><strong>Grit Ventures</strong> — Field operations</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">AI & Defense Tech VCs</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">AI & Defense Tech VCs</h4>
+          <ul class="si-ul-sm">
             <li><strong>a16z American Dynamism</strong> — Defense, public sector</li>
             <li><strong>Gradient Ventures</strong> (Google) — AI startups</li>
             <li><strong>Lux Capital</strong> — Deep tech, defense</li>
@@ -1956,9 +2314,9 @@
             <li><strong>Radical Ventures</strong> — AI-first companies</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">Accelerators</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">Accelerators</h4>
+          <ul class="si-ul-sm">
             <li><strong>Y Combinator</strong> — $500K, 3 months</li>
             <li><strong>Techstars</strong> — Smart Cities / Workforce tracks</li>
             <li><strong>Google for Startups</strong> — Cloud credits + mentorship</li>
@@ -1971,12 +2329,12 @@
     </div>
 
     <!-- Chicago & BloNo -->
-    <div class="reveal" style="margin-bottom:var(--s5);">
-      <h3 style="font-family:'Roboto Slab',serif;font-size:1.2rem;margin-bottom:var(--s2);color:var(--isu-red);">Chicago & Central Illinois Ecosystem</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--s3);">
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">Chicago Tech Hub</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+    <div class="reveal si-mb5">
+      <h3 class="si-h3-slab-red">Chicago & Central Illinois Ecosystem</h3>
+      <div class="si-grid-280">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">Chicago Tech Hub</h4>
+          <ul class="si-ul-sm">
             <li><strong>1871</strong> — Chicago's premier tech incubator, investor network</li>
             <li><strong>mHUB</strong> — Hardware/manufacturing incubator with prototyping labs</li>
             <li><strong>MATTER</strong> — Health tech incubator (hospital PPE angle)</li>
@@ -1987,9 +2345,9 @@
             <li><strong>Illinois Innovation Network</strong> — ISU to Chicago pipeline</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">Bloomington-Normal</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">Bloomington-Normal</h4>
+          <ul class="si-ul-sm">
             <li><strong>ISU Innovation Consulting Community</strong> — Student startup incubator</li>
             <li><strong>Illinois SBDC at ISU</strong> — Free business consulting, loan packaging</li>
             <li><strong>Central Illinois Angels</strong> — $25K–$250K angel investments</li>
@@ -2000,9 +2358,9 @@
             <li><strong>ISU Research and Sponsored Programs</strong> — Grant administration</li>
           </ul>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">Illinois State Programs</h4>
-          <ul style="font-size:.84rem;color:var(--on-surface-var);padding-left:18px;">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">Illinois State Programs</h4>
+          <ul class="si-ul-sm">
             <li><strong>DCEO Small Business Grants</strong> — $5K–$250K</li>
             <li><strong>Illinois Innovation Fund</strong> — $500K–$5M state VC</li>
             <li><strong>R&D Tax Credit</strong> — 6.5% of qualified expenses</li>
@@ -2017,47 +2375,47 @@
 
     <!-- Hardware & Software Costs -->
     <div class="reveal">
-      <h3 style="font-family:'Roboto Slab',serif;font-size:1.2rem;margin-bottom:var(--s2);color:var(--isu-red);">Hardware & Software Cost Transparency</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--s3);">
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">Hardware (MVP)</h4>
-          <table style="font-size:.82rem;width:100%;border-collapse:collapse;">
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Ray-Ban Meta Wayfarer</td><td style="padding:5px 0;text-align:right;"><strong>$299</strong></td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Vuzix M400</td><td style="padding:5px 0;text-align:right;"><strong>$1,799</strong></td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Google Pixel 9 Fold</td><td style="padding:5px 0;text-align:right;"><strong>$1,799</strong></td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">NVIDIA RTX 5090 (training)</td><td style="padding:5px 0;text-align:right;"><strong>$1,999</strong></td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">MacBook Pro M4 Max 48GB</td><td style="padding:5px 0;text-align:right;"><strong>$3,999</strong></td></tr>
-            <tr style="font-weight:700;"><td style="padding:8px 0;">Total MVP Hardware</td><td style="padding:8px 0;text-align:right;color:var(--isu-red);">~$9,945</td></tr>
+      <h3 class="si-h3-slab-red">Hardware & Software Cost Transparency</h3>
+      <div class="si-grid-300">
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">Hardware (MVP)</h4>
+          <table class="si-tbl-inline">
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Ray-Ban Meta Wayfarer</td><td class="si-td-right"><strong>$299</strong></td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Vuzix M400</td><td class="si-td-right"><strong>$1,799</strong></td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Google Pixel 9 Fold</td><td class="si-td-right"><strong>$1,799</strong></td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">NVIDIA RTX 5090 (training)</td><td class="si-td-right"><strong>$1,999</strong></td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">MacBook Pro M4 Max 48GB</td><td class="si-td-right"><strong>$3,999</strong></td></tr>
+            <tr class="si-fw7"><td class="si-td-p8">Total MVP Hardware</td><td class="si-td-total-red">~$9,945</td></tr>
           </table>
         </div>
-        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--elev-1);">
-          <h4 style="font-size:.9rem;margin-bottom:8px;">Software & Licenses (Monthly)</h4>
-          <table style="font-size:.82rem;width:100%;border-collapse:collapse;">
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">GitHub Copilot Enterprise</td><td style="padding:5px 0;text-align:right;">$39/user/mo</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Tailscale Business</td><td style="padding:5px 0;text-align:right;">$18/user/mo</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Parsec Teams</td><td style="padding:5px 0;text-align:right;">$35/user/mo</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Google Cloud / Vertex AI</td><td style="padding:5px 0;text-align:right;">$50–$2K/mo</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Weights & Biases</td><td style="padding:5px 0;text-align:right;">Free–$50/mo</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Roboflow (annotation)</td><td style="padding:5px 0;text-align:right;">Free–$249/mo</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">HuggingFace Pro</td><td style="padding:5px 0;text-align:right;">$9/mo</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Claude Code (Anthropic)</td><td style="padding:5px 0;text-align:right;">Usage-based</td></tr>
-            <tr style="border-bottom:1px solid var(--outline-var);"><td style="padding:5px 0;">Android Studio</td><td style="padding:5px 0;text-align:right;">Free</td></tr>
-            <tr><td style="padding:5px 0;">Domain + Cloudflare</td><td style="padding:5px 0;text-align:right;">~$10/yr</td></tr>
+        <div class="si-info-card">
+          <h4 class="si-card-h4-neutral">Software & Licenses (Monthly)</h4>
+          <table class="si-tbl-inline">
+            <tr class="si-tr-row-outline"><td class="si-td-p5">GitHub Copilot Enterprise</td><td class="si-td-right">$39/user/mo</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Tailscale Business</td><td class="si-td-right">$18/user/mo</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Parsec Teams</td><td class="si-td-right">$35/user/mo</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Google Cloud / Vertex AI</td><td class="si-td-right">$50–$2K/mo</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Weights & Biases</td><td class="si-td-right">Free–$50/mo</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Roboflow (annotation)</td><td class="si-td-right">Free–$249/mo</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">HuggingFace Pro</td><td class="si-td-right">$9/mo</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Claude Code (Anthropic)</td><td class="si-td-right">Usage-based</td></tr>
+            <tr class="si-tr-row-outline"><td class="si-td-p5">Android Studio</td><td class="si-td-right">Free</td></tr>
+            <tr><td class="si-td-p5">Domain + Cloudflare</td><td class="si-td-right">~$10/yr</td></tr>
           </table>
         </div>
       </div>
-      <div style="margin-top:var(--s3);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--s2);">
-        <div style="background:var(--isu-red-container);border-radius:var(--r-sm);padding:var(--s2);text-align:center;">
-          <div style="font-size:1.4rem;font-weight:800;color:var(--isu-red);">~$300/mo</div>
-          <div style="font-size:.78rem;color:var(--isu-red-on-cont);">Hackathon / MVP</div>
+      <div class="si-grid-cost-summary">
+        <div class="si-cost-badge">
+          <div class="si-cost-val">~$300/mo</div>
+          <div class="si-cost-label">Hackathon / MVP</div>
         </div>
-        <div style="background:var(--isu-red-container);border-radius:var(--r-sm);padding:var(--s2);text-align:center;">
-          <div style="font-size:1.4rem;font-weight:800;color:var(--isu-red);">~$3.5K/mo</div>
-          <div style="font-size:.78rem;color:var(--isu-red-on-cont);">Pilot (5 sites, 50 devices)</div>
+        <div class="si-cost-badge">
+          <div class="si-cost-val">~$3.5K/mo</div>
+          <div class="si-cost-label">Pilot (5 sites, 50 devices)</div>
         </div>
-        <div style="background:var(--isu-red-container);border-radius:var(--r-sm);padding:var(--s2);text-align:center;">
-          <div style="font-size:1.4rem;font-weight:800;color:var(--isu-red);">~$15K/mo</div>
-          <div style="font-size:.78rem;color:var(--isu-red-on-cont);">Production (100 sites)</div>
+        <div class="si-cost-badge">
+          <div class="si-cost-val">~$15K/mo</div>
+          <div class="si-cost-label">Production (100 sites)</div>
         </div>
       </div>
     </div>
