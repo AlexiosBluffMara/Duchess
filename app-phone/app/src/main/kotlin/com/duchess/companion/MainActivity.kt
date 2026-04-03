@@ -58,9 +58,9 @@ import com.duchess.companion.stream.StreamScreen
 import com.duchess.companion.ui.theme.DuchessTheme
 import javax.inject.Inject
 import com.meta.wearable.dat.core.Wearables
-import com.meta.wearable.dat.core.registration.RegistrationState
-import com.meta.wearable.dat.core.permissions.Permission
-import com.meta.wearable.dat.core.permissions.PermissionStatus
+import com.meta.wearable.dat.core.types.RegistrationState
+import com.meta.wearable.dat.core.types.Permission
+import com.meta.wearable.dat.core.types.PermissionStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,7 +93,11 @@ class MainActivity : ComponentActivity() {
 
     private val permissionsLauncher =
         registerForActivityResult(Wearables.RequestPermissionContract()) { result ->
-            permissionContinuation?.resume(result)
+            val status = result.fold(
+                onSuccess = { it },
+                onFailure = { _, _ -> PermissionStatus.Denied }
+            )
+            permissionContinuation?.resume(status)
             permissionContinuation = null
         }
 
@@ -330,10 +334,12 @@ private fun MainContent(
 ) {
     when (registrationState) {
         is RegistrationState.Registered -> DuchessMainApp()
-        is RegistrationState.Unregistered -> {
+        is RegistrationState.Available,
+        is RegistrationState.Unavailable,
+        is RegistrationState.Unregistering -> {
             RegistrationPrompt(onRegisterClick = onRegisterClick, modifier = modifier)
         }
-        null -> {
+        is RegistrationState.Registering -> {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     text = stringResource(R.string.loading),
@@ -341,12 +347,11 @@ private fun MainContent(
                 )
             }
         }
-        else -> {
+        null -> {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    text = stringResource(R.string.registration_error),
+                    text = stringResource(R.string.loading),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error,
                 )
             }
         }

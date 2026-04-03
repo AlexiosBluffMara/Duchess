@@ -6,6 +6,7 @@ import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.tasks.genai.llminference.GraphOptions
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import com.google.mediapipe.tasks.genai.llminference.LlmInferenceSession
+import com.duchess.companion.stream.toBitmap
 import com.meta.wearable.dat.camera.types.VideoFrame
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -163,7 +164,7 @@ class GemmaInferenceEngine @Inject constructor(
             _state.value = GemmaState.Running
 
             val result = runCatching {
-                analyzeWithVision(engine, frame.bitmap)
+                analyzeWithVision(engine, frame.toBitmap())
             }.getOrElse { e ->
                 // Alex: getOrElse catches ANYTHING thrown inside runCatching, including
                 // UnsupportedOperationException if a device doesn't support vision input.

@@ -474,7 +474,7 @@ private fun RealStreamContent(
             is StreamUiState.Idle -> IdleContent(onStartStream = { viewModel.startStream() })
             is StreamUiState.Connecting -> ConnectingContent()
             is StreamUiState.Active -> ActiveStreamContent(
-                frameBitmap = latestFrame?.bitmap,
+                frameBitmap = latestFrame?.toBitmap(),
                 onCapturePhoto = { viewModel.capturePhoto() },
                 onStopStream = { viewModel.stopStream() },
             )

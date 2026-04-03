@@ -84,6 +84,11 @@ dependencies {
     implementation(libs.work.runtime)
 
 
+    // Meta Wearables DAT SDK
+    implementation(libs.mwdat.core)
+    implementation(libs.mwdat.camera)
+    debugImplementation(libs.mwdat.mockdevice)
+
     // LiteRT (for Gemma 4 inference)
     implementation(libs.litert)
     implementation(libs.litert.gpu)
