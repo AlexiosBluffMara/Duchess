@@ -4,6 +4,37 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-03 04:01 UTC — Commit de7392d
+
+**Branch**: `claude/confident-franklin`  
+**Author**: AlexiosBluffMara  
+**Message**: feat(glasses): wire TemporalVoter escalation tiers and HUD phone-alert overlay
+
+### Modules touched
+- **app-phone/**: 5 file(s) changed
+- **app-glasses/**: 2 file(s) changed
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 63 | Active (63 files) |
+| app-glasses/ | 33 | Active (33 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 12 | Active (12 files) |
+
+### Changed files
+```
+app-glasses/app/src/main/kotlin/com/duchess/glasses/MainActivity.kt
+app-glasses/app/src/main/kotlin/com/duchess/glasses/display/HudRenderer.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/dashboard/DashboardScreen.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/dashboard/DashboardViewModel.kt
+app-phone/app/src/main/kotlin/com/duchess/companion/stream/InferencePipelineCoordinator.kt
+app-phone/app/src/main/res/values-es/strings.xml
+app-phone/app/src/main/res/values/strings.xml
+```
+
+---
+
 ## 2026-04-03 02:47 UTC — Commit 1a89713
 
 **Branch**: `main`  
@@ -83,30 +114,6 @@ app-phone/app/src/main/kotlin/com/meta/wearable/dat/mockdevice/api/MockRaybanMet
 **Branch**: `main`  
 **Author**: AlexiosBluffMara  
 **Message**: ci(infra): opt into Node.js 24 and add fetch-depth 0 to Pages workflow
-
-### Modules touched
-- **infra**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 1746 | Active (1746 files) |
-| app-glasses/ | 33 | Active (33 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.github/workflows/pages.yml
-```
-
----
-
-## 2026-04-02 22:37 UTC — Commit d1dde36
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: ci(infra): pass GITHUB_TOKEN to Jekyll build for github-metadata plugin
 
 ### Modules touched
 - **infra**: 1 file(s) changed

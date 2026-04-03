@@ -52,6 +52,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.duchess.companion.R
 import com.duchess.companion.demo.ConnectionStatus
 import com.duchess.companion.demo.ZoneStatus
+import com.duchess.companion.mesh.MeshManager
 
 private val SafetyGreen = Color(0xFF4CAF50)
 private val SafetyYellow = Color(0xFFFFD600)
@@ -76,6 +77,7 @@ fun DashboardScreen(
     val activeWorkers by viewModel.activeWorkers.collectAsState()
     val connectionStatus by viewModel.connectionStatus.collectAsState()
     val recentAlerts by viewModel.recentAlerts.collectAsState()
+    val meshState by viewModel.meshState.collectAsState()
 
     val activeAlertCount = recentAlerts.count { it.severity >= 3 }
 
@@ -86,6 +88,10 @@ fun DashboardScreen(
             .padding(horizontal = 24.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // --- Mesh connectivity status ---
+        MeshStatusRow(meshState = meshState)
+        Spacer(modifier = Modifier.height(8.dp))
+
         // --- Safety Score ---
         SafetyScoreSection(score = safetyScore)
 
@@ -400,6 +406,34 @@ private fun HudSimCard(onClick: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+    }
+}
+
+// endregion
+
+// region Mesh Status Row
+
+/** One-line mesh connectivity indicator: colour-coded dot + label text. */
+@Composable
+private fun MeshStatusRow(meshState: MeshManager.MeshState) {
+    val (dotColor, labelRes) = when (meshState) {
+        MeshManager.MeshState.Connected    -> SafetyGreen  to R.string.mesh_status_connected
+        MeshManager.MeshState.Connecting   -> SafetyYellow to R.string.mesh_status_connecting
+        MeshManager.MeshState.Disconnected -> SafetyRed    to R.string.mesh_status_offline
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Canvas(modifier = Modifier.size(10.dp)) {
+            drawCircle(color = dotColor)
+        }
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = stringResource(R.string.mesh_status_label, stringResource(labelRes)),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
