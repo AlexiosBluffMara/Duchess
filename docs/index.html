@@ -858,6 +858,8 @@
         <li><a href="#problem">Problem</a></li>
         <li><a href="#architecture">Architecture</a></li>
         <li><a href="#screenshots">App</a></li>
+        <li><a href="#glasses-hud">Glasses</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
         <li><a href="#gemma4">Gemma 4</a></li>
         <li><a href="#cloud">Google Cloud</a></li>
         <li><a href="#ondevice">On-Device</a></li>
@@ -891,6 +893,9 @@
     <a href="#problem"      onclick="closeNav()">Problem</a>
     <a href="#architecture" onclick="closeNav()">Architecture</a>
     <a href="#screenshots"  onclick="closeNav()">App Screenshots</a>
+    <a href="#glasses-hud"  onclick="closeNav()">Glasses HUD</a>
+    <a href="#roadmap"      onclick="closeNav()">Roadmap</a>
+    <a href="#m400-ask"     onclick="closeNav()">M400 Hardware</a>
     <a href="#gemma4"       onclick="closeNav()">Gemma 4</a>
     <a href="#cloud"        onclick="closeNav()">Google Cloud</a>
     <a href="#ondevice"     onclick="closeNav()">On-Device</a>
@@ -1122,6 +1127,274 @@
     <p class="sec-sub reveal si-mt5-sub">
       All PPE inference runs <strong>on-device via Gemma 4 E2B</strong> — no camera data leaves the phone without explicit escalation. Detection overlays shown in Stream are from the YOLOv8-nano model running on the companion Vuzix M400.
     </p>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     GLASSES HUD
+════════════════ -->
+<section class="section" id="glasses-hud" aria-labelledby="glasses-hud-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <div class="sec-eyebrow">Vuzix M400 · 640×360 OLED</div>
+      <h2 class="sec-title" id="glasses-hud-title">What Workers See Through the Glasses</h2>
+      <p class="sec-sub">
+        The HUD Simulator renders a pixel-perfect preview of the M400's monocular display.<br>
+        The actual <code>app-glasses/</code> APK (2,334 lines Kotlin, 46 tests) also runs directly on the Pixel.<br>
+        Lo que ven los trabajadores a través de las gafas — simulación exacta de la pantalla M400.
+      </p>
+    </div>
+
+    <div class="screenshots-grid">
+      <div class="screenshot-card reveal">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-hud-allclear.png" alt="HUD Simulator showing All Clear state — green status bar with bilingual text, green PPE detection bounding boxes for HARDHAT, VEST, GLASSES" loading="lazy" />
+        </div>
+        <div class="screenshot-label">All Clear / Sin alertas</div>
+        <div class="screenshot-sublabel">Green PPE boxes · 10 FPS · GPU · 18ms</div>
+      </div>
+
+      <div class="screenshot-card reveal d1">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-hud-violation.png" alt="HUD Simulator showing PPE Alert state — pulsing red status bar, red NO GLASSES DETECTED violation box, bilingual ALERTA EPP" loading="lazy" />
+        </div>
+        <div class="screenshot-label">PPE Alert / Alerta EPP</div>
+        <div class="screenshot-sublabel">Pulsing red violation · bilingual alert</div>
+      </div>
+
+      <div class="screenshot-card reveal d2">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/glasses-app-hud-detail.png" alt="Actual glasses app running on Pixel — PPE ALERT, NO HARDHAT 83%, green and red bounding boxes, FPS: 60, Inf: 18ms, Bat: 100%" loading="lazy" />
+        </div>
+        <div class="screenshot-label">Actual Glasses APK on Pixel</div>
+        <div class="screenshot-sublabel">Real app-glasses/ code · FPS: 60 · Inf: 18ms</div>
+      </div>
+
+      <div class="screenshot-card reveal d3">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-hud-controls.png" alt="HUD Simulator interactive controls — violation toggle, FPS slider, BLE connection toggle, battery percentage slider" loading="lazy" />
+        </div>
+        <div class="screenshot-label">HUD Controls</div>
+        <div class="screenshot-sublabel">FPS · BLE · Battery · Violation toggle</div>
+      </div>
+    </div>
+
+    <div class="reveal si-mt5-sub" style="max-width:800px; margin:32px auto 0; text-align:left;">
+      <h3 class="si-h3-slab-2" style="margin-bottom:16px;">Demo vs. Production</h3>
+      <table class="si-tbl" style="width:100%;">
+        <thead><tr>
+          <th class="si-th" style="text-align:left;">Component</th>
+          <th class="si-th" style="text-align:left;">Demo (Current)</th>
+          <th class="si-th" style="text-align:left;">Production (With M400)</th>
+        </tr></thead>
+        <tbody>
+          <tr class="si-tr-row"><td><strong>Camera</strong></td><td>Pixel rear camera / synthetic frames</td><td>M400 onboard 8MP via Camera2</td></tr>
+          <tr><td><strong>ML Model</strong></td><td>256-byte stub, synthetic detections</td><td>YOLOv8-nano INT8 (~4MB), 9 PPE classes</td></tr>
+          <tr class="si-tr-row"><td><strong>Display</strong></td><td>Phone screen (2076×2152)</td><td>640×360 monocular OLED</td></tr>
+          <tr><td><strong>Processor</strong></td><td>Tensor G4 (overpowered)</td><td>Snapdragon XR1 (target constrained hardware)</td></tr>
+          <tr class="si-tr-row"><td><strong>BLE</strong></td><td>Code complete, not paired</td><td>Live GATT client ↔ server</td></tr>
+          <tr><td><strong>Battery</strong></td><td>Reads Pixel battery (100%)</td><td>750mAh with 4-mode throttling</td></tr>
+          <tr class="si-tr-row"><td><strong>Latency</strong></td><td>Theoretical &lt;50ms</td><td>Profiled on real XR1 + Adreno 615</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:16px; font-size:14px; color:var(--on-surface-var);">
+        <strong>The software is code-complete.</strong> We need one M400 development unit ($1,799) to validate on real hardware. See our
+        <a href="https://github.com/AlexiosBluffMara/Duchess/blob/main/docs/M400_PRODUCT_NARRATIVE.md" style="color:var(--isu-red);">full business case</a> and
+        <a href="https://github.com/AlexiosBluffMara/Duchess/blob/main/docs/VUZIX_OUTREACH_EMAIL.md" style="color:var(--isu-red);">Vuzix outreach letter</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     ROADMAP
+════════════════ -->
+<section class="section bg-s2" id="roadmap" aria-labelledby="roadmap-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <div class="sec-eyebrow">From Demo to Enterprise</div>
+      <h2 class="sec-title" id="roadmap-title">Development Roadmap</h2>
+      <p class="sec-sub">
+        What it takes to go from working demo to enterprise-grade platform — and what a fully funded team could build in 12 months.
+      </p>
+    </div>
+
+    <div class="reveal" style="max-width:900px; margin:0 auto;">
+      <!-- Phase 1 -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-1); border-left:4px solid var(--isu-red);">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:var(--isu-red); margin-bottom:8px;">Phase 1: Hardware Validation (Month 1-2) — <em>We are here</em></h3>
+        <ul style="list-style:none; padding:0;">
+          <li style="padding:4px 0;">🔴 <strong>Acquire Vuzix M400</strong> — dev program application or purchase ($1,799)</li>
+          <li style="padding:4px 0;">✅ <strong>Glasses APK compiles + runs</strong> — sideloaded on Pixel, 2,334 lines, 46 tests</li>
+          <li style="padding:4px 0;">✅ <strong>Phone companion app</strong> — dashboard, stream, alerts, settings, HUD simulator</li>
+          <li style="padding:4px 0;">✅ <strong>BLE communication</strong> — GATT server + client, alert serialization</li>
+          <li style="padding:4px 0;">✅ <strong>Gemma 4 integration</strong> — MediaPipe LlmInference, multimodal session API</li>
+          <li style="padding:4px 0;">⏳ <strong>Train real YOLOv8-nano</strong> — ML pipeline exists, 50K+ training images available</li>
+        </ul>
+      </div>
+
+      <!-- Phase 2 -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-1); border-left:4px solid var(--g-yellow);">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:#B8860B; margin-bottom:8px;">Phase 2: Field Testing (Month 2-4)</h3>
+        <ul style="list-style:none; padding:0;">
+          <li style="padding:4px 0;">⬜ Profile inference latency on real Snapdragon XR1 (target: &lt;50ms)</li>
+          <li style="padding:4px 0;">⬜ Measure battery drain across 4 power modes on 750mAh</li>
+          <li style="padding:4px 0;">⬜ Controlled PPE test — hard hat on/off, vest on/off scenarios</li>
+          <li style="padding:4px 0;">⬜ Calibrate TemporalVoter thresholds on real detection noise</li>
+          <li style="padding:4px 0;">⬜ Record 3-minute demo video with real AR glasses POV footage</li>
+          <li style="padding:4px 0;">⬜ Test bilingual voice reporting with construction Spanish</li>
+        </ul>
+      </div>
+
+      <!-- Phase 3 -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-1); border-left:4px solid var(--g-blue);">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:var(--g-blue); margin-bottom:8px;">Phase 3: Multi-Site Pilot (Month 4-8)</h3>
+        <ul style="list-style:none; padding:0;">
+          <li style="padding:4px 0;">⬜ Deploy cloud backend — Vertex AI, Cloud Run, Firestore, Pub/Sub</li>
+          <li style="padding:4px 0;">⬜ Build supervisor web dashboard (React + Firestore real-time)</li>
+          <li style="padding:4px 0;">⬜ Scale Tailscale mesh to 10-50 devices per site</li>
+          <li style="padding:4px 0;">⬜ Automated OSHA compliance reporting (PDF generation)</li>
+          <li style="padding:4px 0;">⬜ Insurance integration API for EMR score calculation</li>
+          <li style="padding:4px 0;">⬜ iOS companion app (SwiftUI port)</li>
+        </ul>
+      </div>
+
+      <!-- Phase 4 -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-1); border-left:4px solid var(--g-green);">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:var(--g-green); margin-bottom:8px;">Phase 4: Enterprise Platform (Month 8-12)</h3>
+        <ul style="list-style:none; padding:0;">
+          <li style="padding:4px 0;">⬜ Fleet management console — provision 100+ glasses from web UI</li>
+          <li style="padding:4px 0;">⬜ OTA model updates — push new YOLOv8 weights without manual APK install</li>
+          <li style="padding:4px 0;">⬜ Advanced hazard detection — fall hazard, confined space, electrical proximity</li>
+          <li style="padding:4px 0;">⬜ Digital twin integration — feed detections into BIM models</li>
+          <li style="padding:4px 0;">⬜ Multi-language expansion — Portuguese, Mandarin, Hindi, Arabic</li>
+          <li style="padding:4px 0;">⬜ SOC 2 / FedRAMP compliance for enterprise + government deployment</li>
+          <li style="padding:4px 0;">⬜ Defense adaptation — military equipment compliance, DDIL inference, ITAR review</li>
+        </ul>
+      </div>
+
+      <!-- Fully Funded Vision -->
+      <div style="background:linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius:var(--r-lg); padding:var(--s4); margin-bottom:var(--s3); box-shadow:var(--elev-3); color:white;">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:22px; color:#FBBC04; margin-bottom:12px;">The Fully-Funded Vision: What 300K Developer-Hours Builds</h3>
+        <p style="margin-bottom:16px; color:#ccc; font-size:15px;">With a dedicated engineering team and one year of development, Duchess becomes:</p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:16px;">
+          <div>
+            <h4 style="color:#4CAF50; font-size:14px; text-transform:uppercase; margin-bottom:6px;">Core Safety</h4>
+            <ul style="list-style:none; padding:0; font-size:14px; color:#ddd;">
+              <li>• All 7 OSHA PPE categories detected</li>
+              <li>• Posture analysis + unsafe lifting detection</li>
+              <li>• Equipment proximity alerts (crane, excavator)</li>
+              <li>• Environmental monitoring (dust, noise, heat)</li>
+              <li>• 30-second pre-incident video buffer</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:#4285F4; font-size:14px; text-transform:uppercase; margin-bottom:6px;">Enterprise</h4>
+            <ul style="list-style:none; padding:0; font-size:14px; color:#ddd;">
+              <li>• 100+ site command center</li>
+              <li>• Predictive analytics (violation probability)</li>
+              <li>• Automated OSHA 300-log generation</li>
+              <li>• SAP, Procore, Autodesk connectors</li>
+              <li>• Subcontractor safety scorecards</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:#E53935; font-size:14px; text-transform:uppercase; margin-bottom:6px;">Advanced AI</h4>
+            <ul style="list-style:none; padding:0; font-size:14px; color:#ddd;">
+              <li>• Full scene understanding + context</li>
+              <li>• OSHA regulation citation in alerts</li>
+              <li>• Conversational voice interface</li>
+              <li>• Autonomous alert routing per role</li>
+              <li>• Multi-frame temporal reasoning</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:#FF6F00; font-size:14px; text-transform:uppercase; margin-bottom:6px;">Defense Ready</h4>
+            <ul style="list-style:none; padding:0; font-size:14px; color:#ddd;">
+              <li>• FedRAMP + ITAR compliance</li>
+              <li>• Tactical mesh networking</li>
+              <li>• 140+ language support</li>
+              <li>• DDIL (offline-first) certified</li>
+              <li>• Thermal/IR camera modules</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     M400 HARDWARE ASK
+════════════════ -->
+<section class="section" id="m400-ask" aria-labelledby="m400-ask-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <div class="sec-eyebrow">The Missing Piece</div>
+      <h2 class="sec-title" id="m400-ask-title">We Need One M400</h2>
+      <p class="sec-sub">
+        2,334 lines of M400-specific Kotlin. 46 tests. A working companion app.<br>
+        The software is ready — we just need the glass.
+      </p>
+    </div>
+
+    <div class="reveal" style="max-width:800px; margin:0 auto;">
+      <!-- ROI Box -->
+      <div style="background:linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%); border-radius:var(--r-lg); padding:var(--s4); margin-bottom:var(--s3); color:white; text-align:center;">
+        <div style="font-size:48px; font-weight:900; font-family:'Roboto Slab',serif;">258×</div>
+        <div style="font-size:18px; margin-bottom:16px;">Return on $1,799 hardware investment</div>
+        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; text-align:left; font-size:14px;">
+          <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:8px;">
+            <div style="font-size:24px; font-weight:700;">$120K+</div>
+            <div>OSHA penalty avoidance / year</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:8px;">
+            <div style="font-size:24px; font-weight:700;">$95K+</div>
+            <div>Insurance premium reduction / year</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:8px;">
+            <div style="font-size:24px; font-weight:700;">$200K+</div>
+            <div>Lawsuit risk mitigation / year</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:8px;">
+            <div style="font-size:24px; font-weight:700;">$50K+</div>
+            <div>Productivity gains / year</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; font-size:13px; opacity:0.8;">Per construction site. Average OSHA serious violation: $15,625. Wrongful death lawsuit: $1M-$10M+.</div>
+      </div>
+
+      <!-- Defense Value -->
+      <div style="background:var(--surface-2); border-radius:var(--r-lg); padding:var(--s3); margin-bottom:var(--s3); box-shadow:var(--elev-2); border-left:4px solid #1565C0;">
+        <h3 style="font-family:'Roboto Slab',serif; font-size:20px; color:#1565C0; margin-bottom:12px;">Defense & Military OEM Testing</h3>
+        <p style="margin-bottom:12px; font-size:15px;">
+          We want to validate Duchess with a defense contractor or military unit. The M400 is already in DoD inventory — Vuzix holds contracts with the US Army, Air Force, and NATO. Our architecture maps directly to military requirements:
+        </p>
+        <ul style="list-style:none; padding:0; font-size:14px;">
+          <li style="padding:4px 0;">🔒 <strong>Zero cloud dependency</strong> — works in SCIF, field, submarine. No data exfiltration risk.</li>
+          <li style="padding:4px 0;">🌐 <strong>140+ languages</strong> — single Gemma 4 model. Deploy to any coalition partner.</li>
+          <li style="padding:4px 0;">📡 <strong>Tactical mesh</strong> — WireGuard-encrypted peer-to-peer, works without internet.</li>
+          <li style="padding:4px 0;">💰 <strong>$0/query</strong> — on-device inference. No per-seat SaaS fees. Buy glasses, load APK, done.</li>
+          <li style="padding:4px 0;">📖 <strong>Open architecture</strong> — Apache 2.0. Government can fork, classify, deploy independently.</li>
+        </ul>
+        <p style="margin-top:12px; font-size:14px; color:var(--on-surface-var);">
+          Target partners: <strong>BAE Systems</strong> · <strong>L3Harris</strong> · <strong>Anduril</strong> · <strong>Palantir</strong> · <strong>DIU</strong> · <strong>AFWERX</strong> · <strong>NavalX</strong>
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <div style="text-align:center; padding:var(--s3);">
+        <p style="font-size:18px; font-weight:500; margin-bottom:16px;">Ready to help?</p>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <a href="https://github.com/AlexiosBluffMara/Duchess/blob/main/docs/VUZIX_OUTREACH_EMAIL.md" style="display:inline-block; background:var(--isu-red); color:white; padding:12px 24px; border-radius:var(--r-pill); text-decoration:none; font-weight:500; box-shadow:var(--elev-2);">Vuzix Outreach Letter</a>
+          <a href="https://github.com/AlexiosBluffMara/Duchess/blob/main/docs/M400_PRODUCT_NARRATIVE.md" style="display:inline-block; background:#1565C0; color:white; padding:12px 24px; border-radius:var(--r-pill); text-decoration:none; font-weight:500; box-shadow:var(--elev-2);">Full Business Case</a>
+          <a href="https://github.com/AlexiosBluffMara/Duchess" style="display:inline-block; background:#333; color:white; padding:12px 24px; border-radius:var(--r-pill); text-decoration:none; font-weight:500; box-shadow:var(--elev-2);">View Source Code</a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
