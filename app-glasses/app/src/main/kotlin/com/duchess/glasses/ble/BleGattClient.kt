@@ -212,6 +212,10 @@ class BleGattClient(
      *
      * Exponential backoff: 1s, 2s, 4s, 8s, 16s, then give up.
      * The give-up isn't permanent — startScan() can be called again.
+     * ELI13: If your friend doesn't answer the phone, you don't call back every second
+     * (that's annoying). You wait 1 second, then 2, then 4, then 8, then 16. And if
+     * 10 glasses all lose connection at once, the random timing prevents them from ALL
+     * calling back at the exact same moment and crashing the phone.
      */
     private fun scheduleReconnect() {
         if (reconnectAttempt >= MAX_RECONNECT_ATTEMPTS) {

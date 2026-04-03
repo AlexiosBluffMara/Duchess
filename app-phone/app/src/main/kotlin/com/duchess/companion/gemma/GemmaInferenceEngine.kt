@@ -131,6 +131,11 @@ open class GemmaInferenceEngine @Inject constructor(
         _state.value = GemmaState.Loading
 
         try {
+            // ELI13: This is the "builder pattern" — instead of passing 4 arguments to a
+            // constructor (easy to mix up the order!), we set each option by name, like
+            // filling out a form. .setModelPath() says where the AI brain lives on disk,
+            // .setMaxTokens() limits how long its answer can be, .setMaxNumImages() says
+            // how many pictures it can look at, and .build() says "okay, create it!"
             val options = LlmInference.LlmInferenceOptions.builder()
                 .setModelPath(getModelPath())
                 .setMaxTokens(512)
@@ -271,6 +276,13 @@ open class GemmaInferenceEngine @Inject constructor(
      *
      * Internal visibility so tests can call it directly with synthetic JSON strings.
      */
+    // ELI13: The AI spits out text that we need to turn into structured data we can use.
+    // The fields we're looking for:
+    //   violation_detected: did the AI spot something dangerous? (true/false)
+    //   confidence: how sure is the AI? (0.0 = no clue, 1.0 = totally sure)
+    //   violation_type: what kind of danger? (e.g., "NO_HARD_HAT")
+    //   description_en/es: what's wrong, in English and Spanish
+    //   severity: how bad? (0 = fine, 5 = life-threatening)
     internal fun parseGemmaOutput(rawJson: String): GemmaAnalysisResult {
         val json = extractJson(rawJson)
         return try {
@@ -312,6 +324,12 @@ open class GemmaInferenceEngine @Inject constructor(
      *
      * Internal visibility for unit testing.
      */
+    // ELI13: The AI doesn't always return clean JSON. Sometimes it wraps it in
+    // markdown code fences (```json ... ```), sometimes it adds chit-chat around it.
+    // We try three strategies to dig out the JSON, from most precise to least:
+    //   1. Look for ```json ... ``` fences (the AI was being "helpful" with formatting)
+    //   2. Look for the first { and last } (just grab the raw JSON object)
+    //   3. Give up and return whatever we got (hope for the best)
     internal fun extractJson(raw: String): String {
         val trimmed = raw.trim()
 

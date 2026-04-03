@@ -291,6 +291,10 @@ class PpeDetector(
      *
      * Alex: YOLOv8 output is transposed compared to YOLOv5. The columns are
      * detections and the rows are [cx, cy, w, h, class0_conf, class1_conf, ...].
+     * ELI13: The AI spits out a giant spreadsheet. Each column is one thing it spotted.
+     * The first 4 rows say WHERE it is (center x, center y, width, height). The remaining
+     * rows say WHAT it is (how confident for each possible label like hardhat, vest, etc.).
+     * We read each column, find which label got the highest confidence, and keep it.
      * We need the max class confidence per detection and convert center-format
      * boxes to RectF (left, top, right, bottom).
      */
@@ -336,7 +340,11 @@ class PpeDetector(
      * Applies Non-Maximum Suppression to remove overlapping detections.
      *
      * Alex: NMS is essential for YOLO models. Without it, the model outputs dozens
-     * of overlapping boxes for the same object. The algorithm:
+     * of overlapping boxes for the same object.
+     * ELI13: The AI often draws 5 rectangles around the same hard hat because it spots
+     * it from slightly different angles. NMS picks the single best rectangle and throws
+     * away the rest that overlap too much — like choosing the best selfie from a burst.
+     * The algorithm:
      * 1. Sort detections by confidence (highest first)
      * 2. Take the highest-confidence detection
      * 3. Remove all other detections of the SAME class with IoU > threshold
@@ -385,6 +393,8 @@ class PpeDetector(
      *
      * Alex: Classic computer vision metric. IoU = area_of_overlap / area_of_union.
      * Both rects must be in the same coordinate space (we use normalized [0,1]).
+     * ELI13: Imagine two rectangles drawn on paper. IoU measures how much they overlap:
+     * 0 = they don't touch at all, 1 = they're exactly the same rectangle.
      */
     private fun computeIoU(a: RectF, b: RectF): Float {
         val interLeft = maxOf(a.left, b.left)

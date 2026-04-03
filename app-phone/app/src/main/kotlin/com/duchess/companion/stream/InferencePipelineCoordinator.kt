@@ -151,6 +151,9 @@ class InferencePipelineCoordinator @Inject constructor(
             // Re-check under lock: two coroutines might both pass the pre-mutex check
             // if they arrive within the same millisecond. The double-check prevents
             // running inference twice for the same throttle window.
+            // ELI13: Imagine two kids both see the cookie jar is unlocked and rush to it.
+            // The mutex is the lock — only one gets in. But once inside, we check AGAIN
+            // "has someone already taken a cookie recently?" to prevent double-grabbing.
             val nowLocked = System.currentTimeMillis()
             if (nowLocked - lastInferenceMs < THROTTLE_MS) return@withLock
             lastInferenceMs = nowLocked

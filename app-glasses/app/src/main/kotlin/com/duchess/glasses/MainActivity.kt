@@ -229,6 +229,10 @@ class MainActivity : Activity() {
                 //   >= CONFIDENCE_HIGH (0.7): confirmed → escalate immediately via BLE
                 //   CONFIDENCE_UNCERTAIN_LOW..< HIGH (0.3–0.7): uncertain → escalate only when voter agrees (3/5 frames)
                 //   < CONFIDENCE_UNCERTAIN_LOW (0.3): too noisy → ignore silently
+                // ELI13: Think of confidence like raising your hand in class:
+                //   70%+ sure = "I KNOW the answer!" → tell the teacher (phone) right away
+                //   30-70% sure = "I think so..." → ask 4 classmates first, if 3 agree → tell teacher
+                //   <30% sure = "no idea" → stay quiet, don't waste anyone's time
                 for (detection in detections) {
                     if (!PpeDetector.isViolation(detection.label)) continue
                     when {

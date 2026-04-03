@@ -43,6 +43,10 @@ class HudRenderer(context: Context) : View(context) {
     // Alex: We pre-allocate ALL paints in init. Creating Paint objects in onDraw()
     // triggers GC pressure that causes janky frames on the XR1. Learned this the
     // hard way — 3ms onDraw became 15ms with GC pauses.
+    // ELI13: Every time you create a new object in Java/Kotlin, the system eventually
+    // has to clean up old ones (garbage collection), which freezes the screen briefly.
+    // So we make ALL our drawing tools once at startup and reuse them forever —
+    // like keeping your paintbrushes instead of buying new ones for every stroke.
 
     /** Green bounding box paint for confirmed PPE (hardhat, vest, etc.) */
     private val okBoxPaint = Paint().apply {
@@ -115,6 +119,9 @@ class HudRenderer(context: Context) : View(context) {
     // Alex: These are @Volatile because they're written from the ML coroutine
     // and read from the UI thread's onDraw(). No synchronization needed because
     // each field is independently atomic (primitive or reference assignment).
+    // ELI13: Two threads are like two people sharing a whiteboard. @Volatile is a rule
+    // that says "when you write something new, make sure the other person sees it
+    // IMMEDIATELY instead of reading what was written 5 minutes ago."
     @Volatile var detections: List<Detection> = emptyList()
     @Volatile var inferenceTimeMs: Long = 0L
     @Volatile var currentMode: InferenceMode = InferenceMode.FULL

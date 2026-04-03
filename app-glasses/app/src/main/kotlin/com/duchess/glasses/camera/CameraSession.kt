@@ -73,6 +73,10 @@ class CameraSession(
     // Alex: RenderScript for YUV→RGB conversion. Yes, it's deprecated in API 31+.
     // But on AOSP 13 (Vuzix) it still works and is WAY faster than manual conversion.
     // The alternative is a custom native (C++) conversion, which is overkill for now.
+    // ELI13: The camera records colors in a weird format called YUV (like a foreign
+    // language for colors). Our AI model only understands RGB (normal red/green/blue).
+    // RenderScript translates between them using the GPU, which is ~7x faster than
+    // doing it on the CPU. Think of it like Google Translate but for color formats.
     private var renderScript: RenderScript? = null
     private var yuvToRgb: ScriptIntrinsicYuvToRGB? = null
 
@@ -93,6 +97,10 @@ class CameraSession(
      *        If SUSPENDED, no frames are emitted (but camera stays open for preview).
      * @return Flow of RGB Bitmaps at the target frame rate, or empty if permissions denied.
      */
+    // ELI13: callbackFlow is a bridge between two coding styles. The camera uses an
+    // old-school "hey, call me back when a photo is ready" approach. Our code uses a
+    // modern "I'll wait here for photos to arrive in a stream" approach (called Flow).
+    // callbackFlow translates between them — like an adapter plug for different outlets.
     fun frames(inferenceMode: InferenceMode): Flow<Bitmap> = callbackFlow {
         // Alex: Permission check BEFORE opening the camera. On AOSP 13 (SDK 33),
         // CAMERA is a runtime permission. If the user denies it, Camera2 throws

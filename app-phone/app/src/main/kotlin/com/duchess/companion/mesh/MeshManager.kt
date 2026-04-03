@@ -122,6 +122,11 @@ class MeshManager @Inject constructor() {
      *
      * Falls back gracefully if mesh is unavailable — queues locally, never crashes.
      */
+    // ELI13: This function tries to send a safety alert, with a backup plan if it fails:
+    //   1. Are we connected to the mesh network? If NO → save it for later (queue it)
+    //   2. If YES, try to send it. Did the send fail? → also save it for later
+    //   3. Saved alerts get automatically re-sent when the connection comes back
+    // This is called "graceful degradation" — we never lose an alert, even with bad WiFi.
     fun broadcastAlert(alert: SafetyAlert) {
         if (!isConnected()) {
             // NOAH: Mesh down. Queue the alert for delivery when we reconnect.
@@ -215,6 +220,11 @@ class MeshManager @Inject constructor() {
      * no device ID, no worker identity, no GPS coordinates. The zoneId is the
      * coarsest location granularity we transmit.
      */
+    // ELI13: When we send an alert over the network, we only include safety-relevant data.
+    // Notice what's NOT here: no worker name, no face data, no exact GPS coordinates.
+    // If someone hacked the network, they'd only see "someone in Zone B isn't wearing a
+    // hardhat" — not "John Smith at latitude 40.7128." The alert is still useful for
+    // safety without being a privacy risk. That's the whole point.
     internal fun serializeAlert(alert: SafetyAlert): String {
         return JSONObject().apply {
             put("id", alert.id)
@@ -337,6 +347,10 @@ class MeshManager @Inject constructor() {
      * the port is open, not that the full HTTP stack is healthy. The coordinator
      * health check happens implicitly when we POST alerts.
      */
+    // ELI13: This is like knocking on a door to see if anyone's home. We try to open a
+    // network connection to the coordinator computer. If the door opens (connection works),
+    // we know the mesh network is running. If nobody answers within 5 seconds, we assume
+    // the network is down. We don't actually say anything — just check if the door opens.
     internal fun checkCoordinatorReachable(): Boolean {
         return try {
             Socket().use { socket ->
