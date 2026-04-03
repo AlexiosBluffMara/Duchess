@@ -4,6 +4,29 @@ _Read this first at the start of every session. Updated automatically by post-co
 
 ---
 
+## 2026-04-03 14:13 UTC — Commit db92e65
+
+**Branch**: `main`  
+**Author**: AlexiosBluffMara  
+**Message**: refactor(ux): extract all 81 inline styles to si-* CSS classes, fix all 387 lint errors
+
+### Modules touched
+
+### Project snapshot
+| Module | Files | Status |
+|--------|-------|--------|
+| app-phone/ | 2764 | Active (2764 files) |
+| app-glasses/ | 800 | Active (800 files) |
+| ml/ | 17 | Active (17 files) |
+| cloud/ | 18 | Active (18 files) |
+
+### Changed files
+```
+docs/index.html
+```
+
+---
+
 ## 2026-04-03 14:04 UTC — Commit 05eb023
 
 **Branch**: `main`  
@@ -115,36 +138,6 @@ app-phone/app/src/test/kotlin/com/duchess/companion/gemma/GemmaInferenceEngineTe
 app-phone/app/src/test/kotlin/com/duchess/companion/model/SafetyAlertTest.kt
 app-phone/app/src/test/kotlin/com/duchess/companion/stream/InferencePipelineCoordinatorTest.kt
 app-phone/app/src/test/kotlin/com/duchess/companion/stream/StreamViewModelTest.kt
-```
-
----
-
-## 2026-04-03 13:42 UTC — Commit 8394f60
-
-**Branch**: `main`  
-**Author**: AlexiosBluffMara  
-**Message**: docs(ux): add live phone screenshots to README and website
-
-### Modules touched
-- **infra**: 1 file(s) changed
-
-### Project snapshot
-| Module | Files | Status |
-|--------|-------|--------|
-| app-phone/ | 2764 | Active (2764 files) |
-| app-glasses/ | 799 | Active (799 files) |
-| ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
-
-### Changed files
-```
-.claude/worktrees/adoring-jackson
-README.md
-docs/assets/screenshots/phone-alerts.png
-docs/assets/screenshots/phone-dashboard.png
-docs/assets/screenshots/phone-settings.png
-docs/assets/screenshots/phone-stream.png
-docs/index.html
 ```
 
 ---
