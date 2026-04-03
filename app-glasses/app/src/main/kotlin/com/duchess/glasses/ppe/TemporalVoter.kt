@@ -11,6 +11,11 @@ import com.duchess.glasses.model.Detection
  * consecutive frames to agree before we escalate, which filters transient noise while
  * keeping latency low (~500ms at 10 FPS for 5 frames).
  *
+ * ELI13: Imagine you're looking out a window and think you see a bird. You look 5 times
+ * in a row. If 3 out of 5 looks you still see a bird, it's probably really there. If only
+ * 1 out of 5 looks shows a bird, it was probably just a leaf blowing by. This class does
+ * that same "look multiple times to be sure" thing for safety violations.
+ *
  * ELENA: Memory design — the Vuzix M400 has only 500MB ML budget. Each violation label
  * gets a fixed BooleanArray(5) window plus an Int cursor. With ~4 violation classes
  * (no_hardhat, no_vest, no_glasses, no_gloves), that's ~24 bytes per label × 4 = ~96 bytes.

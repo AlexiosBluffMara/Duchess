@@ -39,6 +39,11 @@ class DashboardViewModel @Inject constructor(
     val connectionStatus: StateFlow<ConnectionStatus> = _connectionStatus.asStateFlow()
 
     /** Live mesh connectivity state exposed to DashboardScreen. */
+    // ELI13: stateIn() turns a Flow (a stream of data) into a StateFlow (a stream that
+    // always remembers its latest value). WhileSubscribed(5_000) means "keep the data
+    // stream alive for 5 seconds after the last screen stops watching." Why 5 seconds?
+    // If you rotate your phone, the screen briefly dies and rebuilds — without this
+    // grace period, we'd restart all data loading on every rotation. 5 seconds covers that.
     val meshState: StateFlow<MeshManager.MeshState> = meshManager.state
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MeshManager.MeshState.Disconnected)
 
@@ -57,6 +62,11 @@ class DashboardViewModel @Inject constructor(
                 val updated = (listOf(alert) + _recentAlerts.value).take(50)
                 _recentAlerts.value = updated
                 val criticalCount = updated.count { it.severity >= 4 }
+                // ELI13: Safety score starts at 100 (perfect) and loses 8 points per critical
+                // alert. So 1 critical = 92, 5 criticals = 60, 12 criticals = 4... but we cap
+                // the minimum at 10 so the score never hits zero (zero would look like "no data"
+                // rather than "very unsafe"). Why 8? Because ~11 criticals drops you to the
+                // floor, which is roughly the "things are really bad, stop work" threshold.
                 _safetyScore.value = maxOf(10, 100 - (criticalCount * 8))
             }
         }

@@ -215,6 +215,12 @@ class BleGattServer @Inject constructor(
         // Alex: Alert characteristic — read + notify.
         // NOTIFY lets us push alerts to glasses without them polling.
         // The CCCD descriptor is REQUIRED for notifications to work.
+        // ELI13: BLE characteristics are like mailboxes with rules:
+        //   READ = the glasses can check this mailbox whenever they want ("pull")
+        //   NOTIFY = the phone pushes updates to the glasses automatically ("push")
+        //   WRITE = the glasses can put messages INTO this mailbox
+        // This alert mailbox uses READ + NOTIFY: glasses can check it OR get pinged
+        // automatically when a new alert arrives (best of both worlds).
         val alertCharacteristic = BluetoothGattCharacteristic(
             ALERT_CHARACTERISTIC_UUID,
             BluetoothGattCharacteristic.PROPERTY_READ or BluetoothGattCharacteristic.PROPERTY_NOTIFY,
@@ -297,6 +303,10 @@ class BleGattServer @Inject constructor(
         // The `false` param means "no confirmation required" (unacknowledged notification).
         // Using `true` would require the client to ACK each notification, which adds
         // latency we can't afford for safety alerts.
+        // ELI13: The 'false' parameter below means "fire-and-forget" — we don't wait for
+        // the glasses to reply "got it!" for each notification. If we used 'true' (confirmed),
+        // every notification would need a round-trip handshake, adding latency we can't afford
+        // for safety alerts. If the glasses miss one, they'll get the next one soon anyway.
         var sentToAny = false
         for (device in devices) {
             val sent = server.notifyCharacteristicChanged(device, characteristic, false)

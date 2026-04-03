@@ -24,6 +24,11 @@ import kotlinx.coroutines.flow.asStateFlow
  *   >= 15%  → MINIMAL (2 FPS)
  *   <  15%  → SUSPENDED (0 FPS — display-only mode, BLE alerts from phone)
  *
+ * ELI13: Think of it like your phone's battery saver mode, but with 4 levels instead
+ * of 2. At high battery, go full speed. As battery drops, the glasses slow down their
+ * AI brain to last longer. At really low battery, the AI brain sleeps entirely and the
+ * glasses just show alerts from the phone — like a dumb screen.
+ *
  * These thresholds were empirically determined on real M400 hardware:
  *   - FULL mode drains ~20%/hour with GPU delegate
  *   - REDUCED mode drains ~12%/hour
