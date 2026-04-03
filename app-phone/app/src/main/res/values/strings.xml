@@ -157,4 +157,17 @@
     <string name="demo_mode_label">Demo Mode</string>
     <string name="demo_mode_desc">Simulated data — no hardware required</string>
     <string name="live_mode_desc">Live hardware — Meta glasses required</string>
+
+    <!-- HUD Language preference (synced to glasses via BLE) -->
+    <string name="pref_hud_language_title">HUD Language</string>
+    <string name="pref_hud_language_subtitle">Language shown on glasses display</string>
+    <string name="pref_hud_language_english_primary">English primary</string>
+    <string name="pref_hud_language_spanish_primary">Spanish primary</string>
+    <string name="pref_hud_language_english_only">English only</string>
+
+    <!-- Mesh connectivity status (DashboardScreen indicator) -->
+    <string name="mesh_status_label">Mesh: %s</string>
+    <string name="mesh_status_connected">Connected</string>
+    <string name="mesh_status_connecting">Connecting</string>
+    <string name="mesh_status_offline">Offline</string>
 </resources>

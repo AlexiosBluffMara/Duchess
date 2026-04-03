@@ -13,6 +13,7 @@ import com.duchess.glasses.camera.CameraSession
 import com.duchess.glasses.display.HudRenderer
 import com.duchess.glasses.model.InferenceMode
 import com.duchess.glasses.ppe.PpeDetector
+import com.duchess.glasses.ppe.TemporalVoter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -72,6 +73,7 @@ class MainActivity : Activity() {
     // needs fresh initialization after onPause releases it.
     private var cameraSession: CameraSession? = null
     private var ppeDetector: PpeDetector? = null
+    private var temporalVoter: TemporalVoter? = null
     private var detectionJob: Job? = null
 
     // Alex: Partial wake lock to keep CPU alive during detection.
@@ -119,15 +121,12 @@ class MainActivity : Activity() {
             }
         }
 
-        // Alex: Collect BLE alerts from the phone and display on HUD
+        // Collect phone-pushed alerts and display them immediately on the HUD.
         activityScope.launch {
             bleClient.alerts.collect { alert ->
-                // Alex: Phone-pushed alert — display immediately on HUD.
-                // This is for alerts that the PHONE detected (from its own camera
-                // or from another worker's glasses) and is pushing to nearby workers.
-                // We don't need to run inference — just show the alert.
-                // For now, we show the violation type as a pseudo-detection on the HUD.
-                // TODO: Dedicated alert overlay in HudRenderer (separate from detection boxes)
+                hudRenderer.activePhoneAlert = alert
+                hudRenderer.phoneAlertExpiresAt = System.currentTimeMillis() + PHONE_ALERT_DURATION_MS
+                hudRenderer.post { hudRenderer.invalidate() }
             }
         }
 
@@ -206,9 +205,9 @@ class MainActivity : Activity() {
     private fun startDetectionPipeline(mode: InferenceMode) {
         if (mode == InferenceMode.SUSPENDED) return
 
-        // Alex: Create fresh instances. CameraSession needs fresh Camera2 resources,
-        // and PpeDetector is stateless between frames (reusable, but easier to track
-        // resource lifecycle with fresh instances on each resume).
+        // Fresh voter each time the pipeline starts — no stale window history.
+        temporalVoter = TemporalVoter()
+
         val detector = PpeDetector(this)
         ppeDetector = detector
 
@@ -217,34 +216,39 @@ class MainActivity : Activity() {
 
         detectionJob = activityScope.launch(Dispatchers.Default) {
             camera.frames(mode).collect { bitmap ->
-                // Alex: Run inference on the captured frame.
-                // detect() is blocking (~18ms GPU, ~35ms CPU) — that's fine on
-                // Dispatchers.Default which has a thread pool sized to CPU cores.
                 val detections = detector.detect(bitmap)
 
-                // Alex: Update HUD state. These are volatile writes that get
-                // picked up on the next onDraw() call.
                 hudRenderer.detections = detections
                 hudRenderer.inferenceTimeMs = detector.lastInferenceTimeMs
 
-                // Alex: Update battery display (read from scheduler, not BatteryManager directly)
-                // The scheduler's StateFlow has the latest battery-derived mode.
+                // Feed every frame through the voter so the sliding window stays current.
+                val voter = temporalVoter
+                voter?.recordDetections(detections)
 
-                // Alex: Check for violations that need BLE escalation to the phone.
-                // Per the PPE detection workflow spec:
-                // - confidence > 0.7: confirmed violation → escalate immediately
-                // - confidence 0.3-0.7: uncertain → needs temporal voting (TODO)
-                // - confidence < 0.3: probably OK
+                // Escalation tiers (per PPE detection workflow spec):
+                //   >= CONFIDENCE_HIGH (0.7): confirmed → escalate immediately via BLE
+                //   CONFIDENCE_UNCERTAIN_LOW..< HIGH (0.3–0.7): uncertain → escalate only when voter agrees (3/5 frames)
+                //   < CONFIDENCE_UNCERTAIN_LOW (0.3): too noisy → ignore silently
                 for (detection in detections) {
-                    if (PpeDetector.isViolation(detection.label) &&
-                        detection.confidence >= PpeDetector.CONFIDENCE_HIGH
-                    ) {
-                        // Alex: High-confidence violation. Send to phone for Gemma 4 confirmation.
-                        bleClient.sendEscalation(
-                            label = detection.label,
-                            confidence = detection.confidence,
-                            zoneId = "zone-default" // TODO: Real zone detection from phone GPS
-                        )
+                    if (!PpeDetector.isViolation(detection.label)) continue
+                    when {
+                        detection.confidence >= PpeDetector.CONFIDENCE_HIGH -> {
+                            bleClient.sendEscalation(
+                                label = detection.label,
+                                confidence = detection.confidence,
+                                zoneId = "zone-default"
+                            )
+                        }
+                        detection.confidence >= PpeDetector.CONFIDENCE_UNCERTAIN_LOW -> {
+                            if (voter != null && voter.shouldEscalate(detection.label)) {
+                                bleClient.sendEscalation(
+                                    label = detection.label,
+                                    confidence = detection.confidence,
+                                    zoneId = "zone-default"
+                                )
+                            }
+                        }
+                        // else: < CONFIDENCE_UNCERTAIN_LOW — silently drop
                     }
                 }
 
@@ -270,6 +274,8 @@ class MainActivity : Activity() {
 
         ppeDetector?.close()
         ppeDetector = null
+
+        temporalVoter = null
     }
 
     /**
@@ -340,5 +346,8 @@ class MainActivity : Activity() {
         // Alex: 4 hours in milliseconds. One shift. After this, the wake lock
         // auto-releases even if we forgot to release it in onPause(). Safety net.
         const val WAKE_LOCK_TIMEOUT_MS = 4 * 60 * 60 * 1000L
+
+        /** Duration a phone-pushed HUD alert banner stays visible before auto-dismissing. */
+        const val PHONE_ALERT_DURATION_MS = 8_000L
     }
 }
