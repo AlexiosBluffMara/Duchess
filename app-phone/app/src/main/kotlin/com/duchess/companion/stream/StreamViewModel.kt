@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.meta.wearable.dat.camera.StreamSession
+import com.meta.wearable.dat.camera.startStreamSession
 import com.meta.wearable.dat.camera.types.PhotoData
 import com.meta.wearable.dat.camera.types.StreamConfiguration
 import com.meta.wearable.dat.camera.types.VideoFrame
@@ -114,23 +115,17 @@ class StreamViewModel @Inject constructor(
                 frameRate = 24
             )
 
-            val result = Wearables.startStreamSession(
-                context = appContext,
-                deviceSelector = AutoDeviceSelector(),
-                streamConfiguration = config
-            )
-
-            // Alex: Always use fold(). Never getOrThrow() — typed errors let us
-            // show the user a helpful recovery screen instead of crashing.
-            result.fold(
-                onSuccess = { session ->
-                    _sessionState.value = StreamUiState.Active(session)
-                    collectFrames(session)
-                },
-                onFailure = { error ->
-                    _sessionState.value = StreamUiState.Error(error.toString())
-                }
-            )
+            try {
+                val session = Wearables.startStreamSession(
+                    context = appContext,
+                    deviceSelector = AutoDeviceSelector(),
+                    streamConfiguration = config
+                )
+                _sessionState.value = StreamUiState.Active(session)
+                collectFrames(session)
+            } catch (e: Exception) {
+                _sessionState.value = StreamUiState.Error(e.message ?: "Failed to start stream")
+            }
         }
     }
 
@@ -144,7 +139,7 @@ class StreamViewModel @Inject constructor(
     fun stopStream() {
         val currentState = _sessionState.value
         if (currentState is StreamUiState.Active) {
-            currentState.session.stop()
+            currentState.session.close()
             _sessionState.value = StreamUiState.Idle
             _latestFrame.value = null
             _inferenceEnabled.value = false
@@ -168,7 +163,7 @@ class StreamViewModel @Inject constructor(
                 onSuccess = { photoData ->
                     _photoCaptureResult.value = PhotoCaptureResult.Success(photoData)
                 },
-                onFailure = { error ->
+                onFailure = { error, _ ->
                     _photoCaptureResult.value = PhotoCaptureResult.Failure(error.toString())
                 }
             )

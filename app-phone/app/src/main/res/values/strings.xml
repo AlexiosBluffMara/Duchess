@@ -151,4 +151,10 @@
     <string name="alert_acknowledged">Alert acknowledged</string>
     <string name="alert_escalated">Alert escalated to cloud review</string>
     <string name="alert_dismissed">Alert dismissed</string>
+
+    <!-- App Mode toggle (Settings → App Mode) -->
+    <string name="settings_mode">App Mode</string>
+    <string name="demo_mode_label">Demo Mode</string>
+    <string name="demo_mode_desc">Simulated data — no hardware required</string>
+    <string name="live_mode_desc">Live hardware — Meta glasses required</string>
 </resources>
