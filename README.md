@@ -16,6 +16,25 @@
 
 ---
 
+## App Screenshots — Running on Pixel 9 Fold
+
+<p align="center">
+  <img src="docs/assets/screenshots/phone-dashboard.png" width="22%" alt="Dashboard — Site Safety Score with bilingual zone cards" title="Dashboard" />
+  &nbsp;&nbsp;
+  <img src="docs/assets/screenshots/phone-stream.png" width="22%" alt="Stream — Live glasses camera feed with YOLOv8 detection overlays" title="Stream" />
+  &nbsp;&nbsp;
+  <img src="docs/assets/screenshots/phone-alerts.png" width="22%" alt="Alerts — Bilingual safety alert feed with severity badges" title="Alerts" />
+  &nbsp;&nbsp;
+  <img src="docs/assets/screenshots/phone-settings.png" width="22%" alt="Settings — Device, preferences, and detection sensitivity" title="Settings" />
+</p>
+
+<p align="center">
+  <em>Dashboard · Stream (24 FPS, 18ms) · Safety Alerts · Settings</em><br>
+  <em>Tablero · Transmisión (24 FPS, 18ms) · Alertas de seguridad · Configuración</em>
+</p>
+
+---
+
 ## What is Duchess?
 
 **1,056 construction workers died on US job sites in 2022.** Falls, struck-by incidents, electrocutions, and caught-in hazards — the "Fatal Four" — account for over 60% of those deaths. Most are preventable with proper PPE.
@@ -477,7 +496,368 @@ Illinois State University · Department of Technology · [Alexios Bluff Mara LLC
 
 ---
 
-## License
+## Beyond Construction — The Duchess Core Architecture
+
+Duchess is built on a **universal three-tier architecture**: wearable glasses, smartphone inference engine, and cloud backend — all powered by Gemma 4. While construction safety is our beachhead, this architecture generalizes to any domain requiring real-time, on-device visual intelligence with bilingual communication.
+
+### The Core Pattern
+
+```
+Tier 1: Smart Glasses (camera + display)  →  Edge detection / scene capture
+Tier 2: Phone (on-device VLM inference)   →  Real-time reasoning, $0/query
+Tier 3: Cloud (Vertex AI)                 →  Batch analytics, escalation, dashboards
+```
+
+This pattern — **see, think, act** — applies far beyond hardhats and scaffolding.
+
+---
+
+## Academic Research Papers
+
+The Duchess platform opens multiple publishable research directions for **Dr. Mangolika Bhattacharya** and **Dr. Haiyan Sally Xie**. Each paper leverages their complementary expertise: Dr. Bhattacharya's IoT/AI background and Dr. Xie's construction digital twin research (791+ citations).
+
+### Computer Vision (CVPR, ECCV, ICCV)
+
+| Paper | Venue | Core Contribution |
+|-------|-------|-------------------|
+| **Ego-Centric PPE Detection from Wearable Cameras** | CVPR Workshop (Vision for Infrastructure Safety) | First dataset of glasses-mounted PPE detection — all prior work uses surveillance cameras |
+| **Mixed-Precision MoE Quantization for On-Device Vision-Language Models** | ECCV | PrismQuant — expert-aware quantization exploiting MoE utilization frequency |
+| **Real-Time Construction Hazard Detection Under Adverse Conditions** | ICCV Workshop | Detection robustness under dust, rain, low-light, and ego-motion blur |
+| **Hybrid Ternary-INT8 Vision-Language Models for Edge Deployment** | CVPR | BitNet b1.58 language decoder + INT8 vision encoder hybrid architecture |
+
+### NLP / Bilingual AI (ACL, EMNLP, NAACL)
+
+| Paper | Venue | Core Contribution |
+|-------|-------|-------------------|
+| **Construction-Register Spanish for Safety-Critical NLU** | ACL Findings | First study of code-switching and domain jargon in US construction Spanish |
+| **Bilingual Safety Alert Generation with On-Device VLMs** | NAACL Industry Track | Gemma 4 generating simultaneous EN/ES alerts from visual input |
+| **Domain-Adapted LoRA for Low-Resource Occupational Terminology** | EMNLP | Adapter stacking for construction jargon across 140+ languages |
+
+### HCI / Wearable Computing (CHI, UbiComp, ISMAR)
+
+| Paper | Venue | Core Contribution |
+|-------|-------|-------------------|
+| **Heads-Up Safety: AR Alert Design for Construction Workers** | CHI | Glove-compatible, bilingual AR interface design for Vuzix M400 |
+| **Voice-First Hazard Reporting in Multilingual Workforces** | UbiComp | Voice UI with Gemma 4 audio input — no STT pipeline |
+| **Situated AI Assistance Through Consumer Smart Glasses** | ISMAR | Ray-Ban Meta as a general-purpose situated intelligence platform |
+
+### Construction Engineering (Automation in Construction, ASCE)
+
+| Paper | Venue | Core Contribution |
+|-------|-------|-------------------|
+| **Digital Twin Integration with Wearable AI for Site Safety** | Automation in Construction | Dr. Xie's digital twin expertise meets real-time on-device inference |
+| **On-Device VLM Inference for Construction Safety Compliance** | ASCE Journal of Computing | Zero-cost inference replacing cloud-dependent safety monitoring |
+| **Multilingual AI Safety Systems for Diverse Construction Workforces** | Safety Science | Bilingual safety alerts reducing language-barrier incidents |
+
+### Edge AI / Systems (MLSys, NeurIPS)
+
+| Paper | Venue | Core Contribution |
+|-------|-------|-------------------|
+| **PrismQuant: Expert-Aware Mixed-Precision for MoE Models** | MLSys | Per-expert quantization based on activation frequency |
+| **TurboQuant: AWQ + SqueezeLLM Pipeline for Mobile VLMs** | NeurIPS Workshop (Efficient NLP) | End-to-end quantization pipeline from training to mobile deployment |
+| **Ternary LoRA: 1.58-Bit Adapter Fine-Tuning** | NeurIPS | Novel ternary-constrained LoRA training for edge models |
+
+### Education & Accessibility
+
+| Paper | Venue | Core Contribution |
+|-------|-------|-------------------|
+| **Smart Glasses as Situated Learning Aids in STEM Education** | LAK / L@S | Glasses + VLM for real-time lab safety and science tutoring |
+| **Wearable AI for Visually Impaired Navigation** | ASSETS | Gemma 4 multimodal scene description through glasses |
+
+---
+
+## Consumer Applications — Ray-Ban Meta Smart Glasses
+
+The Ray-Ban Meta Wayfarers are a **$299 consumer product** already on millions of faces. The Duchess architecture turns them into a general-purpose situated intelligence platform.
+
+### Science & Education
+
+- **Lab Safety Monitor** — Chemistry/biology students wear glasses that detect unsafe practices (no goggles, improper chemical handling) in real-time
+- **Field Research Assistant** — Geology, ecology, and archaeology students get real-time species/mineral/artifact identification and context
+- **STEM Tutoring** — Point at a circuit, equation, or organism and get instant visual explanation via Gemma 4
+- **Vocational Training** — Welding, HVAC, automotive students get step-by-step AR guidance with safety checks
+- **Museum & Heritage** — Visitors point at exhibits for real-time multilingual interpretation and context
+
+### Healthcare & Medical Training
+
+- **Clinical Skills Training** — Medical students get real-time feedback during procedures
+- **Surgical Observation** — First-person recording and AI annotation of surgical technique
+- **Patient Safety** — Hospital workers get hand hygiene and PPE compliance monitoring (same architecture as construction PPE)
+- **Elderly Care** — Fall detection and medication reminders for assisted living
+
+### Accessibility
+
+- **Visual Impairment** — Gemma 4 describes scenes, reads text, identifies objects through glasses in real-time
+- **Deaf/Hard of Hearing** — Real-time captioning of speech overlaid on the glasses display
+- **Cognitive Assistance** — Step-by-step task guidance for individuals with cognitive disabilities
+- **Navigation** — Indoor wayfinding for wheelchair users and mobility-impaired individuals
+
+---
+
+## Military & Defense Applications — Vuzix M400
+
+The **Vuzix M400** is already deployed in military and defense contexts. Vuzix holds contracts with the US Department of Defense and NATO allies. The M400 is ruggedized (IP67, MIL-STD-810G), runs Android 11 (AOSP), and supports thermal/IR camera modules.
+
+### Existing Military Use
+
+- **US Army** — Vuzix has supplied smart glasses for maintenance, logistics, and remote expert assistance
+- **NATO forces** — Field maintenance with AR-guided procedures
+- **US Air Force** — Aircraft inspection and maintenance workflows
+- **Defense contractors** — BAE Systems, L3Harris, and Elbit Systems have integrated Vuzix hardware
+- **IVAS adjacency** — Microsoft's Integrated Visual Augmentation System (IVAS) for the Army validates the AR glasses form factor for warfighters; the Vuzix M400 offers a lighter, cheaper alternative for non-combat roles
+
+### Duchess Architecture Mapped to Defense
+
+| Construction Use Case | Military Equivalent |
+|----------------------|---------------------|
+| PPE violation detection | Uniform/equipment compliance verification |
+| Bilingual safety alerts (EN/ES) | Coalition force multilingual communication (EN/AR/Dari/Pashto) |
+| OSHA regulation lookup | Technical manual and SOP lookup via VLM |
+| Hazard zone identification | IED/UXO visual threat detection |
+| Real-time camera stream to supervisor | Remote expert assistance for field maintenance |
+| On-device inference (no cloud) | DDIL (Denied, Disrupted, Intermittent, Limited) environments |
+| Tailscale mesh networking | Tactical mesh networking for unit coordination |
+| Privacy (video stays on-site) | OPSEC (video stays on classified network) |
+
+### Defense-Specific Capabilities
+
+- **DDIL Operations** — On-device Gemma 4 inference works without any network connectivity — critical for forward-deployed units
+- **Maintenance & Logistics** — AR-guided repair procedures for vehicles, aircraft, and equipment with real-time parts identification
+- **Situational Awareness** — Object/vehicle/threat classification in real-time from the warfighter's perspective
+- **Training** — Immersive scenario-based training with real-time AI feedback
+- **Medical Triage** — Combat medics get AI-assisted injury assessment and treatment guidance
+
+---
+
+## Grants & Funding Opportunities
+
+### NSF Grants
+
+| Program | Award | Fit |
+|---------|-------|-----|
+| **CRII** (Computer Research Initiation Initiative) | $175K / 2 years | Perfect for early-career PI. "On-device VLM inference for safety-critical wearable systems" |
+| **FW-HTF** (Future of Work at the Human-Technology Frontier) | $150K–$3M | Direct fit — wearable AI changing construction work, multilingual workforce equity |
+| **CPS** (Cyber-Physical Systems) | $500K–$1M | Three-tier glasses→phone→cloud is a textbook cyber-physical system |
+| **NRI** (National Robotics Initiative) | $500K–$1.5M | AR glasses as "co-robots" for human-robot collaboration on construction sites |
+| **PFI-TT** (Partnerships for Innovation — Technology Translation) | $550K / 3 years | University-to-market pathway for Duchess platform with industry partner |
+| **IIS** (Information and Intelligent Systems) | $500K–$600K | Core AI research on edge VLM inference, bilingual NLU |
+| **CNS** (Computer and Network Systems) | $500K | Tailscale mesh, BLE 5.0, edge-cloud orchestration research |
+| **S-STEM** (Scholarships in STEM) | $1M–$2.5M | Fund construction technology students at ISU using Duchess as teaching platform |
+| **NSF SBIR/STTR Phase I** | $275K | Commercialize Duchess through Alexios Bluff Mara LLC |
+| **NSF SBIR/STTR Phase II** | $1M | Scale from Phase I, multi-site pilot deployment |
+| **CIVIC** (Community Innovation) | $1M | Partner with construction unions for community-driven safety AI |
+
+### OSHA & Department of Labor
+
+| Program | Award | Fit |
+|---------|-------|-----|
+| **Susan Harwood Training Grants** | $100K–$175K | Bilingual safety training using Duchess platform — perfect alignment |
+| **Susan Harwood Capacity Building** | $75K–$145K | Build training curriculum around wearable AI safety tools |
+| **DOL Workforce Innovation** | Varies | Multilingual AI tools for immigrant construction workforce |
+
+### Department of Defense
+
+| Program | Award | Fit |
+|---------|-------|-----|
+| **DOD SBIR/STTR Phase I** | $250K | Military adaptation of Duchess (equipment compliance, DDIL inference) |
+| **DOD SBIR/STTR Phase II** | $1M–$1.7M | Full military prototype with Vuzix M400 |
+| **DARPA OFFSET** (OFFensive Swarm-Enabled Tactics) | Varies | Swarm situational awareness via glasses mesh network |
+| **DARPA PTG** (Perceptive Team Teaming) | Varies | AI-assisted human teaming through AR glasses |
+| **Army Research Lab (ARL) Open Campus** | Varies | Collaborative research on edge AI for soldier systems |
+| **Defense Innovation Unit (DIU)** | Prototype contracts | Fast-track commercial tech to military; Duchess = dual-use |
+| **AFWERX** (Air Force) | $50K–$1.5M | Aircraft maintenance with AR glasses |
+| **NavalX** | $50K–$250K | Shipyard worker safety (same PPE detection use case) |
+
+### NIH & Health
+
+| Program | Award | Fit |
+|---------|-------|-----|
+| **R21 Exploratory/Developmental** | $275K / 2 years | Occupational health — wearable AI reducing construction injuries |
+| **R01 Research Project** | $500K/year | Long-term study of AI-assisted safety on injury rates |
+| **NIOSH Pilot Research Project** | $400K | National Institute for Occupational Safety and Health — direct fit |
+| **CDC Injury Prevention** | Varies | Construction fall prevention with real-time AI alerts |
+
+### Other Federal
+
+| Program | Award | Fit |
+|---------|-------|-----|
+| **NIST PSCR** (Public Safety Communications) | Varies | First responder safety with wearable AI |
+| **DOE ARPA-E** | $500K–$3M | Energy facility construction safety |
+| **EDA Build Back Better** | $100K–$500K | Regional economic development through construction tech |
+| **USDA Rural Development** | Varies | Rural construction worker safety in underserved areas |
+
+---
+
+## Venture Capital & Startup Funding
+
+### Construction Tech VCs
+
+| Firm | Focus | Stage | Typical Check |
+|------|-------|-------|---------------|
+| **Brick & Mortar Ventures** | Construction tech exclusively | Seed–Series A | $500K–$5M |
+| **Building Ventures** | Built environment tech | Seed–Series A | $1M–$5M |
+| **Blackhorn Ventures** | Industrial IoT, construction | Seed–Series B | $1M–$10M |
+| **Grit Ventures** | Construction, field operations | Pre-seed–Seed | $250K–$2M |
+| **Suffolk Technologies** | Construction innovation (Suffolk Construction's VC arm) | Seed–Series A | $500K–$5M |
+| **Cotu Ventures** | Built world, construction | Seed | $500K–$3M |
+
+### AI / ML Focused VCs
+
+| Firm | Focus | Stage |
+|------|-------|-------|
+| **a16z (AI Fund)** | AI-native companies | Seed–Growth |
+| **Gradient Ventures** (Google) | AI startups | Seed–Series A |
+| **AI2 Incubator** (Allen Institute) | AI research commercialization | Pre-seed |
+| **Radical Ventures** | AI-first companies | Seed–Series B |
+| **Coatue Management** | AI/ML infrastructure | Series A+ |
+
+### Defense Tech VCs
+
+| Firm | Focus | Stage |
+|------|-------|-------|
+| **Andreessen Horowitz (a16z American Dynamism)** | Defense, public sector tech | Seed–Growth |
+| **Lux Capital** | Deep tech, defense | Seed–Series B |
+| **Shield Capital** | National security tech | Seed–Series A |
+| **Founders Fund** | Dual-use technology | Series A+ |
+| **In-Q-Tel** | CIA's strategic VC | Strategic investment |
+
+### Wearable / Hardware VCs
+
+| Firm | Focus | Stage |
+|------|-------|-------|
+| **HAX** (SOSV) | Hardware accelerator + fund | Pre-seed |
+| **Root Ventures** | Hardware, manufacturing | Seed–Series A |
+| **Eclipse Ventures** | Industrial tech, hardware | Seed–Series B |
+| **Lemnos** | Hardware startups | Pre-seed–Seed |
+
+### Accelerators & Incubators
+
+| Program | Duration | Funding | Fit |
+|---------|----------|---------|-----|
+| **Y Combinator** | 3 months | $500K | Construction safety AI startup |
+| **Techstars** (multiple tracks) | 3 months | $120K | Smart Cities, Workforce Dev tracks |
+| **Google for Startups Accelerator** | 3 months | Non-dilutive + Google Cloud credits | Gemma 4 / Google Cloud native |
+| **NVIDIA Inception** | Ongoing | GPU credits + mentorship | Edge AI, model optimization |
+| **Qualcomm AI Research** | Varies | Hardware + funding | Snapdragon XR1 (Vuzix) optimization |
+| **Microsoft for Startups** | Ongoing | $150K Azure credits | Potential HoloLens/IVAS pathway |
+| **Amazon Alexa Fund** | Varies | $100K–$200K | Voice-first wearable AI |
+
+---
+
+## Chicago & Central Illinois Resources
+
+### Chicago Tech Ecosystem
+
+| Organization | What They Offer | Fit |
+|-------------|----------------|-----|
+| **1871** | Chicago's premier tech incubator — workspace, mentorship, investor network | Hardware + AI startup incubation |
+| **mHUB** | Hardware/manufacturing-focused incubator — prototyping labs, engineering resources | Glasses hardware integration, device testing |
+| **MATTER** | Health tech incubator — if pursuing medical/occupational health angle | Hospital PPE, patient safety applications |
+| **Polsky Center** (UChicago) | Technology commercialization, proof-of-concept grants ($5K–$25K) | Research-to-startup pathway |
+| **Chicago Booth New Venture Challenge** | Top university startup competition — $500K+ in prizes | Pitch Duchess / Alexios Bluff Mara |
+| **P33 Chicago** | Tech talent and ecosystem development | Workforce development connections |
+| **World Business Chicago** | Economic development — connections to municipal contracts | Chicago construction = massive market |
+| **Chicago Ventures** | Early-stage VC focused on Chicago-area startups | Local lead investor |
+| **BLUE1647** | Tech innovation hub — workforce training | Construction worker tech training |
+| **Illinois Innovation Network (IIN)** | Statewide innovation — connects ISU to Chicago ecosystem | University-to-market pipeline |
+| **Chicagoland Entrepreneurial Center** | Mentorship, programming for early-stage companies | Business development support |
+
+### Illinois State Government Programs
+
+| Program | Award | Fit |
+|---------|-------|-----|
+| **DCEO Small Business Grants** | $5K–$250K | State grants for Illinois-based startups |
+| **DCEO Advantage Illinois** | Varies | Participation loan and venture capital programs |
+| **Illinois Innovation Fund** | $500K–$5M | State venture fund for IL-based companies |
+| **DCEO Intersect Illinois** | Foreign direct investment connections | Manufacturing / international partnerships |
+| **R&D Tax Credit (Illinois)** | 6.5% of qualified R&D expenses | Offset ML training and development costs |
+| **Angel Investment Tax Credit (Illinois)** | 25% tax credit for angel investors | Makes Duchess more attractive to IL angels |
+
+### Bloomington-Normal Resources
+
+| Organization | What They Offer | Fit |
+|-------------|----------------|-----|
+| **ISU Innovation Consulting Community (ICC)** | Student startup incubator at ISU | Direct university support, student talent pipeline |
+| **ISU Research and Sponsored Programs** | Grant administration, IP management | Process NSF/OSHA/DOD grants |
+| **Illinois SBDC at ISU** | Free business consulting, market research, loan packaging | SBA loan applications, business plan development |
+| **McLean County Chamber of Commerce** | Local business connections, advocacy | Local B2B partnerships (construction firms) |
+| **BN Economic Development Council (BNEDC)** | Business attraction, retention, workforce development | Economic development partnerships |
+| **Central Illinois Angels** | Angel investor network — $25K–$250K investments | Pre-seed / seed funding from local investors |
+| **Rivian** (Normal, IL) | Electric vehicle manufacturing — massive construction site | Pilot deployment site + potential customer (factory safety) |
+| **State Farm** (Bloomington, IL) | Insurance industry — worker's comp, construction liability | Strategic partner (reduce claims via AI safety) |
+| **Country Financial** (Bloomington) | Insurance — same worker's comp angle | Insurance partnership for risk reduction |
+| **Heartland Community College** | Vocational training — construction programs | Training deployment partner |
+| **Illinois Wesleyan University** | Computer science partnership opportunities | Student talent, interdisciplinary research |
+
+---
+
+## Government Loans & Small Business Programs
+
+### SBA Programs
+
+| Program | Amount | Terms | Fit |
+|---------|--------|-------|-----|
+| **SBA 7(a) Loan** | Up to $5M | 7–25 years, ~6–8% | General business capital for Alexios Bluff Mara LLC |
+| **SBA 504 Loan** | Up to $5.5M | 10–25 years, fixed rate | Equipment purchases (Vuzix units, GPUs, servers) |
+| **SBA Microloan** | Up to $50K | 6 years max, ~8% | Early-stage prototype funding |
+| **SBIR/STTR** (via NSF, DOD, NIH) | $275K–$1.7M | Non-dilutive grant | See grants section above |
+| **SBA Emerging Leaders** | Free training | 7-month intensive | Business development for revenue-stage companies |
+
+### Other Government Programs
+
+| Program | Amount | Fit |
+|---------|--------|-----|
+| **USDA Rural Development (RBDG)** | $10K–$500K | Rural construction safety — underserved communities |
+| **EDA Competitive Grants** | $100K–$3M | Regional innovation in construction tech |
+| **CDFI Fund** | Varies | Community development financial institutions for underserved areas |
+| **HUBZone Program** | Contract preferences | If operating in historically underutilized business zones |
+
+---
+
+## Hardware & Software Cost Breakdown
+
+Transparency on exactly what it costs to build and run the Duchess platform.
+
+### Hardware
+
+| Item | Cost | Purpose |
+|------|------|---------|
+| **Ray-Ban Meta Wayfarer** | $299 | Tier 1 consumer smart glasses — camera stream to phone |
+| **Vuzix M400** | $1,799 | Tier 1 industrial AR glasses — on-device YOLOv8, AR HUD |
+| **Google Pixel 9 Fold** | $1,799 | Tier 2 inference engine — on-device Gemma 4 E2B |
+| **NVIDIA RTX 5090** | $1,999 | ML training — Unsloth QLoRA fine-tuning (4.1 GB VRAM needed, 24 GB available) |
+| **MacBook Pro M4 Max (48 GB)** | $3,999 | Development machine, optional Tier 3 local server |
+| **USB-C cables, BLE adapters** | ~$50 | Device connectivity |
+| **Total Hardware (MVP)** | **~$9,945** | One of each for development and demo |
+
+### Software Licenses & Subscriptions
+
+| Service | Cost | Purpose |
+|---------|------|---------|
+| **GitHub Copilot Enterprise** | $39/user/month | AI-assisted development across 15 agent workflows |
+| **GitHub Team** | $4/user/month | Private repos, CI/CD, GitHub Packages |
+| **Tailscale Business** | $18/user/month | WireGuard mesh networking — device fleet management |
+| **Parsec Teams** | $35/user/month | Remote desktop for GPU training machines |
+| **Google Cloud (Vertex AI)** | ~$50–100/month (hackathon) | Gemma 4 31B inference, Cloud Run, Firestore, GCS |
+| **Google Cloud (production)** | ~$500–2,000/month | Scaled deployment with Vertex AI endpoints |
+| **Kaggle Pro** | Free–$20/month | Model hosting, notebook compute |
+| **JetBrains (Android Studio)** | Free (Community) | Android development IDE |
+| **Weights & Biases** | Free tier / $50/month | ML experiment tracking |
+| **Roboflow** | Free tier / $249/month | Dataset annotation and augmentation |
+| **HuggingFace Pro** | $9/month | Model hosting, inference endpoints |
+| **Cloudflare (domain + DNS)** | ~$10/year | Domain registration, DNS, CDN |
+| **Apple Developer Program** | $99/year | Not required (Android-only), but useful for future iOS |
+| **Claude Code (Anthropic)** | Usage-based | AI development assistant |
+
+### Monthly Operating Cost Estimate
+
+| Phase | Monthly Cost | Notes |
+|-------|-------------|-------|
+| **Hackathon / MVP** | ~$200–400 | Minimal cloud, free tiers everywhere |
+| **Pilot (5 construction sites)** | ~$2,000–5,000 | 50 devices, scaled Vertex AI |
+| **Production (100 sites)** | ~$10,000–25,000 | Full fleet, enterprise licenses |
+
+---
 
 This project is licensed under the **Apache License 2.0** — see [LICENSE](LICENSE) for details.
 
