@@ -709,6 +709,49 @@
       .prize-grid { grid-template-columns:1fr 1fr; }
       .metric-grid { grid-template-columns:1fr 1fr; }
     }
+
+    /* ══ APP SCREENSHOTS ══ */
+    .screenshots-grid {
+      display:flex; gap:var(--s3); justify-content:center;
+      flex-wrap:wrap; margin-top:var(--s5);
+    }
+    .screenshot-card {
+      display:flex; flex-direction:column; align-items:center; gap:var(--s2);
+      flex:0 1 200px;
+    }
+    .screenshot-frame {
+      position:relative; border-radius:28px;
+      box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 5px #2c2c2c, var(--elev-4);
+      overflow:hidden; line-height:0;
+      transition:transform .25s ease, box-shadow .25s ease;
+    }
+    .screenshot-frame:hover {
+      transform:translateY(-6px) scale(1.02);
+      box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 5px #2c2c2c, 0 24px 48px rgba(0,0,0,.28);
+    }
+    .screenshot-frame img {
+      width:200px; display:block; border-radius:24px;
+    }
+    .screenshot-label {
+      font-size:.82rem; font-weight:700; color:var(--on-surface);
+      text-align:center; letter-spacing:.03em;
+    }
+    .screenshot-sublabel {
+      font-size:.74rem; color:var(--on-surface-var);
+      text-align:center; margin-top:-6px;
+    }
+    .screenshot-badge {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:.68rem; font-weight:700; letter-spacing:.06em;
+      text-transform:uppercase; padding:3px 10px;
+      border-radius:var(--r-pill);
+      background:var(--surface-var); color:var(--isu-red);
+      margin-bottom:4px;
+    }
+    @media (max-width:768px) {
+      .screenshot-card { flex-basis:140px; }
+      .screenshot-frame img { width:140px; }
+    }
   </style>
 </head>
 <body>
@@ -729,6 +772,7 @@
       <ul class="nav-links">
         <li><a href="#problem">Problem</a></li>
         <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#screenshots">App</a></li>
         <li><a href="#gemma4">Gemma 4</a></li>
         <li><a href="#cloud">Google Cloud</a></li>
         <li><a href="#ondevice">On-Device</a></li>
@@ -759,6 +803,7 @@
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
     <a href="#problem"      onclick="closeNav()">Problem</a>
     <a href="#architecture" onclick="closeNav()">Architecture</a>
+    <a href="#screenshots"  onclick="closeNav()">App Screenshots</a>
     <a href="#gemma4"       onclick="closeNav()">Gemma 4</a>
     <a href="#cloud"        onclick="closeNav()">Google Cloud</a>
     <a href="#ondevice"     onclick="closeNav()">On-Device</a>
@@ -933,6 +978,61 @@
         🕶️ Two glass paths: <strong>Vuzix M400</strong> (on-device YOLOv8-nano) + <strong>Oakley/Ray-Ban</strong> (camera stream to phone). Prototyping with Meta Ray-Ban Wayfarers we have in hand.
       </div>
     </div>
+  </div>
+</section>
+
+
+<!-- ════════════════
+     APP SCREENSHOTS
+════════════════ -->
+<section class="section bg-s2" id="screenshots" aria-labelledby="screenshots-title">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <div class="sec-eyebrow">Running on Pixel 9 Fold</div>
+      <h2 class="sec-title" id="screenshots-title">See Duchess in Action</h2>
+      <p class="sec-sub">
+        Four screens. Real hardware. No cloud round-trip.<br>
+        Cuatro pantallas. Hardware real. Sin roundtrip a la nube.
+      </p>
+    </div>
+
+    <div class="screenshots-grid">
+      <div class="screenshot-card reveal">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-dashboard.png" alt="Dashboard screen showing Site Safety Score of 87/100 with bilingual zone cards for Framing, Excavation, and Electrical" loading="lazy" />
+        </div>
+        <div class="screenshot-label">Dashboard</div>
+        <div class="screenshot-sublabel">Site safety score + bilingual zones</div>
+      </div>
+
+      <div class="screenshot-card reveal d1">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-stream.png" alt="Stream screen showing live glasses camera feed with YOLOv8 detection overlays: HARDHAT 0.94, VEST 0.88, NO GLASSES 0.91 at 24 FPS, 18ms latency" loading="lazy" />
+        </div>
+        <div class="screenshot-label">Stream</div>
+        <div class="screenshot-sublabel">24 FPS · 18ms · YOLOv8 overlays</div>
+      </div>
+
+      <div class="screenshot-card reveal d2">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-alerts.png" alt="Alerts screen showing bilingual safety alerts: Missing Hard Hat, Missing Safety Vest, Fall Hazard — all marked CRITICAL with English and Spanish descriptions" loading="lazy" />
+        </div>
+        <div class="screenshot-label">Alerts</div>
+        <div class="screenshot-sublabel">Bilingual EN/ES · severity-coded</div>
+      </div>
+
+      <div class="screenshot-card reveal d3">
+        <div class="screenshot-frame">
+          <img src="assets/screenshots/phone-settings.png" alt="Settings screen showing glasses connection, language selector, notification toggle, nightly upload toggle, and detection sensitivity slider" loading="lazy" />
+        </div>
+        <div class="screenshot-label">Settings</div>
+        <div class="screenshot-sublabel">Detection sensitivity + preferences</div>
+      </div>
+    </div>
+
+    <p class="sec-sub reveal" style="margin-top:var(--s5); font-size:.9rem;">
+      All PPE inference runs <strong>on-device via Gemma 4 E2B</strong> — no camera data leaves the phone without explicit escalation. Detection overlays shown in Stream are from the YOLOv8-nano model running on the companion Vuzix M400.
+    </p>
   </div>
 </section>
 

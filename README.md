@@ -16,6 +16,25 @@
 
 ---
 
+## App Screenshots — Running on Pixel 9 Fold
+
+<p align="center">
+  <img src="docs/assets/screenshots/phone-dashboard.png" width="22%" alt="Dashboard — Site Safety Score with bilingual zone cards" title="Dashboard" />
+  &nbsp;&nbsp;
+  <img src="docs/assets/screenshots/phone-stream.png" width="22%" alt="Stream — Live glasses camera feed with YOLOv8 detection overlays" title="Stream" />
+  &nbsp;&nbsp;
+  <img src="docs/assets/screenshots/phone-alerts.png" width="22%" alt="Alerts — Bilingual safety alert feed with severity badges" title="Alerts" />
+  &nbsp;&nbsp;
+  <img src="docs/assets/screenshots/phone-settings.png" width="22%" alt="Settings — Device, preferences, and detection sensitivity" title="Settings" />
+</p>
+
+<p align="center">
+  <em>Dashboard · Stream (24 FPS, 18ms) · Safety Alerts · Settings</em><br>
+  <em>Tablero · Transmisión (24 FPS, 18ms) · Alertas de seguridad · Configuración</em>
+</p>
+
+---
+
 ## What is Duchess?
 
 **1,056 construction workers died on US job sites in 2022.** Falls, struck-by incidents, electrocutions, and caught-in hazards — the "Fatal Four" — account for over 60% of those deaths. Most are preventable with proper PPE.
