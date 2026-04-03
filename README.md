@@ -469,7 +469,7 @@ Full documentation at **[alexiosbluffmara.github.io/Duchess](https://alexiosbluf
 
 ## Team
 
-**Bhattacharya, Baksi, Lahiri**
+**Bhattacharya, Lahiri**
 
 Illinois State University · Department of Technology · [Alexios Bluff Mara LLC](https://github.com/AlexiosBluffMara)
 

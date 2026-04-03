@@ -21,7 +21,7 @@ The people and agents behind Duchess.
 
 ## Core Team
 
-**Bhattacharya, Baksi, Lahiri** — Illinois State University / Alexios Bluff Mara LLC
+**Bhattacharya, Lahiri** — Illinois State University / Alexios Bluff Mara LLC
 
 ---
 
