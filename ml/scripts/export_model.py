@@ -1,6 +1,40 @@
 """
 Export fine-tuned Gemma 4 adapter to ONNX and LiteRT FP16 for Android deployment.
 
+TODO-PRINCIPAL: Export pipeline review — critical issues:
+  1. No reproducibility. Export results depend on PyTorch version, CUDA version,
+     ai-edge-torch version, and ONNX opset version — none of which are pinned.
+     Lock all dependency versions in pyproject.toml and record them in the manifest.
+  2. The ONNX → LiteRT path via ai-edge-torch is experimental for LLMs. Google's
+     recommended path for Gemma 4 on-device is MediaPipe Model Maker or the
+     pre-converted MediaPipe task bundles. Verify that our custom export produces
+     models compatible with MediaPipe LlmInference API on Android.
+  3. _write_litert_stub() silently writes a placeholder on ANY conversion error.
+     This means a subtle export bug produces a "model" that the phone app will try
+     to load and fail with an opaque error. Stubs should be clearly distinguishable
+     (e.g., magic bytes check) and the app should detect and refuse to load them.
+  4. No A/B comparison between base model and adapter-merged model. After merge, we
+     should run the eval set on BOTH and confirm the adapter improves (not degrades)
+     accuracy. An automated regression gate before export.
+  5. The benchmark uses temperature=0.1 with do_sample=False — these are contradictory.
+     do_sample=False ignores temperature entirely (greedy decoding). Fix to either
+     do_sample=True + temperature=0.1, or just do_sample=False for deterministic bench.
+
+TODO-ML-PROF: Export optimization for hackathon benchmarks:
+  - For the LiteRT $10K prize: we need side-by-side benchmarks of FP16 vs INT8 vs
+    INT4 on the actual Tensor G4 NPU. The export pipeline only produces FP16.
+    Add --quantize {fp16,int8,int4} flag and generate all three variants.
+  - For the Unsloth $10K prize: the export must preserve the QLoRA adapter structure
+    for benchmarking purposes. Export BOTH the merged model AND the base+adapter
+    separately so we can measure: (a) adapter overhead, (b) merged vs runtime-adapter
+    inference speed, (c) accuracy with vs without adapter.
+  - ai-edge-torch conversion may not support Gemma 4's MoE routing layers correctly.
+    E2B uses a mixture-of-experts architecture where only 2.3B of 4B parameters are
+    active per token. Verify the exported LiteRT model has the same parameter count
+    and that MoE routing works correctly post-conversion.
+  - The benchmark should include a VISION input (not just text). Our primary use case
+    is multimodal PPE detection. Text-only benchmarks don't represent real latency."""
+
 # Priya: This is where the rubber meets the road — we take our carefully-trained
 # LoRA adapter weights and produce deployment-ready artifacts for the phone (Tier 2).
 #
@@ -20,7 +54,6 @@ Export fine-tuned Gemma 4 adapter to ONNX and LiteRT FP16 for Android deployment
 #     python scripts/export_model.py --adapter safety
 #     python scripts/export_model.py --adapter spanish_jargon --output exports/
 #     python scripts/export_model.py --adapter safety --benchmark --num-benchmark-runs 5
-"""
 
 from __future__ import annotations
 

@@ -1,6 +1,43 @@
 """
 Construction safety dataset preparation for Gemma 4 fine-tuning.
 
+TODO-PRINCIPAL: Dataset pipeline review — critical issues:
+  1. No data versioning. We load from HuggingFace "latest" or a local file with no
+     version tracking. If the HF dataset is updated between training runs, results
+     aren't reproducible. Pin to a specific dataset revision/commit hash.
+  2. No image handling. This is a TEXT-ONLY dataset pipeline, but our primary use case
+     is MULTIMODAL (vision + text). We need a separate pipeline for image-text pairs:
+     (construction_photo, safety_assessment) format for Gemma 4 E2B vision fine-tuning.
+     The Unsloth $10K prize specifically requires vision fine-tuning benchmarks.
+  3. Placeholder examples are used for CI but also silently used when HF is unreachable.
+     A training run on 8 placeholder examples will produce a useless model with zero
+     warning. Add a hard minimum sample count (e.g., --min-examples 100) that aborts
+     if the dataset is too small for meaningful training.
+  4. Language detection is keyword-based — it will misclassify code-switched text
+     (common in bilingual construction environments, e.g., "The trabajador needs a
+     hardhat"). For the bilingual adapter, we need to KEEP code-switched examples,
+     not reject them.
+  5. validate_example() treats unknown violation types as errors, but the taxonomy
+     will evolve as Elena adds new detection classes. Make the taxonomy a config file,
+     not a hardcoded set.
+
+TODO-ML-PROF: Dataset quality concerns for Unsloth fine-tuning:
+  - For QLoRA fine-tuning of Gemma 4 E2B, we need ≥1000 high-quality examples per
+    violation class for the safety adapter. Our placeholder set has 8 examples.
+    What's the actual Construction-PPE dataset size? MOCS? SH17? Quantify the gap.
+  - The output format is flat JSON but Gemma 4 supports native function calling.
+    Fine-tuning data should use the function-calling format:
+    {"tool_calls": [{"name": "create_safety_alert", "arguments": {...}}]}
+    This teaches the model to use structured output natively rather than JSON-in-string.
+  - No augmentation strategy for minority classes. If electrical_hazard has 50 examples
+    and no_hardhat has 5000, QLoRA will overfit to the majority class. Plan:
+    (a) upsample minority classes, (b) use class-weighted loss in Unsloth config,
+    (c) evaluate per-class F1, not just aggregate accuracy.
+  - Bilingual training data should be paired: same scenario in EN and ES. This teaches
+    the model that the SAME violation has descriptions in both languages, rather than
+    treating EN and ES as independent examples. Restructure as conversation format:
+    user: [image] → model: {"description_en": "...", "description_es": "..."}"""
+
 # Priya: This script is the data pipeline's front door. Garbage in, garbage out.
 # I've seen too many "fine-tuned" models that were just overfitting to noisy data.
 # Every example that enters our training pipeline goes through validation:
@@ -18,7 +55,6 @@ Construction safety dataset preparation for Gemma 4 fine-tuning.
 #     python scripts/prepare_dataset.py --output data/safety_dataset.jsonl
 #     python scripts/prepare_dataset.py --source data/raw_annotations.jsonl
 #     python scripts/prepare_dataset.py --source data/raw.jsonl --stratified-split --val-ratio 0.1
-"""
 
 from __future__ import annotations
 

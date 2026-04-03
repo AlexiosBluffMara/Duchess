@@ -1,3 +1,32 @@
+// TODO-PRINCIPAL: Build configuration review — issues:
+//   1. No DAT SDK dependency. The Meta DAT SDK (mwdat-core, mwdat-camera, mwdat-mockdevice)
+//      is referenced throughout the codebase but missing from this build file. This means
+//      the app CANNOT compile as-is. Add the GitHub Packages Maven repository and DAT SDK
+//      dependencies. See .claude/rules/dat-conventions.md for import patterns.
+//   2. No ProGuard/R8 rules for MediaPipe and LiteRT. minifyEnabled=true in release will
+//      strip native method bindings and crash at runtime. Need keep rules for:
+//        - com.google.mediapipe.** (LLM inference JNI)
+//        - org.tensorflow.lite.** (LiteRT interpreter JNI)
+//      Test the release build BEFORE the hackathon demo.
+//   3. No signing config for release. The hackathon needs a signed APK or AAB for the
+//      "live demo URL" deliverable. Set up a keystore and reference it from local.properties.
+//   4. compileSdk=35 but the Pixel 9 Fold ships with Android 14 (SDK 34). Verify that
+//      all APIs we use are available on SDK 34. compileSdk=35 is fine for compilation but
+//      runtime behavior should be tested on the actual target device.
+//   5. Missing Cactus SDK dependency. HACKATHON_STRATEGY.md targets the Cactus $10K prize
+//      but the SDK isn't in the dependency list. Add it when integration begins.
+//   6. No test coverage plugin (JaCoCo). We have test dependencies but no way to measure
+//      coverage. For a safety-critical system, coverage metrics should be mandatory in CI.
+//
+// TODO-ML-PROF: On-device ML dependency sizing:
+//   - mediapipe-llm-inference bundles ~15MB of native .so libraries. Combined with
+//     litert and litert-gpu, the APK size is ~40MB before the model. Profile the APK
+//     with Android Studio's APK Analyzer to identify which native ABIs are included.
+//     For Pixel 9 Fold (arm64-v8a only), strip x86/x86_64/armeabi-v7a to save ~25MB.
+//   - LiteRT GPU delegate uses OpenCL on most devices but the Tensor G4 supports a
+//     custom NPU delegate. Verify that libs.litert.gpu actually routes to NPU on
+//     Pixel 9 Fold — may need the google-ai-edge litert-gpu-api artifact instead.
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)

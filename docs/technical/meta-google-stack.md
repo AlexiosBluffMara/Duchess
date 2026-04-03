@@ -43,14 +43,6 @@ The **Meta Wearables Device Access Toolkit** is how Duchess communicates with th
 - `AutoDeviceSelector` for automatic glasses pairing
 - `StreamConfiguration` for resolution (360p–720p) and frame rate (2–30 FPS)
 
-### TRIBE v2 (Research Reference)
-
-Meta's multimodal brain-encoding foundation model that predicts fMRI brain responses to video, audio, and text stimuli. Built on LLaMA 3.2 (text), V-JEPA2 (video), and Wav2Vec-BERT (audio). Licensed CC-BY-NC-4.0 with 25.7K downloads on HuggingFace.
-
-**Relevance to Duchess:** Potential research angle for understanding worker cognitive responses to safety alerts. TRIBE v2 could help optimize alert effectiveness by predicting neural engagement patterns — ensuring that PPE violation warnings actually capture attention in noisy construction environments.
-
-> **Note:** The non-commercial license (CC-BY-NC-4.0) means TRIBE v2 cannot be used in the commercial Duchess product. It is referenced here for academic positioning and future research directions only.
-
 ---
 
 ## Google Technologies
@@ -180,6 +172,6 @@ Neither company's stack alone covers the full pipeline from camera to cloud infe
 | **SDK** | DAT SDK (device streaming) | LiteRT (on-device ML) |
 | **Models** | — | Gemma 4 (E2B, E4B, 26B, 31B) |
 | **Cloud** | — | Vertex AI, Cloud Run, Firestore |
-| **Research** | TRIBE v2 (neuroscience) | Gemma model research |
+| **Research** | V-JEPA2 (video understanding) | Gemma model research |
 
 Meta gives us the **eyes** on every worker. Google gives us the **brain** to understand what those eyes see. The open-source ecosystem (Tailscale, Unsloth, Ollama, llama.cpp, Cactus) provides the **connective tissue** that makes the full pipeline practical, fast, and deployable on real construction sites.

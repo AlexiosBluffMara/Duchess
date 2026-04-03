@@ -30,6 +30,37 @@ sealed interface ModelDownloadState {
     data class Failed(val reason: String) : ModelDownloadState
 }
 
+// TODO-PRINCIPAL: Model lifecycle management — critical issues:
+//   1. No checksum verification. We check file SIZE but not INTEGRITY. A network
+//      corruption that produces a same-size file passes validation. Use SHA-256 hash
+//      from a manifest file and verify after download. This is safety-critical software.
+//   2. No download resume support. A 7.2GB download on cellular will fail frequently.
+//      Implement Range header support with partial file retention. Without this, users
+//      on poor connections will NEVER successfully download the model.
+//   3. downloadModel() catches Exception broadly — including CancellationException,
+//      which breaks structured concurrency. Catch IOException specifically, and let
+//      CancellationException propagate so job cancellation works correctly.
+//   4. No disk space check before download. If the phone has 5GB free and we need 7.2GB,
+//      we'll write until the disk fills, corrupting other apps' data. Check
+//      StatFs(context.filesDir.path).availableBytes before starting.
+//   5. The MODEL_DOWNLOAD_URL is hardcoded to a Gemma 3 2B stand-in. There's no
+//      mechanism for OTA model updates. Need a model manifest endpoint that returns
+//      {url, sha256, size, version} so we can push new models without APK updates.
+//   6. deleteModel() has no confirmation flow and no backup. If called accidentally,
+//      the user waits another 20+ minutes to re-download 7.2GB.
+//
+// TODO-ML-PROF: Model distribution strategy needs rethinking for the hackathon:
+//   - The Gemma 4 E2B INT4 quantized model is ~1.4GB via MediaPipe, not 7.2GB. The
+//     7.2GB figure is for Q4_K_M GGUF format. Verify which format MediaPipe actually
+//     uses and update EXPECTED_SIZE constants accordingly.
+//   - For the Unsloth fine-tuned model: we need TWO download paths — base model (from
+//     Google CDN) and LoRA adapter weights (from our HuggingFace repo, ~50-200MB).
+//     Merging happens on-device or we distribute pre-merged weights. The current
+//     single-file assumption doesn't support adapter-based deployment.
+//   - Model versioning: when we ship updated adapters (safety_v2, spanish_jargon_v3),
+//     how do we ensure the phone downloads the right adapter for its base model version?
+//     Version mismatch between base and adapter = silent accuracy degradation.
+
 /**
  * Manages the Gemma 4 E2B model file lifecycle: check → download → verify → ready.
  *

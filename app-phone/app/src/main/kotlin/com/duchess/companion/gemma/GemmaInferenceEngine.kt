@@ -19,6 +19,36 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO-PRINCIPAL: This class is the single most critical path in the app.
+// If GemmaInferenceEngine is slow, wrong, or leaks memory, the entire product fails.
+// Current issues I'd flag in a code review:
+//   1. No retry/backoff on model load failure — if the model file is corrupted mid-download,
+//      we enter GemmaState.Error permanently and the user has to force-kill the app.
+//   2. The Mutex serializes ALL inference. At 1 frame/sec this is fine, but if someone
+//      cranks the throttle to 5fps we'll queue up and OOM from queued bitmaps. Need a
+//      bounded channel or drop-oldest policy.
+//   3. parseGemmaOutput() uses JSONObject (Android's built-in) which silently returns null
+//      on malformed JSON instead of throwing. This masks Gemma output format drift.
+//   4. No telemetry. We have zero visibility into inference latency distribution, failure
+//      rate, or memory pressure in production. Add Firebase Performance traces.
+//   5. SAFETY_PROMPT is a giant string constant. It should be loaded from assets/ so we
+//      can A/B test prompt variants without recompiling.
+//
+// TODO-ML-PROF: The real question is whether MediaPipe LlmInference even uses the
+// Tensor G4 NPU effectively. Google's docs claim "hardware acceleration" but don't
+// specify whether the NNAPI delegate actually routes MoE expert dispatch to the NPU
+// or falls back to GPU shaders. We need to benchmark with:
+//   - systrace to confirm NPU activity during inference
+//   - Memory profiler to measure actual loaded model footprint (claimed ~1.4GB)
+//   - Thermal throttling curve: sustained inference at 1fps for 30min on Pixel 9 Fold
+//   - Compare MediaPipe vs llama.cpp Android backend on same model/hardware
+// Also: the 0.1 temperature is cargo-culted. For classification tasks with function
+// calling, temperature=0.0 (greedy) is correct. 0.1 introduces noise. The "same answer
+// every time" comment is wrong — 0.1 is NOT deterministic, it's just low-entropy.
+// For the Unsloth fine-tuned model: we need to verify that QLoRA adapters don't degrade
+// the vision pathway. Unsloth's Dynamic QLoRA claims 0% accuracy loss but that's measured
+// on text benchmarks, not multimodal. Run the vision PPE eval BEFORE and AFTER adapter merge.
+
 /**
  * Injectable singleton encapsulating the Gemma 4 E2B inference logic.
  *

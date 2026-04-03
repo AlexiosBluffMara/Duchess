@@ -62,74 +62,51 @@ app-phone/app/src/main/res/values/strings.xml
 
 ## 2026-04-03 02:47 UTC — Commit 1a89713
 
-**Branch**: `main`  
+**Branch**: `claude/serene-shtern`  
 **Author**: AlexiosBluffMara  
-**Message**: feat(phone): wire BLE startup, persist settings, live dashboard, demo/live toggle
+**Message**: fix(ml): remove stray triple-quote causing SyntaxError in export_model and prepare_dataset
 
 ### Modules touched
-- **app-phone/**: 8 file(s) changed
+- **ml/**: 2 file(s) changed
 
 ### Project snapshot
 | Module | Files | Status |
 |--------|-------|--------|
-| app-phone/ | 2392 | Active (2392 files) |
+| app-phone/ | 64 | Active (64 files) |
 | app-glasses/ | 33 | Active (33 files) |
 | ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
+| cloud/ | 12 | Active (12 files) |
 
 ### Changed files
 ```
-app-phone/app/src/main/kotlin/com/duchess/companion/DuchessApplication.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/dashboard/DashboardViewModel.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/di/AppModule.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/settings/SettingsScreen.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/settings/SettingsViewModel.kt
-app-phone/app/src/main/res/values-es/strings.xml
-app-phone/app/src/main/res/values/strings.xml
+ml/scripts/export_model.py
+ml/scripts/prepare_dataset.py
 ```
 
 ---
 
-## 2026-04-03 02:36 UTC — Commit d1c14cf
+## 2026-04-03 03:31 UTC — Commit 9db3846
 
-**Branch**: `main`  
+**Branch**: `claude/serene-shtern`  
 **Author**: AlexiosBluffMara  
-**Message**: feat(phone): wire real Meta DAT SDK mwdat 0.5.0, remove 14 stubs
+**Message**: chore(shared): remove Baksi from all project references
 
 ### Modules touched
-- **app-phone/**: 20 file(s) changed
 
 ### Project snapshot
 | Module | Files | Status |
 |--------|-------|--------|
-| app-phone/ | 2467 | Active (2467 files) |
+| app-phone/ | 64 | Active (64 files) |
 | app-glasses/ | 33 | Active (33 files) |
 | ml/ | 17 | Active (17 files) |
-| cloud/ | 18 | Active (18 files) |
+| cloud/ | 12 | Active (12 files) |
 
 ### Changed files
 ```
-app-phone/app/build.gradle.kts
-app-phone/app/src/main/kotlin/com/duchess/companion/MainActivity.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/gemma/GemmaInferenceEngine.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/stream/StreamScreen.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/stream/StreamViewModel.kt
-app-phone/app/src/main/kotlin/com/duchess/companion/stream/VideoFrameExt.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/camera/StreamSession.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/camera/types/PhotoData.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/camera/types/StreamConfiguration.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/camera/types/StreamSessionState.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/camera/types/VideoFrame.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/camera/types/VideoQuality.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/core/DatResult.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/core/Wearables.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/core/permissions/Permission.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/core/permissions/PermissionStatus.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/core/registration/RegistrationState.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/core/selectors/AutoDeviceSelector.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/mockdevice/MockDeviceKit.kt
-app-phone/app/src/main/kotlin/com/meta/wearable/dat/mockdevice/api/MockRaybanMeta.kt
+README.md
+docs/_config.yml
+docs/index.html
+docs/project/team.md
 ```
 
 ---
