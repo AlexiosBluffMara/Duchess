@@ -7,7 +7,9 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.view.View
 import com.duchess.glasses.model.Detection
+import com.duchess.glasses.model.HudLanguageMode
 import com.duchess.glasses.model.InferenceMode
+import com.duchess.glasses.model.SafetyAlert
 import com.duchess.glasses.ppe.PpeDetector
 
 /**
@@ -119,6 +121,24 @@ class HudRenderer(context: Context) : View(context) {
     @Volatile var batteryPercent: Int = 100
     @Volatile var isConnectedToBle: Boolean = false
 
+    // ---- Phone-pushed alert overlay ----
+    // Written from the BLE coroutine, read from onDraw (UI thread). @Volatile for visibility.
+
+    /** Non-null while a phone-pushed alert banner should be displayed. */
+    @Volatile var activePhoneAlert: SafetyAlert? = null
+
+    /** Epoch-ms deadline; when currentTimeMillis >= this value the banner auto-dismisses. */
+    @Volatile var phoneAlertExpiresAt: Long = 0L
+
+    /** Pre-allocated red fill for the phone-alert banner — no allocations in onDraw. */
+    private val alertBannerPaint = Paint().apply {
+        style = Paint.Style.FILL
+        color = Color.argb(210, 180, 0, 0)
+    }
+
+    /** Pre-allocated RectF for the phone-alert banner bounds. */
+    private val alertBannerRect = RectF()
+
     // Alex: Frame counter for FPS calculation. We count frames rendered in the
     // last second. This is the RENDERING FPS, not the inference FPS.
     private var frameCount = 0
@@ -138,6 +158,9 @@ class HudRenderer(context: Context) : View(context) {
 
         // Alex: Draw detection bounding boxes and labels
         drawDetections(canvas, w, h)
+
+        // Draw phone-pushed alert banner (if active and not yet expired)
+        drawPhoneAlert(canvas, w, h)
 
         // Alex: Draw bottom diagnostic bar (FPS, battery, inference time)
         drawDiagnosticBar(canvas, w, h)
@@ -295,6 +318,38 @@ class HudRenderer(context: Context) : View(context) {
             frameCount = 0
             lastFpsUpdateTime = now
         }
+    }
+
+    /**
+     * Draws a prominent alert banner in the middle third of the display when a
+     * phone-pushed alert is active and has not yet expired.
+     *
+     * Uses pre-allocated [alertBannerRect] and [alertBannerPaint] — no heap
+     * allocation occurs during this call.
+     *
+     * Auto-dismisses: if the expiry deadline has passed, [activePhoneAlert] is
+     * cleared and nothing is drawn.
+     */
+    private fun drawPhoneAlert(canvas: Canvas, w: Float, h: Float) {
+        val alert = activePhoneAlert ?: return
+
+        if (System.currentTimeMillis() >= phoneAlertExpiresAt) {
+            activePhoneAlert = null
+            return
+        }
+
+        // Banner covers the middle third of the display (y: 35%..65%).
+        alertBannerRect.set(0f, h * 0.35f, w, h * 0.65f)
+        canvas.drawRect(alertBannerRect, alertBannerPaint)
+
+        // Two lines: English primary, Spanish secondary.
+        val lineHeight = statusTextPaint.textSize + 8f
+        val bannerMidY = alertBannerRect.top + alertBannerRect.height() / 2f
+        val firstLineY = bannerMidY - lineHeight / 2f
+        val secondLineY = firstLineY + lineHeight
+
+        canvas.drawText(alert.messageEn, 16f, firstLineY, statusTextPaint)
+        canvas.drawText(alert.messageEs, 16f, secondLineY, secondaryTextPaint)
     }
 
     companion object {

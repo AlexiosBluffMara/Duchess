@@ -6,13 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.duchess.companion.demo.ConnectionStatus
 import com.duchess.companion.demo.DemoDataProvider
 import com.duchess.companion.demo.ZoneStatus
+import com.duchess.companion.mesh.MeshManager
 import com.duchess.companion.model.SafetyAlert
 import com.duchess.companion.stream.InferencePipelineCoordinator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +23,7 @@ import javax.inject.Inject
 class DashboardViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val coordinator: InferencePipelineCoordinator,
+    private val meshManager: MeshManager,
 ) : ViewModel() {
 
     private val _safetyScore = MutableStateFlow(DemoDataProvider.getSafetyScore())
@@ -33,6 +37,10 @@ class DashboardViewModel @Inject constructor(
 
     private val _connectionStatus = MutableStateFlow(DemoDataProvider.getConnectionStatus())
     val connectionStatus: StateFlow<ConnectionStatus> = _connectionStatus.asStateFlow()
+
+    /** Live mesh connectivity state exposed to DashboardScreen. */
+    val meshState: StateFlow<MeshManager.MeshState> = meshManager.state
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MeshManager.MeshState.Disconnected)
 
     private val _recentAlerts = MutableStateFlow(DemoDataProvider.getSampleAlerts())
     val recentAlerts: StateFlow<List<SafetyAlert>> = _recentAlerts.asStateFlow()
@@ -51,6 +59,10 @@ class DashboardViewModel @Inject constructor(
                 val criticalCount = updated.count { it.severity >= 4 }
                 _safetyScore.value = maxOf(10, 100 - (criticalCount * 8))
             }
+        }
+        // Connect mesh and start offline-queue drain loop.
+        viewModelScope.launch {
+            meshManager.connect(viewModelScope)
         }
     }
 }

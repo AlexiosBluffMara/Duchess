@@ -4,6 +4,7 @@ import com.duchess.companion.ble.AlertSerializer
 import com.duchess.companion.ble.BleGattServer
 import com.duchess.companion.gemma.GemmaAnalysisResult
 import com.duchess.companion.gemma.GemmaInferenceEngine
+import com.duchess.companion.mesh.MeshManager
 import com.duchess.companion.model.SafetyAlert
 import com.meta.wearable.dat.camera.types.VideoFrame
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -84,6 +85,7 @@ import javax.inject.Singleton
 class InferencePipelineCoordinator @Inject constructor(
     private val engine: GemmaInferenceEngine,
     private val bleServer: BleGattServer,
+    private val meshManager: MeshManager,
 ) {
     companion object {
         // Alex: 1 inference per second. Balances detection latency vs. NPU load.
@@ -166,6 +168,9 @@ class InferencePipelineCoordinator @Inject constructor(
             if (alert.severity >= BLE_SEVERITY_THRESHOLD) {
                 val payload = AlertSerializer.serialize(alert)
                 bleServer.sendAlert(payload)
+                // Parallel path: mesh → Tailscale coordinator → cloud escalation.
+                // broadcastAlert() is non-suspending — enqueues internally, drains on reconnect.
+                meshManager.broadcastAlert(alert)
             }
         }
     }
@@ -182,6 +187,7 @@ class InferencePipelineCoordinator @Inject constructor(
         if (alert.severity >= BLE_SEVERITY_THRESHOLD) {
             val payload = AlertSerializer.serialize(alert)
             bleServer.sendAlert(payload)
+            meshManager.broadcastAlert(alert)
         }
     }
 }

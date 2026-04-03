@@ -157,4 +157,17 @@
     <string name="demo_mode_label">Modo demostración</string>
     <string name="demo_mode_desc">Datos simulados — sin hardware necesario</string>
     <string name="live_mode_desc">Hardware real — se requieren lentes Meta</string>
+
+    <!-- Preferencia de idioma del HUD (sincronizado a los lentes por BLE) -->
+    <string name="pref_hud_language_title">Idioma del HUD</string>
+    <string name="pref_hud_language_subtitle">Idioma que se muestra en los lentes</string>
+    <string name="pref_hud_language_english_primary">Inglés primero</string>
+    <string name="pref_hud_language_spanish_primary">Español primero</string>
+    <string name="pref_hud_language_english_only">Solo inglés</string>
+
+    <!-- Estado de conectividad de red mesh (indicador en el tablero) -->
+    <string name="mesh_status_label">Mesh: %s</string>
+    <string name="mesh_status_connected">Conectado</string>
+    <string name="mesh_status_connecting">Conectando</string>
+    <string name="mesh_status_offline">Sin conexión</string>
 </resources>
